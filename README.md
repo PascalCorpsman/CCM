@@ -1,7 +1,7 @@
 # CCM
 This is the public source mirror of the CCM Project.
 
-![Preview](Prewiev.png)
+![Preview](Preview.png)
 
 If you just want to use CCM, please download it from
 
