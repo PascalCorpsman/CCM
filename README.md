@@ -3,7 +3,28 @@ This is the public source mirror of the CCM Project.
 
 ![Preview](Preview.png)
 
-If you just want to use CCM, please download it from
+## Features
+ - Windows / Linux 64
+ - Bilingual (de / en)
+ - Online support
+ - Travelbug database
+ - Scriptable
+ - Custom Filters
+ - diverse statistic evaluations (Jasmer / 81 / Attributes ..)
+ - automatic updates
+ - Export / Import features for GSAK / c:Geo
+ - as many databases as you want
+ - compare / merge databases
+ - pocket queries
+ - export chaches to garmin GPS
+ - import fieldnotes from garmin GPS
+ - Online logging
+ - customizable
+ - rudimentary support for LAB-Caches
+ - recordings for light caches (good to download thousands of geocaches arround a route)
+
+## Download
+If you just want to use CCM, please download it from: https://www.Corpsman.de
 
 Application:
 https://www.corpsman.de/klickcounter.php?url=download/ccm.zip
