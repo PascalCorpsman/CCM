@@ -1,0 +1,215 @@
+object Form42: TForm42
+  Left = 248
+  Height = 597
+  Top = 124
+  Width = 711
+  Caption = 'Form42'
+  ClientHeight = 597
+  ClientWidth = 711
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '2.1.0.0'
+  object Button1: TButton
+    Left = 16
+    Height = 25
+    Top = 558
+    Width = 685
+    Anchors = [akLeft, akRight, akBottom]
+    Caption = 'OK'
+    ModalResult = 1
+    TabOrder = 0
+  end
+  object IpHtmlPanel1: TIpHtmlPanel
+    Left = 8
+    Height = 222
+    Top = 232
+    Width = 695
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    FixedTypeface = 'Courier New'
+    DefaultTypeFace = 'default'
+    DefaultFontSize = 12
+    FlagErrors = False
+    PrintSettings.MarginLeft = 0.5
+    PrintSettings.MarginTop = 0.5
+    PrintSettings.MarginRight = 0.5
+    PrintSettings.MarginBottom = 0.5
+    PrintSettings.Preview.Left = 480
+    PrintSettings.Preview.Top = 300
+    PrintSettings.Preview.Width = 1440
+    PrintSettings.Preview.Height = 900
+    TabOrder = 1
+  end
+  object Label1: TLabel
+    Left = 8
+    Height = 16
+    Top = 456
+    Width = 100
+    Anchors = [akLeft, akBottom]
+    Caption = 'Your last logtext'
+    ParentColor = False
+  end
+  object Label2: TLabel
+    Left = 8
+    Height = 16
+    Top = 216
+    Width = 92
+    Caption = 'About this item'
+    ParentColor = False
+  end
+  object Label3: TLabel
+    Left = 8
+    Height = 16
+    Top = 80
+    Width = 77
+    Caption = 'Current Goal'
+    ParentColor = False
+  end
+  object IpHtmlPanel2: TIpHtmlPanel
+    Left = 8
+    Height = 112
+    Top = 96
+    Width = 695
+    Anchors = [akTop, akLeft, akRight]
+    FixedTypeface = 'Courier New'
+    DefaultTypeFace = 'default'
+    DefaultFontSize = 12
+    FlagErrors = False
+    PrintSettings.MarginLeft = 0.5
+    PrintSettings.MarginTop = 0.5
+    PrintSettings.MarginRight = 0.5
+    PrintSettings.MarginBottom = 0.5
+    PrintSettings.Preview.Left = 480
+    PrintSettings.Preview.Top = 300
+    PrintSettings.Preview.Width = 1440
+    PrintSettings.Preview.Height = 900
+    TabOrder = 2
+  end
+  object Label4: TLabel
+    Left = 8
+    Height = 16
+    Top = 0
+    Width = 40
+    Caption = 'Owner'
+    ParentColor = False
+  end
+  object Label5: TLabel
+    Left = 104
+    Height = 16
+    Top = 0
+    Width = 41
+    Caption = 'Label5'
+    ParentColor = False
+  end
+  object Label6: TLabel
+    Left = 8
+    Height = 16
+    Top = 48
+    Width = 84
+    Caption = 'Released date'
+    ParentColor = False
+  end
+  object Label7: TLabel
+    Left = 104
+    Height = 16
+    Top = 48
+    Width = 41
+    Caption = 'Label7'
+    ParentColor = False
+  end
+  object Label8: TLabel
+    Left = 8
+    Height = 16
+    Top = 22
+    Width = 37
+    Caption = 'Origin'
+    ParentColor = False
+  end
+  object Label9: TLabel
+    Left = 104
+    Height = 16
+    Top = 22
+    Width = 41
+    Caption = 'Label9'
+    ParentColor = False
+  end
+  object Label10: TLabel
+    Left = 240
+    Height = 16
+    Top = 456
+    Width = 50
+    Anchors = [akLeft, akBottom]
+    Caption = 'Logdate'
+    ParentColor = False
+  end
+  object Label11: TLabel
+    Left = 304
+    Height = 16
+    Top = 456
+    Width = 49
+    Anchors = [akLeft, akBottom]
+    Caption = 'Label11'
+    ParentColor = False
+  end
+  object Label12: TLabel
+    Left = 504
+    Height = 16
+    Top = 0
+    Width = 52
+    Caption = 'TB-Code'
+    ParentColor = False
+  end
+  object Label13: TLabel
+    Left = 504
+    Height = 16
+    Top = 22
+    Width = 87
+    Caption = 'Discover-Code'
+    ParentColor = False
+  end
+  object Label14: TLabel
+    Left = 616
+    Height = 16
+    Top = 0
+    Width = 49
+    Caption = 'Label14'
+    ParentColor = False
+  end
+  object Label15: TLabel
+    Left = 616
+    Height = 16
+    Top = 24
+    Width = 49
+    Caption = 'Label15'
+    ParentColor = False
+  end
+  object Label16: TLabel
+    Left = 160
+    Height = 16
+    Top = 64
+    Width = 51
+    Caption = 'Label16'
+    Font.Style = [fsBold]
+    ParentColor = False
+    ParentFont = False
+  end
+  object IpHtmlPanel3: TIpHtmlPanel
+    Left = 8
+    Height = 80
+    Top = 472
+    Width = 695
+    Anchors = [akLeft, akRight, akBottom]
+    FixedTypeface = 'Courier New'
+    DefaultTypeFace = 'default'
+    DefaultFontSize = 12
+    FlagErrors = False
+    PrintSettings.MarginLeft = 0.5
+    PrintSettings.MarginTop = 0.5
+    PrintSettings.MarginRight = 0.5
+    PrintSettings.MarginBottom = 0.5
+    PrintSettings.Preview.Left = 480
+    PrintSettings.Preview.Top = 300
+    PrintSettings.Preview.Width = 1440
+    PrintSettings.Preview.Height = 900
+    TabOrder = 3
+  end
+end

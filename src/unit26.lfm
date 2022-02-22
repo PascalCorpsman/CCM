@@ -1,0 +1,51 @@
+object Form26: TForm26
+  Left = 246
+  Height = 295
+  Top = 138
+  Width = 279
+  Caption = 'Form26'
+  ClientHeight = 295
+  ClientWidth = 279
+  OnCreate = FormCreate
+  LCLVersion = '1.9.0.0'
+  object ListBox1: TListBox
+    Left = 8
+    Height = 80
+    Top = 8
+    Width = 100
+    ItemHeight = 0
+    OnDblClick = ListBox1DblClick
+    PopupMenu = PopupMenu1
+    ScrollWidth = 98
+    TabOrder = 0
+    TopIndex = -1
+  end
+  object Panel1: TPanel
+    Left = 8
+    Height = 50
+    Top = 120
+    Width = 170
+    Caption = 'Panel1'
+    ClientHeight = 50
+    ClientWidth = 170
+    TabOrder = 1
+    object Button1: TButton
+      Left = 24
+      Height = 25
+      Top = 11
+      Width = 123
+      Anchors = [akTop, akLeft, akRight]
+      Caption = '&Clear'
+      OnClick = Button1Click
+      TabOrder = 0
+    end
+  end
+  object PopupMenu1: TPopupMenu
+    left = 68
+    top = 60
+    object MenuItem1: TMenuItem
+      Caption = 'del query'
+      OnClick = MenuItem1Click
+    end
+  end
+end

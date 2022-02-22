@@ -1,0 +1,36 @@
+object Form18: TForm18
+  Left = 286
+  Height = 479
+  Top = 102
+  Width = 532
+  Caption = 'Form18'
+  ClientHeight = 479
+  ClientWidth = 532
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '1.8.2.0'
+  object Button1: TButton
+    Left = 8
+    Height = 25
+    Top = 440
+    Width = 513
+    Anchors = [akLeft, akRight, akBottom]
+    Caption = 'Close'
+    OnClick = Button1Click
+    TabOrder = 0
+  end
+  object Memo1: TMemo
+    Left = 8
+    Height = 422
+    Top = 8
+    Width = 513
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    Lines.Strings = (
+      'Memo1'
+    )
+    ReadOnly = True
+    ScrollBars = ssAutoBoth
+    TabOrder = 1
+    WordWrap = False
+  end
+end

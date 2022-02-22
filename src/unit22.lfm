@@ -1,0 +1,138 @@
+object Form22: TForm22
+  Left = 241
+  Height = 571
+  Top = 107
+  Width = 981
+  Caption = 'Form22'
+  ClientHeight = 571
+  ClientWidth = 981
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '1.9.0.0'
+  object StringGrid1: TStringGrid
+    Left = 8
+    Height = 490
+    Top = 8
+    Width = 965
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    Columns = <    
+      item
+        ButtonStyle = cbsCheckboxColumn
+        Title.Caption = 'Title'
+      end    
+      item
+        Title.Caption = 'Title'
+      end    
+      item
+        ButtonStyle = cbsCheckboxColumn
+        Title.Caption = 'Title'
+      end    
+      item
+        Title.Caption = 'Title'
+      end    
+      item
+        Title.Caption = 'Title'
+      end>
+    FixedCols = 0
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goEditing, goRowSelect, goSmoothScroll]
+    PopupMenu = PopupMenu1
+    TabOrder = 0
+    OnSelectCell = StringGrid1SelectCell
+  end
+  object Button1: TButton
+    Left = 810
+    Height = 25
+    Top = 506
+    Width = 75
+    Anchors = [akRight, akBottom]
+    Caption = 'Cancel'
+    ModalResult = 2
+    TabOrder = 1
+  end
+  object Button2: TButton
+    Left = 898
+    Height = 25
+    Top = 506
+    Width = 75
+    Anchors = [akRight, akBottom]
+    Caption = 'Log all'
+    OnClick = Button2Click
+    TabOrder = 2
+  end
+  object Button3: TButton
+    Left = 8
+    Height = 25
+    Top = 506
+    Width = 75
+    Anchors = [akLeft, akBottom]
+    Caption = 'All'
+    OnClick = Button3Click
+    TabOrder = 3
+  end
+  object Button4: TButton
+    Left = 88
+    Height = 25
+    Top = 506
+    Width = 75
+    Anchors = [akLeft, akBottom]
+    Caption = 'None'
+    OnClick = Button4Click
+    TabOrder = 4
+  end
+  object ComboBox1: TComboBox
+    Left = 400
+    Height = 31
+    Top = 500
+    Width = 192
+    Anchors = [akLeft, akBottom]
+    ItemHeight = 0
+    Style = csDropDownList
+    TabOrder = 5
+  end
+  object Button5: TButton
+    Left = 208
+    Height = 25
+    Top = 506
+    Width = 184
+    Anchors = [akLeft, akBottom]
+    Caption = 'Check TB''s group on selected'
+    OnClick = Button5Click
+    TabOrder = 6
+  end
+  object Button6: TButton
+    Left = 208
+    Height = 25
+    Top = 538
+    Width = 184
+    Anchors = [akLeft, akBottom]
+    Caption = 'Uncheck all TB''s on selected'
+    OnClick = Button6Click
+    TabOrder = 7
+  end
+  object PopupMenu1: TPopupMenu
+    left = 96
+    top = 64
+    object MenuItem5: TMenuItem
+      Caption = 'Open Cache in Browser'
+      OnClick = MenuItem5Click
+    end
+    object MenuItem6: TMenuItem
+      Caption = '-'
+    end
+    object MenuItem1: TMenuItem
+      Caption = 'All'
+      OnClick = MenuItem1Click
+    end
+    object MenuItem2: TMenuItem
+      Caption = 'None'
+      OnClick = MenuItem2Click
+    end
+    object MenuItem3: TMenuItem
+      Caption = '-'
+    end
+    object MenuItem4: TMenuItem
+      Caption = 'Show DT- Rating'
+      OnClick = MenuItem4Click
+    end
+  end
+end

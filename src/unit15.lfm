@@ -1,0 +1,140 @@
+object Form15: TForm15
+  Left = 258
+  Height = 471
+  Top = 94
+  Width = 714
+  Caption = 'Form15'
+  ClientHeight = 471
+  ClientWidth = 714
+  KeyPreview = True
+  OnCloseQuery = FormCloseQuery
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  OnKeyDown = FormKeyDown
+  Position = poScreenCenter
+  LCLVersion = '2.3.0.0'
+  object OpenGLControl1: TOpenGLControl
+    Left = 8
+    Height = 144
+    Top = 8
+    Width = 144
+    OnDblClick = OpenGLControl1DblClick
+    OnMakeCurrent = OpenGLControl1MakeCurrent
+    OnMouseDown = OpenGLControl1MouseDown
+    OnMouseMove = OpenGLControl1MouseMove
+    OnMouseWheelDown = OpenGLControl1MouseWheelDown
+    OnMouseWheelUp = OpenGLControl1MouseWheelUp
+    OnPaint = OpenGLControl1Paint
+    OnResize = OpenGLControl1Resize
+    PopupMenu = PopupMenu1
+    ShowHint = True
+  end
+  object PopupMenu1: TPopupMenu
+    Left = 24
+    Top = 160
+    object MenuItem15: TMenuItem
+      Caption = 'Map'
+      object MenuItem3: TMenuItem
+        Caption = 'Google - Hybrid'
+        OnClick = MenuItem3Click
+      end
+      object MenuItem1: TMenuItem
+        Caption = 'Google - Normal'
+        Checked = True
+        OnClick = MenuItem1Click
+      end
+      object MenuItem2: TMenuItem
+        Caption = 'Google - Satellite'
+        OnClick = MenuItem2Click
+      end
+      object MenuItem20: TMenuItem
+        Caption = 'Google - Terrain'
+        OnClick = MenuItem20Click
+      end
+    end
+    object MenuItem11: TMenuItem
+      Caption = 'Show'
+      object MenuItem4: TMenuItem
+        Caption = 'Cachenames'
+        OnClick = MenuItem4Click
+      end
+      object MenuItem9: TMenuItem
+        Caption = '161m ranges'
+        OnClick = MenuItem9Click
+      end
+      object MenuItem10: TMenuItem
+        Caption = 'Waypoints'
+        OnClick = MenuItem10Click
+      end
+      object MenuItem7: TMenuItem
+        Caption = 'Locations'
+        OnClick = MenuItem7Click
+      end
+    end
+    object MenuItem5: TMenuItem
+      Caption = 'Location'
+      object MenuItem6: TMenuItem
+        Caption = 'Add userpoint'
+        OnClick = MenuItem6Click
+      end
+      object MenuItem14: TMenuItem
+        Caption = 'Add location here'
+        OnClick = MenuItem14Click
+      end
+      object MenuItem16: TMenuItem
+        Caption = 'Copy actual coord to clipboard'
+        OnClick = MenuItem16Click
+      end
+      object MenuItem17: TMenuItem
+        Caption = 'Waypoint projection'
+        OnClick = MenuItem17Click
+      end
+    end
+    object MenuItem21: TMenuItem
+      Caption = 'Center at'
+      OnClick = MenuItem21Click
+    end
+    object MenuItem12: TMenuItem
+      Caption = '-'
+    end
+    object MenuItem60: TMenuItem
+      Caption = 'Customer flags'
+      object MenuItem62: TMenuItem
+        Caption = 'Set customer flag'
+        ShortCut = 16467
+        OnClick = MenuItem62Click
+      end
+      object MenuItem63: TMenuItem
+        Caption = 'Clear customer flag'
+        ShortCut = 16451
+        OnClick = MenuItem63Click
+      end
+      object MenuItem18: TMenuItem
+        Caption = '-'
+      end
+      object MenuItem19: TMenuItem
+        Caption = 'Clear all customer flags'
+        OnClick = MenuItem19Click
+      end
+    end
+    object MenuItem13: TMenuItem
+      Caption = 'Open cache in browser'
+      OnClick = MenuItem13Click
+    end
+    object MenuItem22: TMenuItem
+      Caption = 'Online map'
+      OnClick = MenuItem22Click
+    end
+    object MenuItem23: TMenuItem
+      Caption = '-'
+    end
+    object MenuItem8: TMenuItem
+      Caption = 'Reenable downloading'
+      OnClick = MenuItem8Click
+    end
+    object MenuItem24: TMenuItem
+      Caption = 'Empty cache for maptiles'
+      OnClick = MenuItem24Click
+    end
+  end
+end

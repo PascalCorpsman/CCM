@@ -1,0 +1,96 @@
+object Form31: TForm31
+  Left = 248
+  Height = 224
+  Top = 115
+  Width = 309
+  Caption = 'Form31'
+  ClientHeight = 224
+  ClientWidth = 309
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '2.0.8.0'
+  object Label1: TLabel
+    Left = 24
+    Height = 15
+    Top = 16
+    Width = 38
+    Caption = 'Coords'
+    ParentColor = False
+  end
+  object Edit1: TEdit
+    Left = 96
+    Height = 23
+    Top = 8
+    Width = 192
+    TabOrder = 2
+    Text = 'Edit1'
+  end
+  object GroupBox1: TGroupBox
+    Left = 8
+    Height = 129
+    Top = 40
+    Width = 289
+    Caption = ' Projection '
+    ClientHeight = 109
+    ClientWidth = 285
+    TabOrder = 0
+    object Label2: TLabel
+      Left = 15
+      Height = 15
+      Top = 15
+      Width = 47
+      Caption = 'Angle (°)'
+      ParentColor = False
+    end
+    object Label3: TLabel
+      Left = 15
+      Height = 15
+      Top = 45
+      Width = 67
+      Caption = 'Distance (m)'
+      ParentColor = False
+    end
+    object Edit2: TEdit
+      Left = 87
+      Height = 23
+      Hint = 'Will accept formulas like "123/5" ...'
+      Top = 7
+      Width = 190
+      OnKeyPress = Edit3KeyPress
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 0
+      Text = 'Edit2'
+    end
+    object Edit3: TEdit
+      Left = 87
+      Height = 23
+      Hint = 'Will accept formulas like "123/5" ...'
+      Top = 37
+      Width = 190
+      OnKeyPress = Edit3KeyPress
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 1
+      Text = 'Edit3'
+    end
+    object Button1: TButton
+      Left = 87
+      Height = 25
+      Top = 72
+      Width = 190
+      Caption = 'OK'
+      OnClick = Button1Click
+      TabOrder = 2
+    end
+  end
+  object Button3: TButton
+    Left = 8
+    Height = 25
+    Top = 184
+    Width = 289
+    Caption = 'Cancel'
+    ModalResult = 2
+    TabOrder = 1
+  end
+end

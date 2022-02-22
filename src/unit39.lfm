@@ -1,0 +1,33 @@
+object Form39: TForm39
+  Left = 280
+  Height = 226
+  Top = 145
+  Width = 310
+  Caption = 'Form39'
+  ClientHeight = 226
+  ClientWidth = 310
+  Position = poScreenCenter
+  LCLVersion = '2.1.0.0'
+  object Button1: TButton
+    Left = 16
+    Height = 25
+    Top = 192
+    Width = 275
+    Anchors = [akLeft, akRight, akBottom]
+    Caption = 'OK'
+    OnClick = Button1Click
+    TabOrder = 0
+  end
+  object ListBox1: TListBox
+    Left = 8
+    Height = 176
+    Top = 8
+    Width = 292
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    ItemHeight = 0
+    OnDblClick = ListBox1DblClick
+    ScrollWidth = 290
+    TabOrder = 1
+    TopIndex = -1
+  end
+end

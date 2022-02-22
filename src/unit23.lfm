@@ -1,0 +1,211 @@
+object Form23: TForm23
+  Left = 248
+  Height = 400
+  Top = 121
+  Width = 644
+  Caption = 'Form23'
+  ClientHeight = 400
+  ClientWidth = 644
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '2.1.0.0'
+  object StringGrid1: TStringGrid
+    Left = 8
+    Height = 168
+    Top = 8
+    Width = 547
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    ColCount = 2
+    Columns = <    
+      item
+        Title.Caption = 'Title'
+      end    
+      item
+        Title.Caption = 'Title'
+      end>
+    FixedCols = 0
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goColSizing, goRowSelect, goDblClickAutoSize, goSmoothScroll]
+    PopupMenu = PopupMenu1
+    RowCount = 1
+    TabOrder = 0
+    OnSelectCell = StringGrid1SelectCell
+  end
+  object Button1: TButton
+    Left = 288
+    Height = 25
+    Top = 204
+    Width = 128
+    Anchors = [akLeft, akBottom]
+    Caption = 'Add'
+    OnClick = Button1Click
+    TabOrder = 1
+  end
+  object Edit1: TEdit
+    Left = 8
+    Height = 27
+    Hint = 'This is the TB-Code (the code to reference the TB) not the discover code.'
+    Top = 208
+    Width = 80
+    Anchors = [akLeft, akBottom]
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 2
+    Text = 'Edit1'
+  end
+  object Edit2: TEdit
+    Left = 96
+    Height = 27
+    Top = 208
+    Width = 179
+    Anchors = [akLeft, akBottom]
+    TabOrder = 3
+    Text = 'Edit2'
+  end
+  object Label1: TLabel
+    Left = 8
+    Height = 17
+    Top = 184
+    Width = 48
+    Anchors = [akLeft, akBottom]
+    Caption = 'TB-Code'
+    ParentColor = False
+  end
+  object Label2: TLabel
+    Left = 96
+    Height = 17
+    Top = 184
+    Width = 64
+    Anchors = [akLeft, akBottom]
+    Caption = 'Description'
+    ParentColor = False
+  end
+  object Button2: TButton
+    Left = 427
+    Height = 25
+    Top = 204
+    Width = 128
+    Anchors = [akLeft, akBottom]
+    Caption = 'Overwrite'
+    OnClick = Button2Click
+    TabOrder = 4
+  end
+  object Button3: TButton
+    Left = 560
+    Height = 169
+    Top = 8
+    Width = 75
+    Anchors = [akTop, akRight]
+    Caption = 'Del'
+    OnClick = Button3Click
+    TabOrder = 5
+  end
+  object Button4: TButton
+    Left = 560
+    Height = 25
+    Top = 368
+    Width = 75
+    Anchors = [akRight, akBottom]
+    Caption = 'Close'
+    ModalResult = 1
+    TabOrder = 6
+  end
+  object StringGrid2: TStringGrid
+    Left = 8
+    Height = 88
+    Top = 240
+    Width = 547
+    Anchors = [akLeft, akRight, akBottom]
+    ColCount = 2
+    Columns = <    
+      item
+        Title.Caption = 'Title'
+      end    
+      item
+        Title.Caption = 'Title'
+      end>
+    FixedCols = 0
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goColSizing, goRowSelect, goDblClickAutoSize, goSmoothScroll]
+    RowCount = 1
+    TabOrder = 7
+    OnSelectCell = StringGrid2SelectCell
+  end
+  object Button5: TButton
+    Left = 288
+    Height = 25
+    Top = 336
+    Width = 128
+    Anchors = [akLeft, akBottom]
+    Caption = 'Add TB to Group'
+    OnClick = Button5Click
+    TabOrder = 8
+  end
+  object Button6: TButton
+    Left = 427
+    Height = 25
+    Top = 336
+    Width = 128
+    Anchors = [akLeft, akBottom]
+    Caption = 'Del TB from Group'
+    OnClick = Button6Click
+    TabOrder = 9
+  end
+  object Edit3: TEdit
+    Left = 8
+    Height = 27
+    Hint = 'if name contains "default" then this group '#10'will automatically preselected when calling'#10'the online log dialog'
+    Top = 368
+    Width = 80
+    Anchors = [akLeft, akBottom]
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 10
+    Text = 'Edit3'
+  end
+  object Label3: TLabel
+    Left = 8
+    Height = 17
+    Top = 352
+    Width = 70
+    Anchors = [akLeft, akBottom]
+    Caption = 'Group name'
+    ParentColor = False
+  end
+  object Button7: TButton
+    Left = 96
+    Height = 25
+    Top = 368
+    Width = 100
+    Anchors = [akLeft, akBottom]
+    Caption = 'Add group'
+    OnClick = Button7Click
+    TabOrder = 11
+  end
+  object Button8: TButton
+    Left = 320
+    Height = 25
+    Top = 368
+    Width = 100
+    Anchors = [akLeft, akBottom]
+    Caption = 'Del group'
+    OnClick = Button8Click
+    TabOrder = 12
+  end
+  object Button9: TButton
+    Left = 208
+    Height = 25
+    Top = 368
+    Width = 100
+    Anchors = [akLeft, akBottom]
+    Caption = 'Rename group'
+    OnClick = Button9Click
+    TabOrder = 13
+  end
+  object PopupMenu1: TPopupMenu
+    left = 37
+    top = 90
+    object MenuItem1: TMenuItem
+      Caption = 'Open TB in Browser'
+      OnClick = MenuItem1Click
+    end
+  end
+end

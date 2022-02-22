@@ -1,0 +1,76 @@
+object Form35: TForm35
+  Left = 293
+  Height = 516
+  Top = 131
+  Width = 920
+  Caption = 'Jasmer Matrix'
+  ClientHeight = 516
+  ClientWidth = 920
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '2.0.0.4'
+  object StringGrid1: TStringGrid
+    Left = 8
+    Height = 465
+    Top = 8
+    Width = 902
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    ColCount = 14
+    Columns = <    
+      item
+        Title.Caption = 'January'
+      end    
+      item
+        Title.Caption = 'February'
+      end    
+      item
+        Title.Caption = 'March'
+      end    
+      item
+        Title.Caption = 'April'
+      end    
+      item
+        Title.Caption = 'May'
+      end    
+      item
+        Title.Caption = 'June'
+      end    
+      item
+        Title.Caption = 'July'
+      end    
+      item
+        Title.Caption = 'August'
+      end    
+      item
+        Title.Caption = 'September'
+      end    
+      item
+        Title.Caption = 'October'
+      end    
+      item
+        Title.Caption = 'November'
+      end    
+      item
+        Title.Caption = 'December'
+      end    
+      item
+        Title.Caption = 'Sum'
+      end>
+    TabOrder = 0
+    OnDblClick = StringGrid1DblClick
+    OnDrawCell = StringGrid1DrawCell
+    OnMouseWheelDown = StringGrid1MouseWheelDown
+    OnMouseWheelUp = StringGrid1MouseWheelUp
+    OnSelectCell = StringGrid1SelectCell
+  end
+  object Button1: TButton
+    Left = 8
+    Height = 25
+    Top = 481
+    Width = 902
+    Anchors = [akLeft, akRight, akBottom]
+    Caption = 'OK'
+    OnClick = Button1Click
+    TabOrder = 1
+  end
+end

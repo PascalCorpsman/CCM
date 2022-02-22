@@ -1,0 +1,212 @@
+object Form33: TForm33
+  Left = 238
+  Height = 532
+  Top = 123
+  Width = 809
+  Caption = 'Form33'
+  ClientHeight = 532
+  ClientWidth = 809
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  Position = poScreenCenter
+  LCLVersion = '2.1.0.0'
+  object Button1: TButton
+    Left = 144
+    Height = 25
+    Top = 456
+    Width = 500
+    Anchors = [akLeft, akRight, akBottom]
+    Caption = 'Discover all selected'
+    OnClick = Button1Click
+    TabOrder = 4
+  end
+  object StringGrid1: TStringGrid
+    Left = 8
+    Height = 368
+    Top = 40
+    Width = 797
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    Columns = <    
+      item
+        ButtonStyle = cbsCheckboxColumn
+        PickList.Strings = (
+          '0'
+          '1'
+        )
+        Title.Caption = 'Select'
+      end    
+      item
+        Title.Caption = 'Discover-Code'
+      end    
+      item
+        Title.Caption = 'Date'
+      end    
+      item
+        Title.Caption = 'State'
+      end    
+      item
+        SizePriority = 0
+        Title.Caption = 'Comment'
+      end>
+    FixedCols = 0
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goRowSelect, goSmoothScroll]
+    PopupMenu = PopupMenu1
+    TabOrder = 2
+    OnClick = StringGrid1Click
+    OnHeaderClick = StringGrid1HeaderClick
+    OnKeyDown = StringGrid1KeyDown
+    OnKeyUp = StringGrid1KeyUp
+    OnSelectCell = StringGrid1SelectCell
+  end
+  object Label1: TLabel
+    Left = 8
+    Height = 32
+    Top = 1
+    Width = 88
+    Caption = 'Enter Discover'#13#10'code''s:'
+    ParentColor = False
+  end
+  object Edit1: TEdit
+    Left = 96
+    Height = 25
+    Top = 8
+    Width = 512
+    Anchors = [akTop, akLeft, akRight]
+    OnKeyPress = Edit1KeyPress
+    OnKeyUp = Edit1KeyUp
+    TabOrder = 0
+    Text = 'Edit1'
+  end
+  object Button2: TButton
+    Left = 616
+    Height = 25
+    Top = 6
+    Width = 75
+    Anchors = [akTop, akRight]
+    Caption = 'Add to list'
+    OnClick = Button2Click
+    TabOrder = 1
+  end
+  object Button3: TButton
+    Left = 8
+    Height = 25
+    Top = 416
+    Width = 60
+    Anchors = [akLeft, akBottom]
+    Caption = 'All'
+    OnClick = Button3Click
+    TabOrder = 6
+  end
+  object Button4: TButton
+    Left = 76
+    Height = 25
+    Top = 416
+    Width = 60
+    Anchors = [akLeft, akBottom]
+    Caption = 'None'
+    OnClick = Button4Click
+    TabOrder = 7
+  end
+  object Button5: TButton
+    Left = 144
+    Height = 25
+    Top = 416
+    Width = 500
+    Anchors = [akLeft, akRight, akBottom]
+    Caption = 'Set comment for selected'
+    OnClick = Button5Click
+    TabOrder = 3
+  end
+  object Button6: TButton
+    Left = 144
+    Height = 25
+    Top = 496
+    Width = 500
+    Anchors = [akLeft, akRight, akBottom]
+    Caption = 'Close'
+    OnClick = Button6Click
+    TabOrder = 5
+  end
+  object Button7: TButton
+    Left = 8
+    Height = 25
+    Top = 456
+    Width = 128
+    Anchors = [akLeft, akBottom]
+    Caption = 'Delete selected'
+    OnClick = Button7Click
+    TabOrder = 8
+  end
+  object Button8: TButton
+    Left = 696
+    Height = 25
+    Hint = 'In TB-Wulf only export the TB-numbers'
+    Top = 6
+    Width = 109
+    Anchors = [akTop, akRight]
+    Caption = 'Import commalist'
+    OnClick = Button8Click
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 9
+  end
+  object Button9: TButton
+    Left = 8
+    Height = 25
+    Top = 496
+    Width = 128
+    Anchors = [akLeft, akBottom]
+    Caption = 'Export commalist'
+    OnClick = Button9Click
+    TabOrder = 10
+  end
+  object PopupMenu1: TPopupMenu
+    Left = 117
+    Top = 235
+    object MenuItem5: TMenuItem
+      Caption = 'Select'
+      OnClick = MenuItem5Click
+    end
+    object MenuItem7: TMenuItem
+      Caption = 'Deselect'
+      OnClick = MenuItem7Click
+    end
+    object MenuItem6: TMenuItem
+      Caption = '-'
+    end
+    object MenuItem2: TMenuItem
+      Caption = 'Set discoverdate'
+      OnClick = MenuItem2Click
+    end
+    object MenuItem3: TMenuItem
+      Caption = 'Set discoverdate for all selected'
+      OnClick = MenuItem3Click
+    end
+    object MenuItem4: TMenuItem
+      Caption = '-'
+    end
+    object MenuItem1: TMenuItem
+      Caption = 'Open TB in Browser'
+      OnClick = MenuItem1Click
+    end
+  end
+  object CalendarDialog1: TCalendarDialog
+    Date = 43031
+    OKCaption = '&Ok'
+    CancelCaption = 'Cancel'
+    Left = 117
+    Top = 184
+  end
+  object OpenDialog1: TOpenDialog
+    DefaultExt = '.txt'
+    Filter = 'Commalist|*.txt|All|*.*'
+    Left = 728
+    Top = 24
+  end
+  object SaveDialog1: TSaveDialog
+    DefaultExt = '.txt'
+    Filter = 'Commalist|*.txt|All|*.*'
+    Left = 56
+    Top = 480
+  end
+end

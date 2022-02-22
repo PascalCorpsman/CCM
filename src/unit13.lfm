@@ -1,0 +1,260 @@
+object Form13: TForm13
+  Left = 255
+  Height = 504
+  Top = 122
+  Width = 731
+  Caption = 'Form13'
+  ClientHeight = 504
+  ClientWidth = 731
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '2.3.0.0'
+  object IpHtmlPanel1: TIpHtmlPanel
+    Left = 16
+    Height = 228
+    Top = 112
+    Width = 385
+    FixedTypeface = 'Courier New'
+    DefaultTypeFace = 'default'
+    DefaultFontSize = 12
+    FlagErrors = False
+    PrintSettings.MarginLeft = 0.5
+    PrintSettings.MarginTop = 0.5
+    PrintSettings.MarginRight = 0.5
+    PrintSettings.MarginBottom = 0.5
+    PrintSettings.Preview.Left = 480
+    PrintSettings.Preview.Top = 300
+    PrintSettings.Preview.Width = 1440
+    PrintSettings.Preview.Height = 900
+    TabOrder = 0
+  end
+  object Memo1: TMemo
+    Left = 32
+    Height = 74
+    Top = 128
+    Width = 96
+    Lines.Strings = (
+      'Memo1'
+    )
+    PopupMenu = PopupMenu1
+    ReadOnly = True
+    ScrollBars = ssAutoBoth
+    TabOrder = 1
+    WordWrap = False
+  end
+  object Panel1: TPanel
+    Left = 0
+    Height = 40
+    Top = 464
+    Width = 731
+    Align = alBottom
+    Caption = 'Panel1'
+    ClientHeight = 40
+    ClientWidth = 731
+    TabOrder = 2
+    object Button2: TButton
+      Left = 8
+      Height = 25
+      Top = 8
+      Width = 88
+      Caption = 'Logs'
+      OnClick = Button2Click
+      TabOrder = 0
+    end
+    object Button1: TButton
+      Left = 634
+      Height = 25
+      Top = 8
+      Width = 88
+      Anchors = [akTop, akRight]
+      Caption = 'OK'
+      ModalResult = 1
+      TabOrder = 1
+    end
+    object Button3: TButton
+      Left = 104
+      Height = 25
+      Top = 8
+      Width = 88
+      Caption = 'Waypoints'
+      OnClick = Button3Click
+      TabOrder = 2
+    end
+    object Button4: TButton
+      Left = 200
+      Height = 25
+      Top = 8
+      Width = 88
+      Caption = 'Edit Note'
+      OnClick = Button4Click
+      TabOrder = 3
+    end
+    object Button5: TButton
+      Left = 296
+      Height = 25
+      Top = 8
+      Width = 88
+      Caption = 'Add Spoiler'
+      OnClick = Button5Click
+      TabOrder = 4
+    end
+    object Button6: TButton
+      Left = 392
+      Height = 25
+      Top = 8
+      Width = 88
+      Caption = 'Open in browser'
+      OnClick = Button6Click
+      TabOrder = 5
+    end
+  end
+  object Panel2: TPanel
+    Left = 0
+    Height = 96
+    Top = 0
+    Width = 731
+    Align = alTop
+    Caption = 'Panel2'
+    ClientHeight = 96
+    ClientWidth = 731
+    TabOrder = 3
+    object Label1: TLabel
+      Left = 16
+      Height = 15
+      Top = 32
+      Width = 34
+      Caption = 'Label1'
+    end
+    object ScrollBox1: TScrollBox
+      Left = 7
+      Height = 35
+      Top = 56
+      Width = 715
+      HorzScrollBar.Page = 1
+      VertScrollBar.Page = 1
+      Anchors = [akTop, akLeft, akRight]
+      TabOrder = 0
+    end
+    object Image1: TImage
+      Left = 56
+      Height = 12
+      Top = 32
+      Width = 45
+    end
+    object Label2: TLabel
+      Left = 112
+      Height = 15
+      Top = 32
+      Width = 34
+      Caption = 'Label2'
+    end
+    object Image2: TImage
+      Left = 152
+      Height = 13
+      Top = 32
+      Width = 61
+    end
+    object Label3: TLabel
+      Left = 233
+      Height = 15
+      Top = 32
+      Width = 34
+      Caption = 'Label3'
+    end
+    object Image3: TImage
+      Left = 280
+      Height = 13
+      Top = 32
+      Width = 61
+    end
+    object Label4: TLabel
+      Left = 352
+      Height = 15
+      Top = 32
+      Width = 34
+      Caption = 'Label4'
+    end
+    object Label5: TLabel
+      Left = 16
+      Height = 15
+      Top = 8
+      Width = 34
+      Caption = 'Label5'
+      OnClick = Label5Click
+    end
+  end
+  object ImageList1: TImageList
+    Height = 12
+    Width = 45
+    Left = 24
+    Top = 328
+    Bitmap = {
+      4C7A080000002D0000000C000000270100000000000078DAED9B410E82301045
+      BD0657E19E2E3C43CF8007E965202C30632DCDB4489D9167F28371E3A3A1338F
+      524208B7E030F38F3FD3F454E76CE6186331BD99352C30EB985B7960DE67D6FE
+      27CCD763F6D65308BE816FE01BF8865DE661B8BF0233CCF806C137F00D98DF6B
+      B6A676C3DC76DF0D33CCF806C137FCF946AEA6D4D41698756B0530F759E787F9
+      3ACCF806C137DA7BA59CAB96D60A60EEF36C02E63EFB0A60FE0F667C83E01BDF
+      5DDF58E7E57694DFE591E729C799B7B1CC453BCEBD9F7797983DEEDFC88DB385
+      7D8CB5D706FB458FD7BABD9A876F107C83FD1B29F3383E3E38E56F561D4932A6
+      E760B977AFACB931F7CE6CA9776BAF0D2BCC357390F753F00D7C03DF909E9FC6
+      72EFF6C85CBA7FB5DEBB7363EC8599774B19E716667CE3DC2CC4EC83B4
+    }
+  end
+  object ImageList2: TImageList
+    Height = 13
+    Width = 61
+    Left = 96
+    Top = 328
+    Bitmap = {
+      4C7A090000003D0000000D000000600400000000000078DAE599CB4F13411CC7
+      B9AAD1E8CDC4C49B8989572F7AF1EEDFE15941DE90E55125361244908888682A
+      1AA31513C3415E4A5B8A480910790844244148137C2440D2C4109B9FCC68D196
+      6DBB23333BBFDFB4934DD3DDEFEEE6373B3BD34F3E9007B66DACBB1E20CF799B
+      9C98249DDFF8B60A83D661F811DB70745E2C1683CAB272D8DADA2299672DFCB8
+      0886AC7DE0F459874343D0E9F381D3BEC59667ADD77392D7DCE33DE3E89CE69B
+      4D303D35050F3AEE93CA7F5D9D87C58957301DF0F17AD916B00EC2FC5B3FDFFF
+      3DBA9874FEFAFA3AAC7C5E8185F905686B6DE5E3A8ACB804963E2DF1FD9B9B9B
+      68F33DF5E7766A74B2F9ABCF4271FE25F054D740634303BF3EEB53F699181F87
+      96E666BEBFC6AA82C2FC02B876B58E7F63C9FB9F3EE3B5879F9442D03A90B1D6
+      807508222FBD3C3F1C1E8692C222181D7907769F50300815A565FC9E18F389C6
+      C6EF40D551DB7AFBAA8FC3EAC248529E8D972BB51E8846A349D76763E9BAD70B
+      5FD6D650E777E6BBEDE76D5773E2F9A636D6BF5D7E7FD23D1E3DECDCD59F58F3
+      FCDDAE3B6D5B337BE7EDF2F7EEB6C387D95998999E81F63B6DFC9B5D9FDD8742
+      9EFD0F0959FB7FD7E83905EF5F77404FED09FEFB8D7504E23F93D777B6EE175F
+      2EE4FD7AFB560BCCCDCD41D38D4678D1D505564525C4E371D479D6D8F8656B53
+      D07771E718AB73B0E302EF0BB666FD9B67FDC7D682C060E06F7EFBBAFD7DFDFC
+      DEEC3DC29C672DD459B06B9E4AB48F63DD30F2BC36E9189B0BD3CD0BCBCBCB10
+      198DA0CECB608C88BF3CA718233117E41463FCC9E7126324F2A633865DDE54C6
+      E8AB3A96F698C98C912E6F3A63D8E573813152F3B9C018A979D31923353F3B36
+      603C63D8E64D678C0CF95C610CEADEE37F1883B2F7D80B6350F51E7B610C6ADE
+      43066350F11E32198382F790CD1854BC874CC6A0E43D64310635EF218331A879
+      8FBD320635EF218D3108790FD98C41C17BE8600C6CDE43356360F31EAE300632
+      EFE1066360F11EAA190393F750CD18D8BC875B8C81CD7BB8C518D8BC875B8C81
+      CD7BB8C118D8BC876AC6C0E63DDC600C6CDEC315C640E63D74300636EFE10663
+      60F21E6E320616EFE12663E8F61E3A184397F7D0C9183ABC876EC6D0E53D7432
+      864EEFA18B31747B0F1D8CA1DB7BB8CD18BABD8736C6D0E83D7433860EEF4181
+      31547B0F6C8CA1DA7BA0640CC5DE032363A8F21ED81843A5F7C0C618AABD0756
+      C650ED3DB032866AEF819531547B0F8C8CA1DA7B60630CD5DE032363A8F61E28
+      1943B1F7A0C018AABD0746C650E93D3033862AEF819931647B0F0A8C21CB7B50
+      620C19DE831A63C8F21E941843A6F7A0C218B2BD0705C690ED3DB033866CEF41
+      8631247A0F6A8C21C37B98C818A2DE833A63887A0F231843D07B98C0184EBD07
+      75C610F11ED41943D47B98C218A2DEC314C610F51EA63086A8F730813144BD07
+      75C610F51E263086A8F730823104BD87898C219A37813144F2263186C8B33685
+      31B2E54D648C74799319C36EEB6D3C6F3463A4CB9BCC1899F2A63246B6BC898C
+      912D6F1A6364CB1BCB1819F2A633466AFE1707F4D91C
+    }
+  end
+  object PopupMenu1: TPopupMenu
+    Left = 500
+    Top = 206
+    object MenuItem1: TMenuItem
+      Caption = 'Edit title'
+      OnClick = MenuItem1Click
+    end
+    object MenuItem3: TMenuItem
+      Caption = 'Edit listing text'
+      OnClick = MenuItem3Click
+    end
+  end
+end

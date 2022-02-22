@@ -1,0 +1,177 @@
+object Form5: TForm5
+  Left = 267
+  Height = 332
+  Top = 120
+  Width = 318
+  BorderIcons = [biSystemMenu]
+  Caption = 'Form5'
+  ClientHeight = 332
+  ClientWidth = 318
+  OnCreate = FormCreate
+  OnShow = FormShow
+  Position = poScreenCenter
+  LCLVersion = '2.1.0.0'
+  object Button1: TButton
+    Left = 32
+    Height = 25
+    Top = 296
+    Width = 75
+    Caption = 'Cancel'
+    ModalResult = 2
+    TabOrder = 0
+  end
+  object Button2: TButton
+    Left = 229
+    Height = 25
+    Top = 296
+    Width = 75
+    Caption = 'OK'
+    ModalResult = 1
+    TabOrder = 1
+  end
+  object Button3: TButton
+    Left = 120
+    Height = 25
+    Top = 296
+    Width = 75
+    Caption = 'Reset'
+    OnClick = Button3Click
+    TabOrder = 2
+  end
+  object GroupBox1: TGroupBox
+    Left = 32
+    Height = 160
+    Top = 8
+    Width = 272
+    ClientHeight = 158
+    ClientWidth = 270
+    TabOrder = 3
+    object Label1: TLabel
+      Left = 8
+      Height = 16
+      Top = 8
+      Width = 41
+      Caption = 'Label1'
+      ParentColor = False
+    end
+    object Edit1: TEdit
+      Left = 56
+      Height = 25
+      Top = 32
+      Width = 203
+      OnKeyPress = Edit1KeyPress
+      TabOrder = 0
+      Text = 'Edit1'
+    end
+    object Label2: TLabel
+      Left = 8
+      Height = 16
+      Top = 64
+      Width = 41
+      Caption = 'Label2'
+      ParentColor = False
+    end
+    object Edit2: TEdit
+      Left = 56
+      Height = 25
+      Top = 88
+      Width = 203
+      OnKeyPress = Edit1KeyPress
+      TabOrder = 1
+      Text = 'Edit2'
+    end
+    object ComboBox3: TComboBox
+      Left = 8
+      Height = 26
+      Top = 88
+      Width = 40
+      ItemHeight = 0
+      ItemIndex = 0
+      Items.Strings = (
+        'E'
+        'W'
+      )
+      Style = csDropDownList
+      TabOrder = 2
+      Text = 'E'
+    end
+    object ComboBox2: TComboBox
+      Left = 8
+      Height = 26
+      Top = 32
+      Width = 40
+      ItemHeight = 0
+      ItemIndex = 0
+      Items.Strings = (
+        'N'
+        'S'
+      )
+      Style = csDropDownList
+      TabOrder = 3
+      Text = 'N'
+    end
+    object Label4: TLabel
+      Left = 56
+      Height = 16
+      Top = 116
+      Width = 173
+      Caption = 'Coords are already modified.'
+      Font.Color = clRed
+      ParentColor = False
+      ParentFont = False
+    end
+  end
+  object GroupBox2: TGroupBox
+    Left = 32
+    Height = 80
+    Top = 168
+    Width = 272
+    ClientHeight = 78
+    ClientWidth = 270
+    TabOrder = 4
+    object Edit3: TEdit
+      Left = 8
+      Height = 25
+      Top = 8
+      Width = 251
+      OnKeyPress = Edit3KeyPress
+      TabOrder = 0
+      Text = 'Edit3'
+    end
+    object Label3: TLabel
+      Left = 56
+      Height = 16
+      Top = 37
+      Width = 173
+      Caption = 'Coords are already modified.'
+      Font.Color = clRed
+      ParentColor = False
+      ParentFont = False
+    end
+  end
+  object RadioButton1: TRadioButton
+    Left = 8
+    Height = 22
+    Top = 64
+    Width = 22
+    Checked = True
+    TabOrder = 6
+    TabStop = True
+  end
+  object RadioButton2: TRadioButton
+    Left = 8
+    Height = 22
+    Top = 192
+    Width = 22
+    TabOrder = 5
+  end
+  object Button4: TButton
+    Left = 32
+    Height = 25
+    Top = 256
+    Width = 272
+    Caption = 'Waypoint projection'
+    OnClick = Button4Click
+    TabOrder = 7
+  end
+end

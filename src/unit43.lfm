@@ -1,0 +1,153 @@
+object Form43: TForm43
+  Left = 1648
+  Height = 451
+  Top = 170
+  Width = 732
+  Caption = 'Form43'
+  ClientHeight = 451
+  ClientWidth = 732
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '2.3.0.0'
+  object Panel1: TPanel
+    Left = 0
+    Height = 406
+    Top = 0
+    Width = 732
+    Align = alClient
+    Caption = 'Panel1'
+    ClientHeight = 406
+    ClientWidth = 732
+    TabOrder = 0
+    object Panel3: TPanel
+      Left = 1
+      Height = 404
+      Top = 1
+      Width = 350
+      Align = alLeft
+      Caption = 'Panel3'
+      ClientHeight = 404
+      ClientWidth = 350
+      TabOrder = 0
+      object Label1: TLabel
+        Left = 8
+        Height = 16
+        Top = 8
+        Width = 41
+        Caption = 'Label1'
+      end
+      object Memo1: TMemo
+        Left = 8
+        Height = 365
+        Top = 32
+        Width = 335
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        Lines.Strings = (
+          'Memo1'
+        )
+        ReadOnly = True
+        ScrollBars = ssAutoBoth
+        TabOrder = 0
+        WordWrap = False
+      end
+    end
+    object Splitter1: TSplitter
+      Left = 351
+      Height = 404
+      Top = 1
+      Width = 5
+    end
+    object Panel4: TPanel
+      Left = 356
+      Height = 404
+      Top = 1
+      Width = 375
+      Align = alClient
+      Caption = 'Panel4'
+      ClientHeight = 404
+      ClientWidth = 375
+      TabOrder = 2
+      object Label2: TLabel
+        Left = 8
+        Height = 16
+        Top = 8
+        Width = 41
+        Caption = 'Label2'
+      end
+      object Memo2: TMemo
+        Left = 8
+        Height = 365
+        Top = 32
+        Width = 358
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        Lines.Strings = (
+          'Memo2'
+        )
+        OnChange = Memo2Change
+        ScrollBars = ssAutoBoth
+        TabOrder = 0
+        WordWrap = False
+      end
+      object Label3: TLabel
+        Left = 300
+        Height = 15
+        Top = 8
+        Width = 66
+        AutoSize = False
+        BidiMode = bdRightToLeft
+        Caption = 'Label3'
+        ParentBidiMode = False
+      end
+    end
+  end
+  object Panel2: TPanel
+    Left = 0
+    Height = 45
+    Top = 406
+    Width = 732
+    Align = alBottom
+    Caption = 'Panel2'
+    ClientHeight = 45
+    ClientWidth = 732
+    TabOrder = 1
+    object Button1: TButton
+      Left = 496
+      Height = 25
+      Top = 8
+      Width = 225
+      Anchors = [akRight, akBottom]
+      Caption = 'Option_1'
+      OnClick = Button1Click
+      TabOrder = 0
+    end
+    object Button2: TButton
+      Left = 11
+      Height = 25
+      Top = 11
+      Width = 75
+      Anchors = [akLeft, akRight]
+      Caption = 'Cancel'
+      ModalResult = 2
+      TabOrder = 1
+    end
+    object Button3: TButton
+      Left = 264
+      Height = 25
+      Top = 8
+      Width = 225
+      Anchors = [akRight, akBottom]
+      Caption = 'Option_2'
+      OnClick = Button3Click
+      TabOrder = 2
+    end
+    object CheckBox1: TCheckBox
+      Left = 152
+      Height = 22
+      Top = 11
+      Width = 99
+      Anchors = [akRight, akBottom]
+      Caption = 'Apply for all'
+      TabOrder = 3
+    end
+  end
+end

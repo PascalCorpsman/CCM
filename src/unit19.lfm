@@ -1,0 +1,181 @@
+object Form19: TForm19
+  Left = 248
+  Height = 395
+  Top = 122
+  Width = 381
+  Caption = 'Form19'
+  ClientHeight = 395
+  ClientWidth = 381
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '2.0.0.4'
+  object Button2: TButton
+    Left = 98
+    Height = 25
+    Top = 360
+    Width = 273
+    Anchors = [akRight, akBottom]
+    Caption = 'OK'
+    ModalResult = 1
+    TabOrder = 0
+  end
+  object GroupBox1: TGroupBox
+    Left = 9
+    Height = 192
+    Top = 160
+    Width = 361
+    Anchors = [akLeft, akRight, akBottom]
+    Caption = ' Tool '
+    ClientHeight = 172
+    ClientWidth = 357
+    TabOrder = 1
+    object ComboBox1: TComboBox
+      Left = 96
+      Height = 23
+      Top = 32
+      Width = 246
+      Anchors = [akTop, akLeft, akRight]
+      ItemHeight = 15
+      ItemIndex = 0
+      Items.Strings = (
+        'Executable'
+        'Internet link'
+        'Root Node'
+      )
+      Style = csDropDownList
+      TabOrder = 0
+      Text = 'Executable'
+    end
+    object Edit1: TEdit
+      Left = 96
+      Height = 23
+      Top = 3
+      Width = 246
+      Anchors = [akTop, akLeft, akRight]
+      TabOrder = 1
+      Text = 'Edit1'
+    end
+    object Label1: TLabel
+      Left = 8
+      Height = 15
+      Top = 40
+      Width = 24
+      Caption = 'Kind'
+      ParentColor = False
+    end
+    object Label2: TLabel
+      Left = 8
+      Height = 15
+      Top = 11
+      Width = 32
+      Caption = 'Name'
+      ParentColor = False
+    end
+    object Label3: TLabel
+      Left = 8
+      Height = 15
+      Top = 74
+      Width = 57
+      Caption = 'Command'
+      ParentColor = False
+    end
+    object Edit2: TEdit
+      Left = 96
+      Height = 23
+      Top = 66
+      Width = 246
+      Anchors = [akTop, akLeft, akRight]
+      TabOrder = 2
+      Text = 'Edit2'
+    end
+    object Button1: TButton
+      Left = 94
+      Height = 25
+      Top = 136
+      Width = 75
+      Anchors = [akTop, akRight]
+      Caption = 'Delete'
+      OnClick = Button1Click
+      TabOrder = 3
+    end
+    object Button3: TButton
+      Left = 182
+      Height = 25
+      Top = 136
+      Width = 75
+      Anchors = [akTop, akRight]
+      Caption = 'Overwrite'
+      OnClick = Button3Click
+      TabOrder = 4
+    end
+    object Button4: TButton
+      Left = 267
+      Height = 25
+      Top = 136
+      Width = 75
+      Anchors = [akTop, akRight]
+      Caption = 'Add'
+      OnClick = Button4Click
+      TabOrder = 5
+    end
+    object ComboBox2: TComboBox
+      Left = 96
+      Height = 23
+      Top = 101
+      Width = 246
+      Anchors = [akTop, akLeft, akRight]
+      ItemHeight = 15
+      Style = csDropDownList
+      TabOrder = 6
+    end
+    object Label4: TLabel
+      Left = 8
+      Height = 15
+      Top = 109
+      Width = 64
+      Caption = 'Parent node'
+      ParentColor = False
+    end
+  end
+  object ListBox1: TListBox
+    Left = 10
+    Height = 144
+    Top = 8
+    Width = 326
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    ItemHeight = 0
+    OnClick = ListBox1Click
+    ScrollWidth = 324
+    TabOrder = 2
+  end
+  object Button5: TButton
+    Left = 10
+    Height = 25
+    Top = 360
+    Width = 75
+    Anchors = [akLeft, akBottom]
+    Caption = 'Help'
+    OnClick = Button5Click
+    TabOrder = 3
+  end
+  object Button6: TButton
+    Left = 342
+    Height = 64
+    Top = 8
+    Width = 27
+    Anchors = [akTop, akRight]
+    Caption = '/\'
+    OnClick = Button6Click
+    TabOrder = 4
+  end
+  object Button7: TButton
+    Left = 342
+    Height = 64
+    Top = 88
+    Width = 27
+    Anchors = [akRight, akBottom]
+    Caption = '\/'
+    OnClick = Button7Click
+    TabOrder = 5
+  end
+end

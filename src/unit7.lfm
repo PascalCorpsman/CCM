@@ -1,0 +1,55 @@
+object Form7: TForm7
+  Left = 238
+  Height = 243
+  Top = 123
+  Width = 320
+  Caption = 'Form7'
+  ClientHeight = 243
+  ClientWidth = 320
+  Position = poScreenCenter
+  LCLVersion = '1.8.4.0'
+  object Memo1: TMemo
+    Left = 8
+    Height = 186
+    Top = 8
+    Width = 304
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    Lines.Strings = (
+      'Memo1'
+    )
+    OnChange = Memo1Change
+    ScrollBars = ssAutoBoth
+    TabOrder = 0
+    WordWrap = False
+  end
+  object Button1: TButton
+    Left = 8
+    Height = 25
+    Top = 207
+    Width = 75
+    Anchors = [akLeft, akBottom]
+    Caption = 'Cancel'
+    ModalResult = 2
+    TabOrder = 1
+  end
+  object Button2: TButton
+    Left = 237
+    Height = 25
+    Top = 207
+    Width = 75
+    Anchors = [akRight, akBottom]
+    Caption = 'OK'
+    ModalResult = 1
+    TabOrder = 2
+  end
+  object Button3: TButton
+    Left = 123
+    Height = 25
+    Top = 207
+    Width = 75
+    Anchors = [akLeft, akBottom]
+    Caption = 'Clear'
+    OnClick = Button3Click
+    TabOrder = 3
+  end
+end

@@ -1,0 +1,47 @@
+object Form28: TForm28
+  Left = 293
+  Height = 125
+  Top = 112
+  Width = 273
+  BorderIcons = [biSystemMenu]
+  Caption = 'Form28'
+  ClientHeight = 125
+  ClientWidth = 273
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '1.8.4.0'
+  object Button1: TButton
+    Left = 24
+    Height = 25
+    Top = 88
+    Width = 75
+    Caption = 'OK'
+    ModalResult = 1
+    TabOrder = 0
+  end
+  object Button2: TButton
+    Left = 168
+    Height = 25
+    Top = 88
+    Width = 75
+    Caption = 'Cancel'
+    ModalResult = 2
+    TabOrder = 1
+  end
+  object Label1: TLabel
+    Left = 8
+    Height = 15
+    Top = 8
+    Width = 31
+    Caption = 'label1'
+    ParentColor = False
+  end
+  object Edit1: TEdit
+    Left = 16
+    Height = 23
+    Top = 56
+    Width = 240
+    TabOrder = 2
+    Text = 'Edit1'
+  end
+end

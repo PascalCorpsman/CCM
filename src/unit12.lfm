@@ -1,0 +1,288 @@
+object Form12: TForm12
+  Left = 338
+  Height = 731
+  Top = 118
+  Width = 416
+  Caption = 'Form12'
+  ClientHeight = 731
+  ClientWidth = 416
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '2.3.0.0'
+  object StringGrid1: TStringGrid
+    Left = 24
+    Height = 368
+    Top = 48
+    Width = 368
+    ColCount = 11
+    DefaultColWidth = 32
+    DefaultRowHeight = 32
+    FixedCols = 0
+    FixedRows = 0
+    GridLineWidth = 0
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goSmoothScroll]
+    RowCount = 11
+    TabOrder = 0
+    OnDblClick = StringGrid1DblClick
+    OnDrawCell = StringGrid1DrawCell
+    OnSelectCell = StringGrid1SelectCell
+  end
+  object Button1: TButton
+    Left = 24
+    Height = 25
+    Top = 697
+    Width = 366
+    Anchors = [akLeft, akRight, akBottom]
+    Caption = 'Close'
+    OnClick = Button1Click
+    TabOrder = 1
+  end
+  object Label1: TLabel
+    Left = 184
+    Height = 15
+    Top = 32
+    Width = 35
+    Caption = 'Terrain'
+  end
+  object Label2: TLabel
+    Left = 8
+    Height = 150
+    Top = 144
+    Width = 8
+    Alignment = taCenter
+    Caption = 'D'#13#10'i'#13#10'f'#13#10'f'#13#10'i'#13#10'c'#13#10'u'#13#10'l'#13#10't'#13#10'y'
+  end
+  object ComboBox1: TComboBox
+    Left = 344
+    Height = 24
+    Top = 8
+    Width = 48
+    ItemHeight = 18
+    ItemIndex = 0
+    Items.Strings = (
+      'All'
+      'Tradies'
+      'Multies'
+      'Mysteries'
+      'Letterboxes'
+      'Where I Go''s'
+      'Earthcaches'
+      'Virtual'
+      'Event'
+      'Cito'
+      'Webcam'
+    )
+    OnChange = ComboBox1Change
+    OnDrawItem = ComboBox1DrawItem
+    Style = csOwnerDrawFixed
+    TabOrder = 2
+    Text = 'All'
+  end
+  object Label3: TLabel
+    Left = 248
+    Height = 15
+    Top = 15
+    Width = 27
+    Caption = 'Type:'
+  end
+  object GroupBox1: TGroupBox
+    Left = 8
+    Height = 166
+    Top = 520
+    Width = 398
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    Caption = ' Attributes '
+    ClientHeight = 146
+    ClientWidth = 394
+    TabOrder = 3
+    object ScrollBox1: TScrollBox
+      Left = 0
+      Height = 70
+      Top = 0
+      Width = 382
+      HorzScrollBar.Page = 1
+      VertScrollBar.Page = 1
+      Constraints.MinHeight = 40
+      TabOrder = 0
+    end
+    object ScrollBox2: TScrollBox
+      Left = 0
+      Height = 72
+      Top = 75
+      Width = 382
+      HorzScrollBar.Page = 1
+      VertScrollBar.Page = 1
+      Constraints.MinHeight = 40
+      TabOrder = 1
+    end
+  end
+  object Label4: TLabel
+    Left = 8
+    Height = 15
+    Top = 8
+    Width = 34
+    Caption = 'Label4'
+  end
+  object SpeedButton112: TSpeedButton
+    Left = 24
+    Height = 22
+    Hint = 'Unknown'
+    Top = 472
+    Width = 53
+    AllowAllUp = True
+    Images = Form13.ImageList1
+    ImageIndex = 0
+    Visible = False
+    OnClick = SpeedButton112Click
+    ShowHint = True
+    ParentShowHint = False
+  end
+  object SpeedButton113: TSpeedButton
+    Left = 24
+    Height = 22
+    Hint = 'Micro'
+    Top = 424
+    Width = 53
+    AllowAllUp = True
+    Images = Form13.ImageList1
+    ImageIndex = 1
+    OnClick = SpeedButton112Click
+    ShowHint = True
+    ParentShowHint = False
+  end
+  object SpeedButton114: TSpeedButton
+    Left = 129
+    Height = 22
+    Hint = 'Small'
+    Top = 424
+    Width = 53
+    AllowAllUp = True
+    Images = Form13.ImageList1
+    ImageIndex = 2
+    OnClick = SpeedButton112Click
+    ShowHint = True
+    ParentShowHint = False
+  end
+  object SpeedButton115: TSpeedButton
+    Left = 234
+    Height = 22
+    Hint = 'Regular'
+    Top = 424
+    Width = 53
+    AllowAllUp = True
+    Images = Form13.ImageList1
+    ImageIndex = 3
+    OnClick = SpeedButton112Click
+    ShowHint = True
+    ParentShowHint = False
+  end
+  object SpeedButton116: TSpeedButton
+    Left = 339
+    Height = 22
+    Hint = 'Large'
+    Top = 424
+    Width = 53
+    AllowAllUp = True
+    Images = Form13.ImageList1
+    ImageIndex = 4
+    OnClick = SpeedButton112Click
+    ShowHint = True
+    ParentShowHint = False
+  end
+  object SpeedButton117: TSpeedButton
+    Left = 129
+    Height = 22
+    Hint = 'Virtual'
+    Top = 472
+    Width = 53
+    AllowAllUp = True
+    Images = Form13.ImageList1
+    ImageIndex = 5
+    OnClick = SpeedButton112Click
+    ShowHint = True
+    ParentShowHint = False
+  end
+  object SpeedButton118: TSpeedButton
+    Left = 234
+    Height = 22
+    Hint = 'Not chosen'
+    Top = 472
+    Width = 53
+    AllowAllUp = True
+    Images = Form13.ImageList1
+    ImageIndex = 6
+    OnClick = SpeedButton112Click
+    ShowHint = True
+    ParentShowHint = False
+  end
+  object Label5: TLabel
+    Left = 33
+    Height = 15
+    Top = 496
+    Width = 34
+    Caption = 'Label5'
+    Visible = False
+  end
+  object Label6: TLabel
+    Left = 32
+    Height = 15
+    Top = 448
+    Width = 34
+    Caption = 'Label6'
+  end
+  object Label7: TLabel
+    Left = 137
+    Height = 15
+    Top = 448
+    Width = 34
+    Caption = 'Label7'
+  end
+  object Label8: TLabel
+    Left = 242
+    Height = 15
+    Top = 448
+    Width = 34
+    Caption = 'Label8'
+  end
+  object Label9: TLabel
+    Left = 348
+    Height = 15
+    Top = 448
+    Width = 34
+    Caption = 'Label9'
+  end
+  object Label10: TLabel
+    Left = 137
+    Height = 15
+    Top = 496
+    Width = 40
+    Caption = 'Label10'
+  end
+  object Label11: TLabel
+    Left = 242
+    Height = 15
+    Top = 496
+    Width = 40
+    Caption = 'Label11'
+  end
+  object SpeedButton119: TSpeedButton
+    Left = 339
+    Height = 22
+    Hint = 'Other'
+    Top = 472
+    Width = 53
+    AllowAllUp = True
+    Images = Form13.ImageList1
+    ImageIndex = 7
+    OnClick = SpeedButton112Click
+    ShowHint = True
+    ParentShowHint = False
+  end
+  object Label12: TLabel
+    Left = 347
+    Height = 15
+    Top = 496
+    Width = 40
+    Caption = 'Label12'
+  end
+end

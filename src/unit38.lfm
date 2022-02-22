@@ -1,0 +1,223 @@
+object Form38: TForm38
+  Left = 264
+  Height = 555
+  Top = 121
+  Width = 683
+  Caption = 'Form38'
+  ClientHeight = 555
+  ClientWidth = 683
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '2.3.0.0'
+  object Label1: TLabel
+    Left = 8
+    Height = 15
+    Top = 8
+    Width = 106
+    Caption = 'Select trackables by '
+  end
+  object Label2: TLabel
+    Left = 24
+    Height = 15
+    Top = 32
+    Width = 35
+    Caption = 'Owner'
+  end
+  object Label3: TLabel
+    Left = 24
+    Height = 15
+    Top = 64
+    Width = 71
+    Caption = 'Discover date'
+  end
+  object Edit1: TEdit
+    Left = 128
+    Height = 23
+    Top = 56
+    Width = 188
+    OnKeyPress = Edit3KeyPress
+    TabOrder = 1
+    Text = 'Edit1'
+  end
+  object Button1: TButton
+    Left = 128
+    Height = 25
+    Top = 120
+    Width = 544
+    Anchors = [akTop, akLeft, akRight]
+    Caption = 'Start'
+    OnClick = Button1Click
+    TabOrder = 4
+  end
+  object Label4: TLabel
+    Left = 320
+    Height = 15
+    Top = 64
+    Width = 34
+    Caption = 'Label4'
+  end
+  object Label5: TLabel
+    Left = 128
+    Height = 15
+    Top = 488
+    Width = 34
+    Anchors = [akLeft, akBottom]
+    Caption = 'Label5'
+  end
+  object Button2: TButton
+    Left = 597
+    Height = 25
+    Top = 520
+    Width = 75
+    Anchors = [akRight, akBottom]
+    Caption = 'OK'
+    OnClick = Button2Click
+    TabOrder = 7
+  end
+  object StringGrid1: TStringGrid
+    Left = 128
+    Height = 320
+    Top = 160
+    Width = 544
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    ColCount = 6
+    Columns = <    
+      item
+        Title.Caption = 'Discover-Code'
+      end    
+      item
+        Title.Caption = 'TB-Code'
+      end    
+      item
+        Title.Caption = 'State'
+      end    
+      item
+        Title.Caption = 'Date'
+      end    
+      item
+        Title.Caption = 'Owner'
+      end    
+      item
+        Title.Caption = 'Heading'
+      end>
+    FixedCols = 0
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goRowSelect, goSmoothScroll]
+    PopupMenu = PopupMenu1
+    TabOrder = 5
+    OnDblClick = StringGrid1DblClick
+    OnSelectCell = StringGrid1SelectCell
+  end
+  object Label6: TLabel
+    Left = 427
+    Height = 15
+    Top = 32
+    Width = 26
+    Anchors = [akTop, akRight]
+    Caption = 'State'
+  end
+  object ComboBox2: TComboBox
+    Left = 484
+    Height = 23
+    Top = 24
+    Width = 188
+    Anchors = [akTop, akRight]
+    ItemHeight = 15
+    Style = csDropDownList
+    TabOrder = 3
+  end
+  object Button3: TButton
+    Left = 128
+    Height = 25
+    Top = 520
+    Width = 188
+    Anchors = [akLeft, akBottom]
+    Caption = 'Export as csv'
+    OnClick = Button3Click
+    TabOrder = 6
+  end
+  object Label7: TLabel
+    Left = 24
+    Height = 15
+    Top = 94
+    Width = 28
+    Caption = 'Code'
+  end
+  object Edit2: TEdit
+    Left = 128
+    Height = 23
+    Top = 86
+    Width = 188
+    OnKeyPress = Edit3KeyPress
+    TabOrder = 2
+    Text = 'Edit2'
+  end
+  object Edit3: TEdit
+    Left = 128
+    Height = 23
+    Top = 24
+    Width = 188
+    OnKeyPress = Edit3KeyPress
+    TabOrder = 0
+    Text = 'Edit3'
+  end
+  object Button4: TButton
+    Left = 328
+    Height = 25
+    Top = 520
+    Width = 136
+    Anchors = [akLeft, akBottom]
+    Caption = 'Merge TB-Database'
+    OnClick = Button4Click
+    TabOrder = 8
+  end
+  object Label8: TLabel
+    Left = 576
+    Height = 15
+    Top = 488
+    Width = 96
+    Alignment = taRightJustify
+    Anchors = [akRight, akBottom]
+    AutoSize = False
+    Caption = 'Label8'
+  end
+  object Label9: TLabel
+    Left = 416
+    Height = 15
+    Top = 94
+    Width = 21
+    Caption = 'Text'
+  end
+  object Edit4: TEdit
+    Left = 484
+    Height = 23
+    Top = 86
+    Width = 188
+    OnKeyPress = Edit3KeyPress
+    TabOrder = 9
+    Text = 'Edit4'
+  end
+  object SaveDialog1: TSaveDialog
+    DefaultExt = '.csv'
+    Filter = 'CSV-File|*.csv|All|*.*'
+    Left = 73
+    Top = 197
+  end
+  object PopupMenu1: TPopupMenu
+    Left = 160
+    Top = 312
+    object MenuItem1: TMenuItem
+      Caption = 'Open TB in Browser'
+      OnClick = MenuItem1Click
+    end
+    object MenuItem2: TMenuItem
+      Caption = 'Redownload TB Infos'
+      OnClick = MenuItem2Click
+    end
+  end
+  object OpenDialog1: TOpenDialog
+    DefaultExt = '.tdb'
+    Filter = 'Trackables Database|*.tdb'
+    Left = 360
+    Top = 464
+  end
+end

@@ -1,0 +1,78 @@
+object Form44: TForm44
+  Left = 1461
+  Height = 183
+  Top = 289
+  Width = 690
+  Caption = 'Form44'
+  ClientHeight = 183
+  ClientWidth = 690
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '2.3.0.0'
+  object Button1: TButton
+    Left = 8
+    Height = 25
+    Top = 144
+    Width = 75
+    Caption = 'Cancel'
+    ModalResult = 2
+    TabOrder = 0
+  end
+  object CheckBox1: TCheckBox
+    Left = 104
+    Height = 22
+    Top = 147
+    Width = 99
+    Caption = 'Apply for all'
+    TabOrder = 1
+  end
+  object Button2: TButton
+    Left = 216
+    Height = 25
+    Top = 144
+    Width = 225
+    Caption = 'Option_2'
+    OnClick = Button2Click
+    TabOrder = 2
+  end
+  object Button3: TButton
+    Left = 456
+    Height = 25
+    Top = 144
+    Width = 225
+    Caption = 'Option_1'
+    OnClick = Button3Click
+    TabOrder = 3
+  end
+  object Label1: TLabel
+    Left = 8
+    Height = 16
+    Top = 8
+    Width = 41
+    Caption = 'Label1'
+  end
+  object Edit1: TEdit
+    Left = 24
+    Height = 25
+    Top = 32
+    Width = 657
+    ReadOnly = True
+    TabOrder = 4
+    Text = 'Edit1'
+  end
+  object Label2: TLabel
+    Left = 8
+    Height = 16
+    Top = 72
+    Width = 41
+    Caption = 'Label2'
+  end
+  object Edit2: TEdit
+    Left = 24
+    Height = 25
+    Top = 96
+    Width = 657
+    TabOrder = 5
+    Text = 'Edit2'
+  end
+end

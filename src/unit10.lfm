@@ -1,0 +1,364 @@
+object Form10: TForm10
+  Left = 236
+  Height = 501
+  Top = 121
+  Width = 870
+  ActiveControl = StringGrid1
+  Caption = 'Form10'
+  ClientHeight = 501
+  ClientWidth = 870
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '2.3.0.0'
+  object StringGrid1: TStringGrid
+    Left = 8
+    Height = 288
+    Top = 8
+    Width = 852
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    ColCount = 11
+    Columns = <    
+      item
+        ButtonStyle = cbsCheckboxColumn
+        PickList.Strings = (
+          '0'
+          '1'
+        )
+        Title.Caption = 'Select'
+      end    
+      item
+        ButtonStyle = cbsCheckboxColumn
+        Title.Caption = 'Fav'
+        Visible = False
+      end    
+      item
+        Title.Caption = 'Type'
+      end    
+      item
+        Title.Caption = 'Cache'
+      end    
+      item
+        Title.Caption = 'Title'
+      end    
+      item
+        Title.Caption = 'Date'
+      end    
+      item
+        Title.Caption = 'State'
+      end    
+      item
+        Title.Caption = 'Problem'
+      end    
+      item
+        ButtonStyle = cbsButtonColumn
+        Title.Caption = 'Image'
+      end    
+      item
+        Title.Caption = 'Image_Filename_Invisible'
+        Visible = False
+      end    
+      item
+        Title.Caption = 'Comment'
+      end>
+    FixedCols = 0
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goRowSelect, goSmoothScroll]
+    ParentFont = False
+    PopupMenu = PopupMenu1
+    TabOrder = 0
+    OnClick = StringGrid1Click
+    OnDblClick = StringGrid1DblClick
+    OnButtonClick = StringGrid1ButtonClick
+    OnHeaderClick = StringGrid1HeaderClick
+    OnKeyDown = StringGrid1KeyDown
+    OnKeyUp = StringGrid1KeyUp
+    OnResize = StringGrid1Resize
+    OnSelectCell = StringGrid1SelectCell
+  end
+  object Button1: TButton
+    Left = 8
+    Height = 25
+    Top = 312
+    Width = 60
+    Anchors = [akLeft, akBottom]
+    Caption = 'All'
+    OnClick = Button1Click
+    ParentFont = False
+    TabOrder = 1
+  end
+  object Button2: TButton
+    Left = 76
+    Height = 25
+    Top = 312
+    Width = 60
+    Anchors = [akLeft, akBottom]
+    Caption = 'None'
+    OnClick = Button2Click
+    ParentFont = False
+    TabOrder = 2
+  end
+  object Button3: TButton
+    Left = 144
+    Height = 25
+    Top = 312
+    Width = 556
+    Anchors = [akLeft, akRight, akBottom]
+    Caption = 'Set comment for selected'
+    OnClick = Button3Click
+    ParentFont = False
+    TabOrder = 3
+  end
+  object Button7: TButton
+    Left = 710
+    Height = 25
+    Top = 472
+    Width = 150
+    Anchors = [akRight, akBottom]
+    Caption = 'Close'
+    OnClick = Button7Click
+    ParentFont = False
+    TabOrder = 4
+  end
+  object Button8: TButton
+    Left = 144
+    Height = 25
+    Top = 472
+    Width = 556
+    Anchors = [akLeft, akRight, akBottom]
+    Caption = 'Clear Garmin'
+    OnClick = Button8Click
+    ParentFont = False
+    TabOrder = 5
+  end
+  object Button5: TButton
+    Left = 144
+    Height = 25
+    Top = 408
+    Width = 556
+    Anchors = [akLeft, akRight, akBottom]
+    Caption = 'Mark selected as logged in database'
+    OnClick = Button5Click
+    ParentFont = False
+    TabOrder = 6
+  end
+  object Button4: TButton
+    Left = 144
+    Height = 25
+    Top = 376
+    Width = 556
+    Anchors = [akLeft, akRight, akBottom]
+    Caption = 'Write back selected notes to geocache_visits.txt'
+    OnClick = Button4Click
+    ParentFont = False
+    TabOrder = 7
+  end
+  object Button9: TButton
+    Left = 144
+    Height = 25
+    Top = 440
+    Width = 224
+    Anchors = [akLeft, akBottom]
+    Caption = 'Open browser for import'
+    OnClick = Button9Click
+    ParentFont = False
+    TabOrder = 8
+  end
+  object Button10: TButton
+    Left = 376
+    Height = 25
+    Top = 344
+    Width = 324
+    Anchors = [akLeft, akRight, akBottom]
+    Caption = 'Add signature to selected'
+    OnClick = Button10Click
+    ParentFont = False
+    TabOrder = 9
+  end
+  object Button11: TButton
+    Left = 376
+    Height = 25
+    Top = 440
+    Width = 324
+    Anchors = [akLeft, akRight, akBottom]
+    Caption = 'Log online'
+    OnClick = Button11Click
+    ParentFont = False
+    TabOrder = 10
+  end
+  object Button12: TButton
+    Left = 144
+    Height = 25
+    Top = 344
+    Width = 224
+    Anchors = [akLeft, akBottom]
+    Caption = 'refresh found number'
+    OnClick = Button12Click
+    ParentFont = False
+    TabOrder = 11
+  end
+  object Button13: TButton
+    Left = 8
+    Height = 25
+    Top = 472
+    Width = 128
+    Anchors = [akLeft, akBottom]
+    Caption = 'Log trackables'
+    OnClick = Button13Click
+    ParentFont = False
+    TabOrder = 12
+  end
+  object PopupMenu1: TPopupMenu
+    OnPopup = PopupMenu1Popup
+    Left = 112
+    Top = 227
+    object MenuItem21: TMenuItem
+      Caption = 'Select'
+      OnClick = MenuItem21Click
+    end
+    object MenuItem23: TMenuItem
+      Caption = 'Deselect'
+      OnClick = MenuItem23Click
+    end
+    object MenuItem22: TMenuItem
+      Caption = '-'
+    end
+    object MenuItem8: TMenuItem
+      Caption = 'Set log date'
+      OnClick = MenuItem8Click
+    end
+    object MenuItem4: TMenuItem
+      Caption = 'Change state'
+      object MenuItem6: TMenuItem
+        Caption = 'Attended'
+        OnClick = MenuItem6Click
+      end
+      object MenuItem24: TMenuItem
+        Caption = 'Will Attend'
+        OnClick = MenuItem24Click
+      end
+      object MenuItem5: TMenuItem
+        Caption = 'Found it'
+        OnClick = MenuItem5Click
+      end
+      object MenuItem10: TMenuItem
+        Caption = 'Webcam Photo taken'
+        OnClick = MenuItem10Click
+      end
+      object MenuItem9: TMenuItem
+        Caption = 'Write note'
+        OnClick = MenuItem9Click
+      end
+      object MenuItem20: TMenuItem
+        Caption = 'Unattempted'
+        OnClick = MenuItem20Click
+      end
+    end
+    object MenuItem7: TMenuItem
+      Caption = 'Report Problem'
+      object MenuItem19: TMenuItem
+        Caption = 'Needs Maintenance'
+        OnClick = MenuItem19Click
+      end
+      object MenuItem15: TMenuItem
+        Caption = 'Logbook full'
+        OnClick = MenuItem15Click
+      end
+      object MenuItem16: TMenuItem
+        Caption = 'Container is damaged'
+        OnClick = MenuItem16Click
+      end
+      object MenuItem17: TMenuItem
+        Caption = 'Container is missing'
+        OnClick = MenuItem17Click
+      end
+      object MenuItem18: TMenuItem
+        Caption = 'Needs archive'
+        OnClick = MenuItem18Click
+      end
+      object Separator1: TMenuItem
+        Caption = '-'
+      end
+      object MenuItem33: TMenuItem
+        Caption = 'Clear'
+        OnClick = MenuItem33Click
+      end
+    end
+    object MenuItem3: TMenuItem
+      Caption = 'Show DT- Rating'
+      OnClick = MenuItem3Click
+    end
+    object MenuItem2: TMenuItem
+      Caption = '-'
+    end
+    object MenuItem1: TMenuItem
+      Caption = 'Open Cache in Browser'
+      OnClick = MenuItem1Click
+    end
+    object MenuItem12: TMenuItem
+      Caption = '-'
+    end
+    object MenuItem13: TMenuItem
+      Caption = 'Edit'
+      object MenuItem14: TMenuItem
+        Caption = 'Modify coordinates'
+        ShortCut = 113
+        OnClick = MenuItem14Click
+      end
+      object MenuItem11: TMenuItem
+        Caption = 'Edit user note'
+        ShortCut = 112
+        OnClick = MenuItem11Click
+      end
+    end
+    object MenuItem28: TMenuItem
+      Caption = 'Customer flags'
+      object MenuItem29: TMenuItem
+        Caption = 'Set customer flag'
+        ShortCut = 16467
+        OnClick = MenuItem29Click
+      end
+      object MenuItem30: TMenuItem
+        Caption = 'Clear customer flag'
+        ShortCut = 16451
+        OnClick = MenuItem30Click
+      end
+      object MenuItem31: TMenuItem
+        Caption = '-'
+      end
+      object MenuItem32: TMenuItem
+        Caption = 'Clear all customer flags'
+        OnClick = MenuItem32Click
+      end
+    end
+    object MenuItem25: TMenuItem
+      Caption = '-'
+    end
+    object MenuItem27: TMenuItem
+      Caption = 'Show / Hide Favs'
+      OnClick = MenuItem27Click
+    end
+    object MenuItem26: TMenuItem
+      Caption = 'Add GC-Code to list'
+      OnClick = MenuItem26Click
+    end
+  end
+  object CalendarDialog1: TCalendarDialog
+    Date = 43031
+    OKCaption = '&Ok'
+    CancelCaption = 'Abbrechen'
+    Left = 112
+    Top = 144
+  end
+  object SaveDialog1: TSaveDialog
+    DefaultExt = '.txt'
+    FileName = 'geocache_visits.txt'
+    Filter = 'Geocache Visits|*.txt|All|*.*'
+    Left = 225
+    Top = 228
+  end
+  object OpenPictureDialog1: TOpenPictureDialog
+    Filter = 'Joint Picture Expert Group (*.jpeg;*.jpg;*.jpe;*.jfif)|*.jpeg;*.jpg;*.jpe;*.jfif|All|*.*'
+    FilterIndex = 0
+    Left = 224
+    Top = 144
+  end
+end

@@ -1,0 +1,829 @@
+object Form1: TForm1
+  Left = 329
+  Height = 505
+  Top = 120
+  Width = 408
+  Caption = 'Form1'
+  ClientHeight = 483
+  ClientWidth = 408
+  Menu = MainMenu1
+  OnCloseQuery = FormCloseQuery
+  OnCreate = FormCreate
+  OnKeyDown = ComboBox2KeyDown
+  OnResize = FormResize
+  OnShow = FormShow
+  LCLVersion = '2.3.0.0'
+  object Label1: TLabel
+    Left = 8
+    Height = 16
+    Top = 16
+    Width = 40
+    Caption = 'Search'
+  end
+  object Label2: TLabel
+    Left = 8
+    Height = 16
+    Top = 46
+    Width = 81
+    Caption = 'Distance [km]'
+  end
+  object Edit2: TEdit
+    Left = 125
+    Height = 25
+    Hint = 'If value is negative, than the cache has to have at least the given distance'
+    Top = 38
+    Width = 205
+    Anchors = [akTop, akLeft, akRight]
+    OnKeyDown = ComboBox2KeyDown
+    OnKeyPress = Edit1KeyPress
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 1
+    Text = 'Edit2'
+  end
+  object Button1: TButton
+    Left = 341
+    Height = 85
+    Top = 8
+    Width = 59
+    Anchors = [akTop, akRight]
+    Caption = 'Go'
+    OnClick = Button1Click
+    OnKeyDown = ComboBox2KeyDown
+    TabOrder = 3
+  end
+  object Label3: TLabel
+    Left = 8
+    Height = 16
+    Top = 80
+    Width = 31
+    Caption = 'Filter'
+  end
+  object ComboBox1: TComboBox
+    Left = 125
+    Height = 29
+    Top = 72
+    Width = 205
+    Anchors = [akTop, akLeft, akRight]
+    ItemHeight = 0
+    OnChange = ComboBox1Change
+    OnKeyDown = ComboBox2KeyDown
+    Style = csDropDownList
+    TabOrder = 2
+  end
+  object StringGrid1: TStringGrid
+    Left = 8
+    Height = 336
+    Top = 112
+    Width = 391
+    Anchors = [akTop, akLeft, akRight]
+    Columns = <    
+      item
+        Title.Caption = 'Title'
+      end    
+      item
+        Title.Caption = 'Title'
+      end    
+      item
+        Title.Caption = 'Title'
+      end    
+      item
+        Title.Caption = 'Title'
+      end    
+      item
+        Title.Caption = 'Title'
+      end>
+    FixedCols = 0
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goRowSelect, goSmoothScroll]
+    PopupMenu = PopupMenu1
+    TabOrder = 4
+    OnDblClick = StringGrid1DblClick
+    OnDrawCell = StringGrid1DrawCell
+    OnHeaderClick = StringGrid1HeaderClick
+    OnKeyPress = StringGrid1KeyPress
+    OnResize = StringGrid1Resize
+    OnSelectCell = StringGrid1SelectCell
+  end
+  object StatusBar1: TStatusBar
+    Left = 0
+    Height = 23
+    Top = 460
+    Width = 408
+    Panels = <    
+      item
+        Width = 100
+      end    
+      item
+        Width = 100
+      end    
+      item
+        Width = 50
+      end>
+    SimplePanel = False
+  end
+  object ComboBox2: TComboBox
+    Left = 125
+    Height = 27
+    Hint = 'Will compare against Cache Subject or GC-Code'
+    Top = 8
+    Width = 205
+    Anchors = [akTop, akLeft, akRight]
+    ItemHeight = 0
+    OnKeyDown = ComboBox2KeyDown
+    OnKeyPress = Edit1KeyPress
+    ParentShowHint = False
+    PopupMenu = PopupMenu2
+    ShowHint = True
+    TabOrder = 0
+    Text = 'ComboBox2'
+  end
+  object MainMenu1: TMainMenu
+    Left = 56
+    Top = 192
+    object MenuItem1: TMenuItem
+      Caption = 'File'
+      object MenuItem4: TMenuItem
+        Caption = 'New database'
+        OnClick = MenuItem4Click
+      end
+      object MenuItem2: TMenuItem
+        Caption = 'Load database'
+        OnClick = MenuItem2Click
+      end
+      object MenuItem66: TMenuItem
+        Caption = 'Delete database'
+        OnClick = MenuItem66Click
+      end
+      object MenuItem8: TMenuItem
+        Caption = '-'
+      end
+      object MenuItem10: TMenuItem
+        Caption = 'Import directory (caches)'
+        OnClick = MenuItem10Click
+      end
+      object MenuItem67: TMenuItem
+        Caption = 'Download pocket queries'
+        OnClick = MenuItem67Click
+      end
+      object MenuItem81: TMenuItem
+        Caption = 'Download by GC-Code'
+        OnClick = MenuItem81Click
+      end
+      object MenuItem83: TMenuItem
+        Caption = '-'
+      end
+      object MenuItem52: TMenuItem
+        Caption = 'New database from GSAK gpx'
+        OnClick = MenuItem52Click
+      end
+      object MenuItem84: TMenuItem
+        Caption = 'Create LabCache'
+        OnClick = MenuItem84Click
+      end
+      object MenuItem9: TMenuItem
+        Caption = '-'
+      end
+      object MenuItem5: TMenuItem
+        Caption = 'Close'
+        OnClick = MenuItem5Click
+      end
+    end
+    object MenuItem11: TMenuItem
+      Caption = 'Caches / TBs'
+      object MenuItem12: TMenuItem
+        Caption = 'Transfer caches to GPS'
+      end
+      object MenuItem27: TMenuItem
+        Caption = 'Transfer poi to GPS'
+        OnClick = MenuItem27Click
+      end
+      object MenuItem31: TMenuItem
+        Caption = '-'
+      end
+      object MenuItem20: TMenuItem
+        Caption = 'Receive field notes from GPS'
+      end
+      object MenuItem79: TMenuItem
+        Caption = 'Log caches by GC-Code'
+        OnClick = MenuItem79Click
+      end
+      object MenuItem86: TMenuItem
+        Caption = 'Log by geocache_visits.txt'
+        OnClick = MenuItem86Click
+      end
+      object MenuItem68: TMenuItem
+        Caption = '-'
+      end
+      object MenuItem69: TMenuItem
+        Caption = 'Log Trackables'
+        OnClick = MenuItem69Click
+      end
+    end
+    object MenuItem24: TMenuItem
+      Caption = 'Selection'
+      object MenuItem46: TMenuItem
+        Caption = 'Show on map'
+        ShortCut = 114
+        OnClick = MenuItem46Click
+      end
+      object MenuItem26: TMenuItem
+        Caption = 'Show 81 matrix'
+        OnClick = MenuItem26Click
+      end
+      object MenuItem80: TMenuItem
+        Caption = 'Show Jasmer matrix'
+        OnClick = MenuItem80Click
+      end
+      object MenuItem30: TMenuItem
+        Caption = '-'
+      end
+      object MenuItem19: TMenuItem
+        Caption = 'Select cut set to other database'
+        OnClick = MenuItem19Click
+      end
+      object MenuItem32: TMenuItem
+        Caption = '-'
+      end
+      object MenuItem47: TMenuItem
+        Caption = 'Copy to other database'
+        OnClick = MenuItem47Click
+      end
+      object MenuItem25: TMenuItem
+        Caption = 'Move to other database'
+        OnClick = MenuItem25Click
+      end
+      object MenuItem58: TMenuItem
+        Caption = '-'
+      end
+      object MenuItem29: TMenuItem
+        Caption = 'Export as groundspeak pocket query'
+        OnClick = MenuItem29Click
+      end
+      object MenuItem53: TMenuItem
+        Caption = 'Export as GSAK gpx'
+        OnClick = MenuItem53Click
+      end
+      object MenuItem3: TMenuItem
+        Caption = 'Export as c:geo zip'
+        OnClick = MenuItem3Click
+      end
+      object MenuItem59: TMenuItem
+        Caption = 'Export as CSV-File'
+        OnClick = MenuItem59Click
+      end
+    end
+    object MenuItem45: TMenuItem
+      Caption = 'Tools'
+    end
+    object MenuItem57: TMenuItem
+      Caption = 'Script'
+    end
+    object MenuItem38: TMenuItem
+      Caption = 'Spoiler'
+      object MenuItem39: TMenuItem
+        Caption = 'Download spoilers'
+        OnClick = MenuItem39Click
+      end
+      object MenuItem40: TMenuItem
+        Caption = 'Transfer spoilers to GPS'
+      end
+    end
+    object MenuItem6: TMenuItem
+      Caption = 'Edit'
+      object MenuItem14: TMenuItem
+        Caption = 'Filter editor'
+        OnClick = MenuItem14Click
+      end
+      object MenuItem15: TMenuItem
+        Caption = 'Location editor'
+        OnClick = MenuItem15Click
+      end
+      object MenuItem56: TMenuItem
+        Caption = 'Script editor'
+        OnClick = MenuItem56Click
+      end
+      object MenuItem21: TMenuItem
+        Caption = 'Travel Bug editor'
+        OnClick = MenuItem21Click
+      end
+      object MenuItem51: TMenuItem
+        Caption = 'Tool editor'
+        OnClick = MenuItem51Click
+      end
+      object MenuItem55: TMenuItem
+        Caption = '-'
+      end
+      object MenuItem7: TMenuItem
+        Caption = 'Options'
+        OnClick = MenuItem7Click
+      end
+      object MenuItem13: TMenuItem
+        Caption = 'File and folder editor'
+        OnClick = MenuItem13Click
+      end
+      object MenuItem85: TMenuItem
+        Caption = 'Travel Bug Database editor'
+        OnClick = MenuItem85Click
+      end
+      object MenuItem23: TMenuItem
+        Caption = '-'
+      end
+      object MenuItem54: TMenuItem
+        Caption = 'SQL admin tool'
+        OnClick = MenuItem54Click
+      end
+    end
+    object MenuItem16: TMenuItem
+      Caption = 'Help'
+      object MenuItem82: TMenuItem
+        Caption = 'Wizard'
+        OnClick = MenuItem82Click
+      end
+      object MenuItem89: TMenuItem
+        Caption = 'Tutorials'
+        object MenuItem90: TMenuItem
+          Caption = 'How to install CCM'
+          OnClick = MenuItem90Click
+        end
+        object MenuItem91: TMenuItem
+          Caption = 'Working with Databases'
+          OnClick = MenuItem91Click
+        end
+        object MenuItem92: TMenuItem
+          Caption = 'Creating Skripts'
+          OnClick = MenuItem92Click
+        end
+        object MenuItem93: TMenuItem
+          Caption = 'How to handle TB''s'
+          OnClick = MenuItem93Click
+        end
+      end
+      object MenuItem17: TMenuItem
+        Caption = 'About'
+        OnClick = MenuItem17Click
+      end
+    end
+  end
+  object SQLQuery1: TSQLQuery
+    FieldDefs = <>
+    Database = SQLite3Connection1
+    Transaction = SQLTransaction1
+    SQL.Strings = (
+      ''
+    )
+    Params = <>
+    Left = 56
+    Top = 248
+  end
+  object SQLTransaction1: TSQLTransaction
+    Active = False
+    Action = caNone
+    Database = SQLite3Connection1
+    Left = 56
+    Top = 296
+  end
+  object SQLite3Connection1: TSQLite3Connection
+    Connected = False
+    LoginPrompt = False
+    KeepConnection = False
+    Transaction = SQLTransaction1
+    LogEvents = []
+    AlwaysUseBigint = False
+    Left = 56
+    Top = 344
+  end
+  object OpenDialog1: TOpenDialog
+    DefaultExt = '.db'
+    Filter = 'Database |*.db|All|*.*'
+    Left = 56
+    Top = 120
+  end
+  object ImageList1: TImageList
+    Left = 232
+    Top = 248
+    Bitmap = {
+      4C7A150000001000000010000000331500000000000078DAD59C0B5C15D5F6C7
+      A7C247E603F375F59A620F323345A8949B86D4D5EA137DB26E75A36BA6D2212F
+      9A1AE52DC3FE94594A90898971D22E5A6296654AA47655F08122475011117C2B
+      7A044145D4D27CF0FBEFB567F69C993933E71C8E3DEE9DF9ACCFCC99D9DFB5D6
+      5E7BED3DB337E70009BA3D2E44425C4838E808A9613B676C24E1FC487A7CE592
+      4304A79764EE8FB52F7A9B562259EA8953AE5BD937EA31EA98356B164AD31250
+      6A133ABCEBD1FAC28F6CDBB87123926D090DF645F06293F584F3D85BEB71B146
+      5E6CFA3AB9583937C2B9AF23478EB4E48DBE889CA2CF1433BAA78D017DB6DAA8
+      3C95217B544E88B12D3CE911363DF1420795F597B7F245CB8BFAF8D237449D05
+      4F9FFDE9976A5BF9543E1CD9D9D9BABAFA6A87CA1E3B760CA5A5A53A11D7ACD8
+      64852D4D5BC3F22E01A0B12344E45D02CF47D241E246DB248D9F34E648282509
+      21117AAC7568DB86CA93FD52C71AB5ACF0A794F922AE6963B260C102176FA8B3
+      5A96F810172F7CA09851AC8DF1163AF839D9A7FAD8F43C31C4937DA143AB279B
+      C5122109AE7868EA24FC12BC10554F5A028FA51A4703ABE5297E245A3D3CEE8C
+      CD663E5BC585EC500C5E7DF5559D0EDEFF14DBE487595C48443E6B7921A58CCF
+      5678B3F80ADB627FF7DD775596CE85B8C545A3C798874247B2CD15BB6466DF18
+      5FB97EE63BD58578E13FF1DA7AF9DAFF498F561ADAFF9F7CF24995A5735FC71A
+      8A0B31C6CD571DBC9CC5161919E95507C588724BDB27E99CAE71BFBCF82EF2D2
+      D807BDB51BEDDC3FB651AC25D676227E744ED72CC72F43DD89090C0CE43123A1
+      7311534F71E4B9A16CA2CE6A3F53364F31D0B61B1FAB4DCE29C7AD787E4FF3EC
+      17FD45CB5BC580F7594D394F9B590C44EC7DD9CC62A0F5DDDB26F2C3CC36AF9B
+      A1ACE84B667588A4E782526F6AB33E7DFA40E401E912394FF1A1EBA22CDD13F9
+      21FAB7311E56FD85AE37A44F5FF5CEB620F62C2269281BC4C642298D610E45D2
+      E0931E8AA5E0A9BCCA2BE24907B559906287F4C4B131D8CD0FD2C1C779A3BF6B
+      74E5484FB243D623EB90EFD379649A19AF9471E8EB1CC7AE51CE45DA645FC4F8
+      A4724A7CC98E2863D441D7C59826FAA8CCEAE392CDFCA57C53EB4CBA696E9296
+      A01B133DF94B75E6710C917D11EF0BC6FEAFFA6BD246745DFB2E6E7C668BB622
+      7DC636E2F1B525A8639F192B76E193682392647A0FD58E475EC67D5137F1BC51
+      C7CD06F4115117ED7B923FFDCDD318ED5B9F93587B84C33F361C5C181FE4D008
+      7DF6A1DF52B9489A9F2A3EE884F47A7887E1AC8371EC435C9AC4FA17139B86E5
+      E261CE66934F926D324FEF6FF4CEE462A92ED63CD9A69DCAD07936F755D6C3DF
+      454364BD71263E44B27B529AEB029523D628C452BDB4CF1FAD7F9243527CB4E0
+      D3E4FBDAF6D5C537CDDAB68EB78543C72A426D971D22CF19B45CA922C94ABB08
+      7F799F537284DA2A595973203E5BA3234EF9ACE685C3E0BFC20B5B914A2CE9C8
+      DB30CD3D27B5FD9F5F53D666E4798B7253A9AB9137CB3D512E8E1DB3157F792E
+      D80CF6CDFA163D23B57D272D5CD7FF45BC7FEF5D3B7711CF545FC60FDDBCC991
+      C0E761BEE8A17AEB382EF2DC3B9BDD4B56EE5BE97063F93A96BC8E40C7648D0E
+      2B9EE6BAC960CF000749B8CACB7378B90F98F940CF0D994FE07C1C649F052B8B
+      CC9BF9202931A2750A62E31CEE2CE71DDE79BA5FAAD459CB7AB2AFD65F8959B6
+      2A928E2F0D31AFBF6EFEAFD8A5FECEC76387322684C86B026EBEDBF4F921D610
+      44BC2315BED466DEFEF4CCA3F760A30E9E0F699EF34FB0F44E2CE6FCA23F1B75
+      05A5B98FDD821522785F9FD5F4EE2ED8D2063E77B5ECAFDDF78B8A8AB064C912
+      AEB7BEBE1E078F1CF16AE3D2A54BC8CDCF47FEC143D87FE93297907BEB5172FA
+      32221EAE47C1EEDDA63A48FF865D65D8B0771FB656D72066FC2B58B2291FFB2E
+      5EC2FD83EB7153B77AACDD73191BCBDDF9C26395DCCEA2DCB5782F3D9D9FE738
+      CB31B764198A8E57E3FA66C08C2FAE60E8A87AACDEB1C38D271BC47C386F3E3F
+      CE2A5A8436A99DD065D66DD87EE614662EBCC2AFBF997C051B98FFDF7FFFBD4E
+      C7B20D79FC7E6165153F7E5ABC14AD52DBA1F5CC8E58BC6FBD1A87451BD6228F
+      F97FE6CC192C5DBA94EB4848484056DE467E9FEA2DCA9A498BBB5B20F1E3E958
+      B4681197D1A34763E1C285C8CCFA1E7B7FB988D0F070E4571C917DA93A811DA7
+      EA747CCBBE2DF170CC13FCDD7437ABC7F2E5CB392FB6155BB6F072EB581BE4B2
+      FBDF30BFDE9A3E9DC734EFC041F479E8017CB57E2DCE9F3F2F975FB142C71FAF
+      AEC637EC9A99EF4F3CFF3C963B1C706CDDE6B267E0C5B683BDFBCEF9EA6BD4D5
+      D581F269ECC489989A92E256CE8A2F2E2EC6A64D9B5C9F599B9BFD5DC08CFFE5
+      975F7084F2DCB09D3E7D1A67CF9EF5C8FBB27EB16FDF3E5CB97245C79F387102
+      B9B9B93EAF3F2C5BB60C4EA793F313264CE0752D282868906CDEBC1963C68CF1
+      DA9F2B99BFC66B478F1EC5FEFDFB3DB23FB15855AE59836AE6E3D19C1CD4B13A
+      D2F5D90B66A3E3D88E683BB22DE2DF8BD7E93875EA14B4E2DCB307D52C472B4A
+      4AF0D9C2CF10382690176CFF527BE4E4E5B8D93FB3762DEAFEF31FD42A7292D9
+      AEFEEE3B6C9A3B079D1E6D07E9A25C70DC1B2F99FA7E96D93ACBCAD731A96572
+      8AC961D6CF6E8BE80CA9562ED47875000E6DDFEE913FC3E4B4C2470D0947C0BA
+      EBE4025512EE181884C3167C1DCB01271B3B9D2C576BD9F85032670EA42BF2CD
+      F6AF06627E6A320E1516E298C5187A82B50B8F6355154EAE5C89B0C8607EA3F9
+      374D1117F33798B5A5D97EAAA6062913C7A2454A33960012EE1E743B8E317D35
+      9595A67CC196023C14FB102A57AF4615EB7B5BB2B2F0E7C16DB9EF5D877440C9
+      DCB9A861395BC172CEC9FA622DF34FB0C35E1FC6124AFE70C7035D90F4F208B4
+      98713DFF1C50782D6F87934C4E2852C3C4C9F241F0195F66A0D1D246FC43E0B2
+      E6E868BB913D4CD8A7F312821FECACB6C3498D1E2D4F7B9717BBB855AA435C20
+      567D3095E7C2694D3E90380DCF907ECFF583F4B3EB42C0C6003C3DFC5138F3F2
+      50C762E15CBF1E4E36B60A39ADA9BFD8FBBED017019901E8F25C17E46C9073FB
+      348BE739B2BF6A15AABDB4DDC99327F1C30F3FE8E60C35070EA06ADD3A1C37D4
+      D7DB4EEBD566E23347CB2575908F244E654DC7831E7E4F305A5648B9666DC8A0
+      43B56925758A0FE51A3D1A1D3ADB70F9A9D321AE197853DB9E78A7DE0737DBBE
+      D6C36161C713FB5BF14E4D9B99E9D3B66B603777DEA1E874C23C7FEA3462E0D5
+      3630EA10BE3A357E6BE36F6C7F2D2FCA922D21A2EDCB3DE4A0439363666291BF
+      6EFDC7B00EAAE51AD40F7DEDBF85760829B412BB2CE67CA1F7971656A6D01ECB
+      755D15CFC5A0C3171E856A1D8C7CA1C2D381C2141BEB669A5FB7C70A3FCC79DA
+      F82D493E924D92B03070119FDD79BBCE1ED9177E8873D946A1857DBB5B5DC99E
+      587EB3DB5DEC6FCF17725FB5CB86F658176BCADBED2AAB8D1771246AFD7DE075
+      F152448DBF47BE90D753ADAFD69E529FD858CFBC2A856622FA98055F58E8453C
+      F30D113B0FD27FF7BE96BDCBBFFDF6DBAA6CB77867D6EE3447A3BF953F959E86
+      A9E76ADDE4D1A4F711141464AA67DEBC79FC3E95CBBEF013CED7D7EB7AC4EE4B
+      17553DA1FF88D6F973E8D0210CFD7201BFE76D3B7BEE1C0EB3F7F49131312A4F
+      3E132B6CBEF65A8EA5D056C1E67EA463C890215C47B701F7F9645B6C27D8DC8A
+      78F14C68DAAA25E70F5FBEA42B67659F5812F25BC42EE5ACAC93E6EB9EB663C7
+      8FF372796C9E436DAC8D81D04B52C7E68F629E7CFEC205D567125A1F08090971
+      6BC7F1E3C7637C7CBC4E8F51E8FE8C19333CE612D587F2A465CB96E8171ECEE3
+      44E7C4532EFA93CFA4A373E7CE7EF7BB810307FAD407FCF04BB7454747213325
+      1EF1B111888E0EE3121F1F013BBB161D1DED0E285B686828321359195B30C252
+      C2106637486218A262C3909592082A6B64EDF1B188480C76E3226283111B2671
+      898FE8C88FE9F1513A1D643722DE848D77B189D111282F2F873D31967F263F44
+      7DB9CF76779FA3A39AAB3CD9880D6B8E5C369FB32726F273112BD3FA32116C6E
+      663AB232EDFC3C85F99E122FEBCA643E24C62ABEDA23F4BEB3CFB18A7DE25358
+      7BC8FA3A721D76E64F6274286F1F5E3E331AE95BD29964222537859F53FD13A3
+      3AC2C9EA9D1ECFEE27DA90959589CCF414D91F164FC147313EAB3C0BE5CE722E
+      519951F2F5E88E888F0E66F6A3B8AE4476241FB82F8CA73C517DCE8CE0EB52C4
+      931FFC7A8A2B0E4649647AA91E828FCF8A47AE33979F676DC942A6A243DB0E5A
+      49A77C636D10A5B47D2663B20AB35CF1CB8A95DB21C2CC3E6BBFA8089E03940B
+      1129C14867718B6671B0CA21ADA424BAFA02E5227D261D3A36C5DC7622F3398C
+      BD9018FB00F941F18E8A6512D5D1D2AE9175EFBF893C37A87D4828CE3C565151
+      6EDC6FF1ECA6E7218D5762DE4163B558EFF6659C8C4B7A068776CEC3538FF7E7
+      FCD0A3E0D2BA476F8F63E075818D11181D84615387709ECA131FBE03AA8EF0E9
+      19A0F1DDC85ED3E85ACE0A217E48FE41CE476C66C59703430EC83ABAC78C83F1
+      5D45CB667CFB063E4D1D8B670E2B733DB66DAB9375083FB4CF2F7AF6099B4246
+      0E1D8CB06D2E9EB6AEB92C063932DF213C42E503DA37C51BB387EBF87EF77447
+      AF22996FD5AA15C68D1B878F96E5AA3E84BDFD91CA539CB5ACE06FE8DC15E34A
+      81178A65DB8D56CA31A01852AC05DFB9535B537ED0E25CB5BE14CB5EF17CCCC5
+      A28C37D0AC6F5B95A7F71823EF4966668E07B597B60D52A6BC68599E6223DAE6
+      A6E1DDF9D19803C3870FB7E4299FB4ED2BDE7B8C3BB569DE8F296E7C8F51212A
+      EB6DFE4EB9D4B245331E23C1B77CAC33A88DFD7DF7F0E75DC59FF53FC15A6DDE
+      747862BDE9F085F5A4E3B7E0D5B8FD41FCEF59FFAB6DBF5F237F7E8DFC35D373
+      B5FDE87F915FB972257F66575555F17187C64B9A5F7BE3686EA59DB3D3BB8076
+      1E4F7281CDE7CC582DB762E668A40CB95195AF263D86CD1BD7A9BCF13D40B03B
+      73BED47146593A7528A64D9BA663A99EC4EE2D58EE91D5FA52A5F91B0EC585E6
+      16BEB0428A1DEB559EFE965FF47DBA65D9F9E3EFE7F9AFBDF6F13FBA81DA48C4
+      973E1BB98D5F4E53FBCE77EF0F75BB9F9E9EAEF2C67BE7CF9DD6F53D33BFC8BE
+      88BD997DA1A364CD42535EDB7656F5271D66D7C91EF94F3CE502B54743E27FBC
+      628FAE0D29BF4BD67DEB13FBF92B116ECF62CA01BA56F8C3BFBDE68E55FE0B1D
+      948F66F95FE53C6CC96A778A07E5A3E8B774A49CA7B6FE3DDE1FC8DE80FEFDF9
+      5C90B6DADA5A444444F8347ED03B54D9AE5DA6E33FE9F15407BAF7A5F2DDEB44
+      3647EFD1A307C2C3C3D1A44913CED296919161FDDDC3A020FCF4D34FFCBB1893
+      264D426A6A2AE2D95C9DA45DBB76AA1F563EDCD5B327BFDFBB776F5E773BADB5
+      32113A840F56EF71DDBA75C3C58B1779ACE83B4282173AC466C553ECF2F3F270
+      F0E0415E07F221333393F31403F11D154FED608B89411DBB4F7CD7AE5D3174E8
+      503E7FF0F5194CF93669E244EE8776DBC3F291EAE7EBFC91EC3CF7ECB35C57BF
+      BE7DF97CD2DFE71FD5C1DFE727C5FDE9A79F863F7D80E2161C1CCC7DF075FE4B
+      75A7FCD16E22077C7996D3FCC19BFC91EBFA7FCF188C510F0DF7E8C35069185E
+      945E824D1A856192AB6C57290849A96FF2988C897AD14D478C148B012FF746F1
+      6136C94515AD946347C58F7878FC7DE82905E332F6E1FCF9BD98FAD1EB7876DE
+      601DFF67E926EC3AF5A326EAB416FF33934B58F5DD3C3C58F2096AE0643AF623
+      48D2E731D9DD7B768DC2F0556E260769A55C9153B8C0D89A73C5E822DDECE6F7
+      FD63FB68EC0AE688224EACAADB8236E5E958FBEDBFF1C82B0374FCCBD23856C7
+      15628464C226DBA8A46FE331A9A6D57E7E6DD3D96DDCBFBAE3792CAEAEBFFFBC
+      26BDCEFDA3ED727D0572CF14E1E3EA1C8CAAF80E83F72C40A71D6998E45C8E9B
+      4A66432A780FD2C1F73159727D6F2B494A44E7EAD9F2D8B0FE5F90364F91CB39
+      A642DA320DD2263656E10C461F5EC63EB36B151FE05DC9F5FBBBF7A437202D1F
+      8D3A16D9265B3F8254F801A4A214BD6C7A0752FE6448C5D3D17AF5EB48945ED1
+      FFEDFD857688AA5D85A44A07B33D45CF323F6E2D49C792D39B21ED4D6503DCAD
+      6EF19F264D80B4210EB3CF95A1E38E4F5C3E6C49C2037B3E47A3ADD3D169EF1C
+      E6C79B0891CCD7F0239ADCC93A5F1CFA542FE57E729EC5E1040EE1DEEAC5CCFF
+      8988BCA197C7BC4F223F46FC09ED7326423AFA21A40349907E8C6709D60DBDA4
+      4E3EF7DB0F599BA44AEF7099214DFECDFBFBF12A27767DFB4F147E188C82C9AD
+      B033F3EF38BCCD35DED1395DDB3CA50DB624DF8C5D5F8F043182256E5382A493
+      FCB70270307F3E173A37DE2746D835DED3EA306385105B34B38FE57D6FB2F5E3
+      506C7EFB06BFF9FCFF6B8A6DB3FBF9CD17A5DE85FD6B67FACDEF5B2DCF83B6DB
+      0736BCEE2C6ED535F2773A8FECCAC5B64FFAFBCECEBA074776ACD4E5A573AF03
+      05EF75F0CA52192A6B96875547769BE69210CA3D2B56FD6EEBEE7C96ABCFBAB1
+      3B3E7F1247CB7C7B76525C762D8E55D99D0B9F5363D590FD6041260E6CFCEC77
+      7F5E5B7D07CC57D6EAB7639E74B86C481EC5CA175F582B3FB4ACBEBEDE751859
+      F732BED4C5B7F215E72AF1E8CA587E6C284FCC9D8B1F43F38C50FC75F98806F1
+      5AF68EAF1EC1A1B347BDF25A5FCD586FFC432B6C2A63C67A6A0312B2EB0BEB29
+      7F4807C5CA1BFB6BE4EFD5F69F5FA3FFD26F516EB9E596AB5A6FE4F3543F79FA
+      0E73A3468DF86F13FCD541F366F2C3D33CDFDB3E7BF6ECAB5A77A5BF2511DF93
+      D603946BF3E7CFF7E9FB1B346727B669D3A6C8CFCFE7E5BB74E98251A346F179
+      68545494471D8B172FE63CFD1F89EEDDBBE39A6BAE51D7C9F8EF392CBEC32F76
+      FAFD0BF1F437395A8BE0EB1E0DACFFB061C3B88E471E790401010168D1A20576
+      EEDCC97FA3F6F8E38F5BEAA3DFB1949595F1B904AD57910EFA8D12DD6BD3A60D
+      BCF9BE61C306CC993307749C3973261A376E8C11234634D87FBE3EC2B6A4A424
+      B46EDDDAAF3C183468103A74E820FF56AA812CC5FD6AF28FF62FBEF802C9C9C9
+      7FE85C5F929A5CC558D20C246DBBF5C6FC25ABFD5CBF698EF0C1CFC0163F1973
+      BFFA11B7F68A68E0EF206E40E8804731657A06F28B2BF0E1278BD0F39E07D090
+      FA376DDD09B7F7B90F37F7BCD78FF5ABEB18DFCEFF185E737539D4ACB97F7C8B
+      96126E6C27A1515309EF268DC7DDFD6FF349CF5B5362F0A7AE12FA0FEC8031E3
+      07F3F59BEA330538F9F3563C671B80EBDB5BFBD3B48D84C18F0561C05F5BE39E
+      BF5C870BF51BB03C67321665FD0B13DE1984D0C8003CF84407DC1272AD9B8EE0
+      D09678F8C9DBF1E9FCB108EDC7ECB3B25B777E8CD27D76D6EEC9787D727F9455
+      CC45502F09A3270C44E420D7B8DEF5AED6B8F3EE36786DD2DFB07235EB6F28C2
+      3F47F74665CDD728294B43C1D6241CAA9A8F6D6533B0A93809DB7765E0546D29
+      06DC7B17D7D1A4AD8471092F207753269E1F791F76967D8DCD059F6075EE344C
+      7CF301ACCF4BC2E6C254C4BCD413C5657331E4A95BF0C3CA0C346B2CA147A7B6
+      57DDBFFF1FA699F289
+    }
+  end
+  object PopupMenu1: TPopupMenu
+    Left = 144
+    Top = 192
+    object MenuItem50: TMenuItem
+      Caption = 'Show DT- Rating'
+      Checked = True
+      OnClick = MenuItem50Click
+    end
+    object MenuItem87: TMenuItem
+      Caption = 'Show Favs'
+      OnClick = MenuItem87Click
+    end
+    object MenuItem49: TMenuItem
+      Caption = '-'
+    end
+    object MenuItem44: TMenuItem
+      Caption = 'Select all'
+      ShortCut = 16449
+      OnClick = MenuItem44Click
+    end
+    object MenuItem70: TMenuItem
+      Caption = 'Coordinates'
+      object MenuItem18: TMenuItem
+        Caption = 'Modify coordinates'
+        ShortCut = 113
+        OnClick = MenuItem18Click
+      end
+      object MenuItem33: TMenuItem
+        Caption = 'Mark coords as modified'
+        OnClick = MenuItem33Click
+      end
+    end
+    object MenuItem73: TMenuItem
+      Caption = 'Edit'
+      object MenuItem71: TMenuItem
+        Caption = 'Found'
+        object MenuItem28: TMenuItem
+          Caption = 'Mark as found'
+          OnClick = MenuItem28Click
+        end
+        object MenuItem35: TMenuItem
+          Caption = 'Unmark as found'
+          OnClick = MenuItem35Click
+        end
+      end
+      object MenuItem72: TMenuItem
+        Caption = 'Archived'
+        object MenuItem43: TMenuItem
+          Caption = 'Mark as archived'
+          OnClick = MenuItem43Click
+        end
+        object MenuItem42: TMenuItem
+          Caption = 'Unmark as archived'
+          OnClick = MenuItem42Click
+        end
+      end
+      object MenuItem22: TMenuItem
+        Caption = 'Edit user note'
+        ShortCut = 112
+        OnClick = MenuItem22Click
+      end
+      object MenuItem48: TMenuItem
+        Caption = 'Edit Waypoints'
+        OnClick = MenuItem48Click
+      end
+      object MenuItem41: TMenuItem
+        Caption = 'Add spoiler image'
+        OnClick = MenuItem41Click
+      end
+      object MenuItem96: TMenuItem
+        Caption = 'Convert Waypoints into Cache'
+        OnClick = MenuItem96Click
+      end
+      object MenuItem76: TMenuItem
+        Caption = '-'
+      end
+      object MenuItem75: TMenuItem
+        Caption = 'Show cache hint'
+        OnClick = MenuItem75Click
+      end
+      object MenuItem77: TMenuItem
+        Caption = 'Show logs'
+        OnClick = MenuItem77Click
+      end
+    end
+    object MenuItem97: TMenuItem
+      Caption = 'Online'
+      object MenuItem34: TMenuItem
+        Caption = 'Open caches in browser'
+        OnClick = MenuItem34Click
+      end
+      object MenuItem78: TMenuItem
+        Caption = 'Redownload Listings'
+        OnClick = MenuItem78Click
+      end
+      object Separator1: TMenuItem
+        Caption = '-'
+      end
+      object MenuItem88: TMenuItem
+        Caption = 'Refresh favs / hidden date'
+        OnClick = MenuItem88Click
+      end
+      object MenuItem98: TMenuItem
+        Caption = 'Download usernotes / corrected coords'
+        OnClick = MenuItem98Click
+      end
+      object Separator2: TMenuItem
+        Caption = '-'
+      end
+      object MenuItem99: TMenuItem
+        Caption = 'Upload usernotes / corrected coords'
+        OnClick = MenuItem99Click
+      end
+      object MenuItem100: TMenuItem
+        Caption = 'Reset usernotes'
+        OnClick = MenuItem100Click
+      end
+      object MenuItem101: TMenuItem
+        Caption = 'Reset corrected coords'
+        OnClick = MenuItem101Click
+      end
+    end
+    object MenuItem74: TMenuItem
+      Caption = 'Log caches'
+      OnClick = MenuItem74Click
+    end
+    object MenuItem61: TMenuItem
+      Caption = '-'
+    end
+    object MenuItem60: TMenuItem
+      Caption = 'Customer flags'
+      object MenuItem62: TMenuItem
+        Caption = 'Set customer flag'
+        ShortCut = 16467
+        OnClick = MenuItem62Click
+      end
+      object MenuItem63: TMenuItem
+        Caption = 'Clear customer flag'
+        ShortCut = 16451
+        OnClick = MenuItem63Click
+      end
+      object MenuItem64: TMenuItem
+        Caption = '-'
+      end
+      object MenuItem65: TMenuItem
+        Caption = 'Clear all customer flags'
+        OnClick = MenuItem65Click
+      end
+    end
+    object MenuItem36: TMenuItem
+      Caption = '-'
+    end
+    object MenuItem37: TMenuItem
+      Caption = 'Delete caches'
+      ShortCut = 46
+      OnClick = MenuItem37Click
+    end
+  end
+  object SaveDialog1: TSaveDialog
+    DefaultExt = '.zip'
+    Filter = 'Pocket Query|*.zip|All|*.*'
+    Left = 320
+    Top = 120
+  end
+  object OpenPictureDialog1: TOpenPictureDialog
+    Left = 248
+    Top = 120
+  end
+  object ImageList2: TImageList
+    Width = 12
+    Left = 312
+    Top = 248
+    Bitmap = {
+      4C7A120000000C00000010000000A60000000000000078DAEDD8310AC0201004
+      409FEECF2FD80B7A8568B829368598E0CA68918868213249EB3D46327377DFC9
+      CECFAE47FE69ED250FFC4B650FFCBB0FF9E7DFFEE8CBBFFDD1F76CDFD53766E3
+      37CF040FF5FAAE6CEE7AE69FFFD73DF0CF7F650FFC4BE9FFBD6D3C22327377DF
+      C9CECFAE47FE69ED250FFC4B650FFCBB0FF9E7DFFEE8CBBFFDD1F76CDFD53766
+      E337CF040FF5FAAE6CEE7AE69FFFD73DF0CF7F650F15FA7E28DED578
+    }
+  end
+  object OpenDialog2: TOpenDialog
+    DefaultExt = '.gpx'
+    Filter = 'GSAK gpx file|*.gpx|All|*.*'
+    Left = 144
+    Top = 120
+  end
+  object SaveDialog2: TSaveDialog
+    DefaultExt = '.gpx'
+    Filter = 'GSAK gpx file|*.gpx|All|*.*'
+    Left = 320
+    Top = 192
+  end
+  object SelectDirectoryDialog1: TSelectDirectoryDialog
+    Left = 248
+    Top = 192
+  end
+  object UniqueInstance1: TUniqueInstance
+    Enabled = True
+    Identifier = 'CCM_CorpsmanCacheManager'
+    OnOtherInstance = UniqueInstance1OtherInstance
+    Left = 248
+    Top = 336
+  end
+  object SQLQuery2: TSQLQuery
+    FieldDefs = <>
+    Database = SQLite3Connection2
+    Transaction = SQLTransaction2
+    SQL.Strings = (
+      ''
+    )
+    Params = <>
+    Left = 144
+    Top = 248
+  end
+  object SQLTransaction2: TSQLTransaction
+    Active = False
+    Action = caNone
+    Database = SQLite3Connection2
+    Left = 144
+    Top = 296
+  end
+  object SQLite3Connection2: TSQLite3Connection
+    Connected = False
+    LoginPrompt = False
+    KeepConnection = False
+    Transaction = SQLTransaction2
+    LogEvents = []
+    AlwaysUseBigint = False
+    Left = 144
+    Top = 344
+  end
+  object OpenDialog3: TOpenDialog
+    DefaultExt = '.txt'
+    FileName = 'geocache_visits.txt'
+    Filter = 'geocache_visits.txt|*.txt|All|*.*'
+    Left = 72
+    Top = 400
+  end
+  object PopupMenu2: TPopupMenu
+    Left = 235
+    Top = 20
+    object MenuItem94: TMenuItem
+      Caption = 'Clear history'
+      OnClick = MenuItem94Click
+    end
+    object MenuItem95: TMenuItem
+      Caption = 'Copy text to clipboard'
+      OnClick = MenuItem95Click
+    end
+  end
+end
