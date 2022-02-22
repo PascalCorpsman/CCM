@@ -1,0 +1,11 @@
+To be able to Compile the Source with Lazarus you need additionally install the following packages:
+
+External Libs:
+Synapse: https://www.ararat.cz/synapse/doku.php/download
+MP: https://web.archive.org/web/20190628091417/http://www.wolfgang-ehrhardt.de/index.html
+
+Lazarus Packages:
+ - UniqueInstance
+ - TurboPowerPro
+ - LazOpenGLContext
+ - SQLDBLaz
