@@ -12,7 +12,7 @@ This is the public source mirror of the CCM Project.
  - Custom Filters
  - diverse statistic evaluations (Jasmer / 81 / Attributes ..)
  - automatic updates
- - Export / Import features for GSAK / c:Geo
+ - Export / Import features for GSAK / c:geo
  - as many databases as you want
  - compare / merge databases
  - pocket queries
