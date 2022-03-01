@@ -6,7 +6,7 @@ Interface
 
 Uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, uonlineviewer,
-  ugctoolwrapper, uccm, umapviewer;
+  ugctoolwrapper, uccm, umapviewer, uvectormath;
 
 Const
   RouteFileVersion: uint32 = 2;
@@ -74,7 +74,7 @@ Type
   private
     fOnlineViewer: TOnlineViewer;
     renderedCached: Integer;
-    fRoute: Array Of TRealPoint;
+    fRoute: Array Of TVector2;
     Procedure MergeLiteCachesToDB(Const Caches: TLiteCacheArray);
     Procedure MergeLabsCachesToDB(Const Labs: TLABCacheInfoArray);
   public
@@ -111,7 +111,6 @@ Uses
   uOpenGL_ASCII_Font,
   dglOpenGL,
   uopengl_graphikengine,
-  uvectormath,
   LCLType,
   unit1,
   Unit4,
@@ -193,7 +192,7 @@ Procedure TForm40.Button3Click(Sender: TObject);
 Var
   c: TLiteCacheArray;
   vp: TViewport;
-  pt: TRealPoint;
+  pt: TVector2;
 Begin
   // Merge All visual Caches To DB
   pt := form15.mv.GetMouseMapLongLat(0, 0);
@@ -213,7 +212,7 @@ Var
   step, lat, lon: DOuble;
   p, dn, d, ap, np: TVector2;
   zoom, startZoom: integer;
-  StartPos: TRealPoint;
+  StartPos: TVector2;
   t: int64;
   s: String;
 Begin
@@ -270,7 +269,7 @@ Procedure TForm40.Button5Click(Sender: TObject);
 Var
   f: TFileStream;
   i: integer;
-  p: TRealPoint;
+  p: TVector2;
   d: Double;
   b: Boolean;
 Begin
@@ -413,7 +412,7 @@ Procedure TForm40.Button8Click(Sender: TObject);
 Var
   c: TLABCacheInfoArray;
   vp: TViewport;
-  pt: TRealPoint;
+  pt: TVector2;
 Begin
   // Merge All visual Caches To DB
   pt := form15.mv.GetMouseMapLongLat(0, 0);
@@ -695,7 +694,7 @@ End;
 
 Procedure TForm40.IncPointOrder(x, y: integer);
 Var
-  pr: TRealPoint;
+  pr: TVector2;
   p: TPoint;
   i: Integer;
 Begin
@@ -714,7 +713,7 @@ End;
 
 Procedure TForm40.DecPointOrder(x, y: integer);
 Var
-  pr: TRealPoint;
+  pr: TVector2;
   p: TPoint;
   i: Integer;
 Begin

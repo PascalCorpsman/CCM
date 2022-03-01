@@ -113,6 +113,7 @@ Implementation
 
 Uses lazutf8, math, dglOpenGL, uopengl_graphikengine, ugraphics, uOpenGL_ASCII_Font,
   ugctoolwrapper,
+  uvectormath,
   uccm,
   unit1, // Main Form
   unit13, // Preview des Caches
@@ -189,7 +190,7 @@ Procedure TForm15.OpenGLControl1MouseMove(Sender: TObject; Shift: TShiftState;
   X, Y: Integer);
 Var
   img: TImageInfoRecord;
-  r: TRealPoint;
+  r: TVector2;
   s: String;
   p: Tpoint;
 Begin
@@ -293,7 +294,7 @@ End;
 
 Procedure TForm15.MenuItem14Click(Sender: TObject);
 Var
-  r: TRealPoint;
+  r: TVector2;
 Begin
   // Add Location here
   r := mv.GetMouseMapLongLat(moveX, movey);
@@ -312,7 +313,7 @@ End;
 Procedure TForm15.MenuItem16Click(Sender: TObject);
 Var
   img: TImageInfoRecord;
-  rp: TRealPoint;
+  rp: TVector2;
   s: String;
 Begin
   //Copy Actual Coord to Clipboard
@@ -364,7 +365,7 @@ End;
 Procedure TForm15.MenuItem17Click(Sender: TObject);
 Var
   img: TImageInfoRecord;
-  rp: TRealPoint;
+  rp: TVector2;
   s: String;
 Begin
   //Wegpunkt Projektion
@@ -760,7 +761,7 @@ End;
 
 Procedure TForm15.MenuItem6Click(Sender: TObject);
 Var
-  r: TRealPoint;
+  r: TVector2;
 Begin
   // Add UserPoint
   r := mv.GetMouseMapLongLat(moveX, movey);
@@ -939,7 +940,7 @@ Var
 {$ENDIF}
   w, h: Single;
   vp: TViewport;
-  pt: TRealPoint;
+  pt: TVector2;
   txt: String;
 Begin
   If Not Form15Initialized Then Exit;
@@ -1012,8 +1013,8 @@ End;
 
 Procedure TForm15.CenterCaches(Sender: TObject);
 Var
-  p: TRealPoint;
-  mip, map: TRealPoint;
+  p: TVector2;
+  mip, map: TVector2;
   i: Integer;
   dx: Double;
   b: TBitmap;

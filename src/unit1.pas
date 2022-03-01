@@ -1799,7 +1799,7 @@ Begin
   Application.BringToFront;
 End;
 
-Function TForm1.getLang: String;
+Function TForm1.getLang(): String;
   Function strinarr(value: String; arr: Array Of String): Boolean;
   Var
     i: integer;
@@ -2066,7 +2066,7 @@ Begin
   End;
 End;
 
-Function TForm1.OpenTBDatabase: Boolean;
+Function TForm1.OpenTBDatabase(): Boolean;
 Var
   fn: String;
 Begin
@@ -2114,7 +2114,7 @@ Begin
   End;
 End;
 
-Procedure TForm1.RefreshDataBaseCacheCountinfo;
+Procedure TForm1.RefreshDataBaseCacheCountinfo();
 Begin
   StartSQLQuery('Select count(*) from caches');
   If SQLQuery1.EOF Then Begin
@@ -2161,7 +2161,7 @@ Begin
   setvalue('SearchRemember', 'Last0', NewSearch);
 End;
 
-Procedure TForm1.RefreshSearchRemember;
+Procedure TForm1.RefreshSearchRemember();
 Var
   cnt, i: integer;
   s: String;
@@ -2176,7 +2176,7 @@ Begin
   End;
 End;
 
-Procedure TForm1.CloseDataBase;
+Procedure TForm1.CloseDataBase();
 Begin
   SQLite3Connection1.Connected := false;
   StringGrid1.Columns[MainColType].Title.caption := R_Type;

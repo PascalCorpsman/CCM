@@ -14,12 +14,18 @@ Unit umapviewer;
  *                                         - only using synapse as downloadmanager
  *                                         - enable proxy downloading
  *                                         - removed as much variables as possible
+ *
+ * History: 0.01 = initialversion
+ *
+ * Bugs / Missing Features:
+ *                       - Cleanup, Doku
+ *                       - Download via Thread for smoother rendering ?
  *)
 
 Interface
 
 Uses
-  Classes, SysUtils, Controls, OpenGlcontext;
+  Classes, SysUtils, Controls, OpenGlcontext, uvectormath;
 
 Type
 
@@ -38,16 +44,12 @@ Type
     ProxyUser: String;
   End;
 
-  TRealPoint = Record
-    X, Y: Extended;
-  End;
-
   TImageInfoRecord = Record
     x, y: Extended;
     ImageIndex: integer;
     W, H, OffX, OffY: integer;
     Label_: String;
-    MetaInfo: String; // Wird nicht gerendert einfach nur so zur info
+    MetaInfo: String; // Wird nicht gerendert einfach nur so zur info --> TODO: das sollte ein PTRInt werden !
   End;
 
   { tMapViewer }
@@ -105,7 +107,7 @@ Type
     Procedure Exit2d();
     Procedure SetCacheFolder(AValue: String);
 
-    Procedure SetCenterLongLat(Const AValue: TRealPoint); // Zentriert auf das Sichtfenster auf der Lat / Lon Position
+    Procedure SetCenterLongLat(Const AValue: TVector2); // Zentriert auf das Sichtfenster auf der Lat / Lon Position
     Procedure SetImage(index: integer; AValue: TImageInfoRecord);
     Procedure SetScrolGrid(AValue: integer);
     Procedure SetShowscale(AValue: Boolean);
@@ -135,7 +137,7 @@ Type
 
     Property Zoom: integer read FZoom write FZoom;
     Property Source: TMapSource read FSource write FSource;
-    Property ScrollGrid: integer read fScrollGrid write SetScrolGrid;
+    Property ScrollGrid: integer read fScrollGrid write SetScrolGrid; // Used for mous scrolling, typically 1 (or on some systems 3)
     Property ShowScale: Boolean read fShowScale write SetShowscale;
 
     Property ImageCount: integer read GetImageCount;
@@ -145,7 +147,7 @@ Type
     Destructor Destroy; override;
 
     Procedure Render();
-    Procedure EmptyTileCache(); // Löscht alle bisher gepufferten Teile aus dem Cache
+    Procedure EmptyTileCache(); // Löscht alle bisher gepufferten Teile aus dem OpenGL-Cache
 
     (*
      * Zentriert die Koordinate Lon, Lat innerhalb des Sichtbaren Bereiches
@@ -154,8 +156,8 @@ Type
     (*
      * Rückgabe des Lat und Long Wert als Übergabe eine Koordinate auf dem Canvas des Renderingkontextes (in Pixel)
      *)
-    Function GetMouseMapLongLat(X, Y: Integer): TRealPoint;
-    Function GetMouseMapLongLatRev(p: TRealPoint): TPoint; // Umkehrfunktion zu GetMouseMapLongLat
+    Function GetMouseMapLongLat(X, Y: Integer): TVector2;
+    Function GetMouseMapLongLatRev(p: TVector2): TPoint; // Umkehrfunktion zu GetMouseMapLongLat
 
     Procedure Reset; // Reset der Kameraeinstellungen
 
@@ -206,17 +208,7 @@ Uses
 Const
   TILE_SIZE: int64 = 256;
   EARTH_RADIUS = 6378137;
-  //MIN_LATITUDE = -85.05112878;
-  //MAX_LATITUDE = 85.05112878;
-  //MIN_LONGITUDE = -180;
-  //MAX_LONGITUDE = 180;
   SHIFT = {2 *} pi * EARTH_RADIUS {/ 2.0};
-
-Function RealPoint(x, y: Extended): TRealPoint;
-Begin
-  result.x := x;
-  result.Y := y;
-End;
 
 Function PointInRect(p: Tpoint; r: Trect): boolean;
 Begin
@@ -474,7 +466,7 @@ Begin
   Inherited Destroy;
 End;
 
-Procedure tMapViewer.Go2d();
+Procedure tMapViewer.Go2d;
 Begin
   glMatrixMode(GL_PROJECTION);
   glPushMatrix(); // Store The Projection Matrix
@@ -485,7 +477,7 @@ Begin
   glLoadIdentity(); // Reset The Modelview Matrix
 End;
 
-Procedure tMapViewer.Exit2d();
+Procedure tMapViewer.Exit2d;
 Begin
   glMatrixMode(GL_PROJECTION);
   glPopMatrix(); // Restore old Projection Matrix
@@ -499,7 +491,7 @@ Begin
   fCacheFolder := IncludeTrailingPathDelimiter(AValue);
 End;
 
-Function tMapViewer.GetMouseMapLongLat(X, Y: Integer): TRealPoint;
+Function tMapViewer.GetMouseMapLongLat(X, Y: Integer): TVector2;
 Var
   tiles: Int64;
   circumference: Int64;
@@ -523,7 +515,7 @@ Begin
   Result.Y := -lat;
 End;
 
-Function tMapViewer.GetMouseMapLongLatRev(p: TRealPoint): TPoint;
+Function tMapViewer.GetMouseMapLongLatRev(p: TVector2): TPoint;
 Var
   mx, my: Extended;
   res: Extended;
@@ -591,7 +583,7 @@ End;
 Function tMapViewer.GetImageAtXY(x, y: Integer; Out Img: TImageInfoRecord
   ): Boolean;
 Var
-  TopLeft, BottomRight: TRealPoint;
+  TopLeft, BottomRight: TVector2;
   i, xx, yy: Integer;
   pp, p: Tpoint;
   r: Trect;
@@ -603,7 +595,7 @@ Begin
   For i := 0 To high(fPoints) Do Begin
     If (fPoints[i].x >= min(TopLeft.X, BottomRight.X)) And (fPoints[i].x <= max(TopLeft.X, BottomRight.X)) And
       (fPoints[i].y >= min(TopLeft.y, BottomRight.y)) And (fPoints[i].y <= max(TopLeft.y, BottomRight.y)) Then Begin
-      pp := GetMouseMapLongLatRev(RealPoint(fPoints[i].x, fPoints[i].y));
+      pp := GetMouseMapLongLatRev(V2(fPoints[i].x, fPoints[i].y));
       xx := pp.x + fPoints[i].OffX;
       yy := pp.y + fPoints[i].Offy;
       r.Left := xx;
@@ -633,7 +625,7 @@ Begin
   End;
 End;
 
-Procedure tMapViewer.SetCenterLongLat(Const AValue: TRealPoint);
+Procedure tMapViewer.SetCenterLongLat(Const AValue: TVector2);
 Var
   p: TPoint;
 Begin
@@ -684,7 +676,7 @@ End;
 
 Procedure tMapViewer.ZoomTo(x, y: Integer);
 Var
-  r: TRealPoint;
+  r: TVector2;
 Begin
   // Umrechnen der Mausposition in die Tileposition
   r := GetMouseMapLongLat(x, y);
@@ -694,7 +686,7 @@ End;
 
 Procedure tMapViewer.UnZoomTo(x, y: Integer);
 Var
-  r: TRealPoint;
+  r: TVector2;
 Begin
   // Umrechnen der Mausposition in die Tileposition
   r := GetMouseMapLongLat(x, y);
@@ -702,7 +694,7 @@ Begin
   SetCenterLongLat(r);
 End;
 
-Procedure tMapViewer.Render();
+Procedure tMapViewer.Render;
   Function PrettyScale(value: Extended): String;
   Var
     s: String;
@@ -725,7 +717,7 @@ Var
   startX, startY: Integer;
   i, j, x, y: Integer;
 
-  TopLeft, BottomRight: TRealPoint;
+  TopLeft, BottomRight: TVector2;
   s: String;
   si, co, d: Extended;
   p: Tpoint;
@@ -762,7 +754,7 @@ Begin
   For i := 0 To high(fPoints) Do Begin
     If (fPoints[i].x >= min(TopLeft.X, BottomRight.X)) And (fPoints[i].x <= max(TopLeft.X, BottomRight.X)) And
       (fPoints[i].y >= min(TopLeft.y, BottomRight.y)) And (fPoints[i].y <= max(TopLeft.y, BottomRight.y)) Then Begin
-      p := GetMouseMapLongLatRev(RealPoint(fPoints[i].x, fPoints[i].y));
+      p := GetMouseMapLongLatRev(V2(fPoints[i].x, fPoints[i].y));
       x := p.x + fPoints[i].OffX;
       y := p.y + fPoints[i].Offy;
       B := glIsEnabled(gl_Blend);
@@ -827,14 +819,14 @@ Begin
   Exit2d();
 End;
 
-Procedure tMapViewer.EmptyTileCache();
+Procedure tMapViewer.EmptyTileCache;
 Begin
   OpenGL_GraphikEngine.Clear;
 End;
 
 Procedure tMapViewer.CenterLongLat(Lon, Lat: Double);
 Begin
-  SetCenterLongLat(RealPoint(lon, lat));
+  SetCenterLongLat(V2(lon, lat));
 End;
 
 Procedure tMapViewer.PaintRectangle(AX, AY, X, Y, Z: Int64);
@@ -986,7 +978,7 @@ Begin
   DefFormat := FormatSettings;
   DefFormat.DecimalSeparator := '.';
   // Haben wir die Datei schon geladen ?
-  s := format('%s_%d_%d_%d', [MapSourceToString(FSource), x, y, z], DefFormat);
+  s := format('%s_%s_%d_%d_%d', [MapSourceToString(FSource), lowercase(MapLocalization), x, y, z], DefFormat);
   result := OpenGL_GraphikEngine.Find(s, false);
   If result > 0 Then exit;
   // Nein, haben wir sie auf dem HDD Cache ?

@@ -46,7 +46,7 @@ Const
 
   (*
    * If you get a compiler error at this point, than you cloned the source from the
-   * offizial Git REPO.
+   * official Git REPO.
    * Unfortunatunelly it is not allowed to share the consumer keys in public.
    *
    * To be able to compile the code you need to declare the following 2 string
