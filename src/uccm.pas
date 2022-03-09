@@ -2327,7 +2327,7 @@ Var
   f: TField;
 Begin
   result := TStringList.Create;
-  StartSQLQuery('PRAGMA table_info(' + TableName + ');');
+  If Not StartSQLQuery('PRAGMA table_info(' + TableName + ');') Then exit;
   f := SQLQuery.FieldByName('name');
   While (Not SQLQuery.EOF) Do Begin
     result.Add(F.AsString);
