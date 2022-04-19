@@ -60,7 +60,7 @@ Uses
  * 3.2 Erstellen der unter (3.1) angegebenen .zip Datei und Speichern auf dem Server
  *
  *Integration in die Anwendung:
- * 4.1. Instanz TUpdatHelper erstellen
+ * 4.1. Instanz TUpdater erstellen
  * 4.1.1 Proxy Einstellungen setzten
  * 4.2. Aufruf von TUpdatHelper.GetVersions(..) -- mit link auf Datei von (3.1)
  * 4.3. Wenn die an GetVersions übergebene Callback aufgerufen wurde
