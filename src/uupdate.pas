@@ -121,6 +121,7 @@ Type
   TGetVersionsCallback = Procedure(fAlwaysShowResult: Boolean; OnlineVersions: TVersionArray) Of Object;
 
   TGotURLCallback = Procedure(URLContent: String) Of Object; // Callback für den Asynchronen Downloader
+  TGotFileCallback = Procedure(Filename: String) Of Object; // Callbach für den Asynchronen Downloader
 
   { TDownloader }
 
@@ -128,7 +129,9 @@ Type
   private
     fUrlContent: String;
     Procedure CallContentCallback;
+    Procedure CallCallbackFileContent;
     Function DownloadUrlContent(): String;
+    Procedure DownloadFile();
   protected
     Procedure Execute; override;
   public
@@ -136,18 +139,22 @@ Type
     ProxyPort: String;
     ProxyUser: String;
     ProxyPass: String;
-    URL: String;
+    URL: String; // URL die herunter geladen werden soll
+    Filename: String; // Der Dateiname, wo die herunter geladene Datei hin gespeichert werden soll
     CallbackURLContent: TGotURLCallback;
+    CallbackFileContent: TGotFileCallback;
   End;
 
-  { TUpdatHelper }
+  { TUpdater }
 
   TUpdater = Class
   private
     fcallback: TGetVersionsCallback;
     fUpdateAllowed: Boolean;
     fAlwaysShowResult: Boolean; // Den Parameter reichen wir nur an die Callback weiter die Klasse selbst macht nichts damit
+    fFileDownloaded: Boolean; // Zum Blockieren in DoUpdate_Part_1
     Procedure OnGotURL(URLContent: String);
+    Procedure OnFileDownloaded(Filename: String);
     Function ExtractVersionFileContents(Data: String): TVersionArray;
   public
     (*
@@ -209,12 +216,9 @@ Uses ssl_openssl, HTTPSend, zipper, FileUtil, synautil,
 {$IFDEF Linux}
   Process,
 {$ENDIF}
+  forms,
+  md5,
   UTF8Process;
-
-Type
-  TProxySettings = Record
-    Host, Pass, Port, User: String;
-  End;
 
 Procedure Nop;
 Begin
@@ -274,34 +278,30 @@ Begin
   End;
 End;
 
-Function DownLoadFile(URL, Filename: String; Proxy: TProxySettings): Boolean;
+Function CeckCopyFile(SrcFilename, DestFilename: String): Boolean;
 Var
-  f: TFileStream;
-  http: THTTPSend;
+  md5_s, md5_d: String;
 Begin
-  result := false;
-  http := THTTPSend.Create;
-  http.ProxyHost := Proxy.Host;
-  http.ProxyPass := Proxy.Pass;
-  http.ProxyPort := Proxy.Port;
-  http.ProxyUser := Proxy.User;
-  If Not Http.HTTPMethod('GET', url) Then Begin
-    http.free;
-    exit;
-  End;
-  Follow_Links(http, url);
-  If http.Document.Size <> 0 Then Begin
-    Try
-      f := TFileStream.Create(Filename, fmOpenWrite Or fmCreate);
-      f.CopyFrom(http.Document, http.Document.Size);
-      f.Free;
-    Except
-      http.free;
-      exit;
+  (*
+   * Prüft vor dem Kopieren erst mal ob überhaupt kopiert werden soll
+   * Sind Quelle und Ziel Identisch, dann wird nicht kopiert.
+   * Das ist unter Windows notwendig, damit die vom Updater verwendete
+   * ssl librarie nicht mit sich selbst ersetzt wird, so lange sie noch
+   * in verwendung ist.
+   *)
+  If FileExists(SrcFilename) And FileExists(DestFilename) Then Begin
+    md5_s := MD5Print(MD5File(SrcFilename));
+    md5_d := MD5Print(MD5File(DestFilename));
+    If md5_s = md5_d Then Begin
+      result := true;
+    End
+    Else Begin
+      result := CopyFile(SrcFilename, DestFilename);
     End;
-    result := true;
+  End
+  Else Begin
+    result := CopyFile(SrcFilename, DestFilename);
   End;
-  http.free;
 End;
 
 (*
@@ -380,7 +380,14 @@ Begin
   End;
 End;
 
-Function TDownloader.DownloadUrlContent(): String;
+Procedure TDownloader.CallCallbackFileContent;
+Begin
+  If assigned(CallbackFileContent) Then Begin
+    CallbackFileContent(Filename);
+  End;
+End;
+
+Function TDownloader.DownloadUrlContent: String;
 Var
   http: THTTPSend;
 Begin
@@ -403,6 +410,35 @@ Begin
   http.free;
 End;
 
+Procedure TDownloader.DownloadFile;
+Var
+  f: TFileStream;
+  http: THTTPSend;
+Begin
+  http := THTTPSend.Create;
+  http.ProxyHost := ProxyHost;
+  http.ProxyPass := ProxyPass;
+  http.ProxyPort := ProxyPort;
+  http.ProxyUser := ProxyUser;
+  If Not Http.HTTPMethod('GET', url) Then Begin
+    http.free;
+    exit;
+  End;
+  Follow_Links(http, url);
+  If http.Document.Size <> 0 Then Begin
+    Try
+      f := TFileStream.Create(Filename, fmOpenWrite Or fmCreate);
+      f.CopyFrom(http.Document, http.Document.Size);
+      f.Free;
+    Except
+      http.free;
+      f.Free;
+      exit;
+    End;
+  End;
+  http.free;
+End;
+
 Procedure TDownloader.Execute;
 Begin
   If assigned(CallbackURLContent) Then Begin
@@ -414,6 +450,16 @@ Begin
   End
   Else Begin
     // Download einer URL und Speichern als Datei
+    If assigned(CallbackFileContent) Then Begin
+      DownLoadFile;
+      If Not Terminated Then Begin
+        synchronize(@CallCallbackFileContent);
+      End;
+
+    End
+    Else Begin
+      // ??
+    End;
   End;
   Terminate;
 End;
@@ -491,7 +537,7 @@ Var
 Begin
   // !! Achtung !!
   // Der Code hier mus passend zu GetVersionFileContent sein !!
-  setlength(result, 0);
+  result  := nil;
   LastError := 'Unknown error';
   Try
     // Wenn gar nichts geladen werden konnte
@@ -555,7 +601,12 @@ Begin
   fDownloader := Nil; // Der Thread ist fertig,das merken wir uns nun wieder..
 End;
 
-Constructor TUpdater.Create();
+Procedure TUpdater.OnFileDownloaded(Filename: String);
+Begin
+  fFileDownloaded := true;
+End;
+
+Constructor TUpdater.Create;
 Begin
   Inherited create;
   LastError := '';
@@ -577,7 +628,7 @@ End;
 Procedure TUpdater.GetVersions(URL: String; AlwaysShowResult: Boolean;
   Callback: TGetVersionsCallback);
 Begin
-  If (Callback = Nil) or (assigned(fDownloader)) Then exit; // Ohne Callback brauchen wir gar nicht erst prüfen
+  If (Callback = Nil) Or (assigned(fDownloader)) Then exit; // Ohne Callback brauchen wir gar nicht erst prüfen
   LastError := '';
   fcallback := Callback;
   fAlwaysShowResult := AlwaysShowResult;
@@ -587,13 +638,14 @@ Begin
   fDownloader.ProxyUser := ProxyUser;
   fDownloader.ProxyPass := ProxyPass;
   fDownloader.URL := URL;
+  fDownloader.Filename := '';
   fDownloader.CallbackURLContent := @OnGotURL;
+  fDownloader.CallbackFileContent := Nil;
   fDownloader.FreeOnTerminate := true;
   fDownloader.start;
 End;
 
-Function TUpdater.DoUpdate_Part1(WorkDir: String; Version: TVersion
-  ): Boolean;
+Function TUpdater.DoUpdate_Part1(WorkDir: String; Version: TVersion): Boolean;
 Const
 {$IFDEF Windows}
   OSExt = '.exe';
@@ -602,7 +654,6 @@ Const
 {$ENDIF}
 Var
   ap, d, fn: String;
-  p: TProxySettings;
   uz: TUnZipper;
   pr: TProcessUTF8;
 Begin
@@ -635,15 +686,30 @@ Begin
       exit;
     End;
   End;
-  // 1. Runter laden
-  p.Host := ProxyHost;
-  p.Pass := ProxyPass;
-  p.Port := ProxyPort;
-  p.User := ProxyUser;
-  If Not DownLoadFile(version.DownloadLink, WorkDir + fn, p) Then Begin
+
+  // 1. Runter laden asynchron, aber Blockierend
+  fFileDownloaded := false;
+  fDownloader := TDownloader.Create(true);
+  fDownloader.ProxyHost := ProxyHost;
+  fDownloader.ProxyPort := ProxyPort;
+  fDownloader.ProxyUser := ProxyUser;
+  fDownloader.ProxyPass := ProxyPass;
+  fDownloader.URL := version.DownloadLink;
+  fDownloader.Filename := WorkDir + fn;
+  fDownloader.CallbackURLContent := Nil;
+  fDownloader.CallbackFileContent := @OnFileDownloaded;
+  fDownloader.FreeOnTerminate := true;
+  fDownloader.start;
+  While Not fFileDownloaded Do Begin
+    sleep(1);
+    Application.ProcessMessages;
+  End;
+  // Der DL wurde Beendet, aber die Datei nicht geladen -> Fehler
+  If Not FileExists(WorkDir + fn) Then Begin
     LastError := 'Could not download: ' + version.DownloadLink;
     exit;
   End;
+
   // 2. Entpacken
   uz := TUnZipper.Create;
   Try
@@ -726,7 +792,12 @@ Begin
         End
         Else Begin
           // 2. Kopieren aller Dateien auser unser Eigenen
-          If Not CopyFile(sl[i], dest) Then Begin
+          If Not DirectoryExists(ExtractFileDir(dest)) Then Begin
+            If Not ForceDirectories(ExtractFileDir(dest)) Then Begin
+              LastError := LastError + 'Could not create directory: ' + ExtractFileDir(dest);
+            End;
+          End;
+          If Not CeckCopyFile(sl[i], dest) Then Begin
             LastError := LastError + 'Could not copy : ' + sl[i] + ' -> ' + dest;
             sl.free;
             exit;
@@ -746,7 +817,7 @@ Begin
       LastError := LastError + 'missing : ' + StarterName;
       exit;
     End;
-    If Not CopyFile(StarterSource, StarterName) Then Begin
+    If Not CeckCopyFile(StarterSource, StarterName) Then Begin
       LastError := LastError + 'Could not copy : ' + StarterSource + ' -> ' + StarterName;
       exit;
     End;

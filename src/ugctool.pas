@@ -1163,7 +1163,7 @@ Begin
   __VIEWSTATEGENERATOR := '';
   sl := TStringList.Create;
   CopyStreamToStrings(fClient.Document, sl);
-  states := 0;
+  states := 1; // Falls __VIEWSTATEFIELDCOUNT nicht vorhanden, nehmen wir mal 1 an ;)
   // Anzahl der Felder ermitteln
   For i := 0 To sl.count - 1 Do Begin
     If pos('id="__VIEWSTATEFIELDCOUNT" value="', sl[i]) <> 0 Then Begin
@@ -1174,7 +1174,6 @@ Begin
       break;
     End;
   End;
-  If states <= 0 Then exit;
   setlength(__VIEWSTATES, states);
   For i := 0 To high(__VIEWSTATES) Do Begin
     __VIEWSTATES[i] := '';
@@ -1203,6 +1202,7 @@ Begin
     If (__VIEWSTATEGENERATOR <> '') And b Then break;
   End;
   sl.free;
+  // Mindestens einer wurde nicht initialisiert -> Fehler
   For i := 0 To high(__VIEWSTATES) Do Begin
     If __VIEWSTATES[i] = '' Then Begin
       setlength(__VIEWSTATES, 0);
@@ -2583,16 +2583,54 @@ Begin
 End;
 
 Function TGCTool.DownloadCacheGPX(GC_Code: String; Filename: String): Boolean;
+//(* Altes Download Verfahren, bis das neue wieder tut ;)
 Var
-  Request: TStringList;
+  Body, Request: TStringList;
+  url: String;
+  __VIEWSTATES: TStringArray;
+  __VIEWSTATEGENERATOR: String;
+  i: Integer;
 Begin
   result := false;
-  If Not fLoggedIn Then Begin
-    fLastError := 'Not logged in.';
+  // 1. Listing öffnen
+  fClient.Headers.Clear;
+  fClient.HTTPMethod('GET', URL_OpenCacheListing + GC_Code);
+  url := Follow_Links(URL_OpenCacheListing + GC_Code);
+  If url = '' Then Begin
+    url := URL_OpenCacheListing + GC_Code;
+  End;
+  // 2. Die Formulardaten extrahieren
+  ExtractViewStates(__VIEWSTATES, __VIEWSTATEGENERATOR);
+  If (length(__VIEWSTATES) = 0) Or
+    (__VIEWSTATEGENERATOR = '') Then Begin
+    fLastError := 'TGCTool.DownloadCacheGPX: Could not extract viewstates';
     exit;
   End;
+  // 3. Anfrage erstellen
+  Body := TStringList.Create;
+  body.Text :=
+    '__EVENTTARGET=ctl00$ContentBody$lnkGpxDownload' + // Das hier sorgt dafür das wir den Link bekommen
+  '&__EVENTARGUMENT=' +
+    '&__VIEWSTATEFIELDCOUNT=' + inttostr(length(__VIEWSTATES));
+  For i := 0 To high(__VIEWSTATES) Do Begin
+    If i = 0 Then Begin
+      body.text := body.text + '&__VIEWSTATE=' + EncodeURI(__VIEWSTATES[0]);
+    End
+    Else Begin
+      body.text := body.text + '&__VIEWSTATE' + inttostr(i) + '=' + EncodeURI(__VIEWSTATES[i]);
+    End;
+  End;
+  body.text := body.text +
+    '&__VIEWSTATEGENERATOR=' + __VIEWSTATEGENERATOR;
+  fClient.MimeType := 'application/x-www-form-urlencoded';
   fClient.Headers.Clear;
-  fClient.HTTPMethod('GET', API_Download_GPX_URL + GC_Code);
+  fClient.Document.Clear;
+  CopyStringsToStream(body, fClient.Document);
+  // 4. Absenden
+  fClient.HTTPMethod('POST', url);
+  Body.free;
+  Follow_Links(url); // Nicht sicher ob man das wirklich noch braucht, es schadet aber auch nicht *g*
+  // 5. und ergebnis Speichern
   Request := TStringList.Create;
   CopyStreamToStrings(fclient.Document, Request);
   result := fClient.ResultCode = 200; // alles Paletti *g*
@@ -2602,8 +2640,39 @@ Begin
     Except
       result := false;
     End;
+  End
+  Else Begin
+    fLastError := 'Unable to download, result code: ' + inttostr(fClient.ResultCode) + LineEnding + Request.Text;
   End;
   Request.Free;
+  //  *)
+(* Das ist die Alte Version, aber die API_Download_GPX_URL funktioniert nicht mehr :(
+Var
+  Request: TStringList;
+Begin
+  result := false;
+  If Not fLoggedIn Then Begin
+    fLastError := 'Not logged in.';
+    exit;
+  End;
+  fClient.Headers.Clear;
+  //RefreshAPIToken; // Hohlen eines API-Tokens, falls notwendig
+  //fClient.MimeType := 'application/gpx+xml'; -- hilft auch nicht
+  fClient.HTTPMethod('POST', API_Download_GPX_URL + GC_Code); //-- War ein Get
+  Request := TStringList.Create;
+  CopyStreamToStrings(fclient.Document, Request);
+  result := fClient.ResultCode = 200; // alles Paletti *g*
+  If result Then Begin
+    Try
+      Request.SaveToFile(Filename);
+    Except
+      result := false;
+    End;
+  End else begin
+    fLastError := 'Unable to download, result code: ' + inttostr(fClient.ResultCode) + LineEnding + Request.Text;
+  end;
+  Request.Free;
+  // *)
 End;
 
 Function TGCTool.DownloadSpoiler(GC_Code: String): integer;

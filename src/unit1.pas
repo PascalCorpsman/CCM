@@ -2000,7 +2000,7 @@ Begin
   // Suchen der Version die zu uns gehört
   ver.name := '';
   For i := 0 To high(OnlineVersions) Do Begin
-    If LowerCase(OnlineVersions[i].Name) = updater_AppName Then Begin
+    If OnlineVersions[i].Name = updater_AppName Then Begin
       ver := OnlineVersions[i];
       break;
     End;

@@ -539,6 +539,8 @@ Const
    *                   Fix Export filter
    *                   New Export Filter / Button Reset "Filter"
    *            2.46 = Check inifile on load and update "invalid" / "old" filters if needed.
+   *            2.47 = Abfangen AV wenn DL von Cache schief geht
+   *                   Reactivate old gpx download methode
    *)
 
   Version = updater_Version;
@@ -3456,7 +3458,13 @@ Begin
     RefresStatsMethod(filename, result, wpts, true);
   // 1. Laden des Caches
   doc := TXMLDocument.Create;
-  ReadXMLFile(doc, Filename);
+  Try
+    ReadXMLFile(doc, Filename);
+  Except
+    result := 0;
+    doc.free;
+    exit;
+  End;
   gpx := doc.FindNode('gpx');
   If Not assigned(gpx) Then Begin
     doc.free;

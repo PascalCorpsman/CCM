@@ -1,7 +1,7 @@
 (******************************************************************************)
 (* uDomXML                                                         07.10.2016 *)
 (*                                                                            *)
-(* Version     : 0.07                                                         *)
+(* Version     : 0.08                                                         *)
 (*                                                                            *)
 (* Autor       : Corpsman                                                     *)
 (*                                                                            *)
@@ -32,6 +32,7 @@
 (*                      Parsing state -> enum                                 *)
 (*               0.06 - Findpath (wie bei TJSONObj) implementiert             *)
 (*               0.07 - ExpandEmptyNodes                                      *)
+(*               0.08 - Erste implementierung zu "escaping"                   *)
 (*                                                                            *)
 (* Known Bugs  : -Unsinnige Fehlermeldung wenn gar keine gültige xml Datei    *)
 (*                geparst werden soll.                                        *)
@@ -138,6 +139,37 @@ Type
 Implementation
 
 Uses SysUtils, LazFileUtils;
+
+(*
+ * Konvertiert einen String in einen String der in einer XML-Datei stehen darf
+ * > -> &#60 , ...
+ *)
+
+Function StringToXMLString(Value: String): String;
+Begin
+  result := value;
+  result := StringReplace(result, '&', '&#38;', [rfReplaceAll]);
+  result := StringReplace(result, '<', '&#60;', [rfReplaceAll]);
+  result := StringReplace(result, '>', '&#62;', [rfReplaceAll]);
+  result := StringReplace(result, '''', '&#39;', [rfReplaceAll]);
+  result := StringReplace(result, '"', '&#34;', [rfReplaceAll]);
+End;
+
+(*
+ * Umkehrfunktion zu StringToXMLString
+ *)
+
+Function XMLStringToString(Value: String): String;
+Begin
+  result := value;
+  result := StringReplace(result, '&#34;', '"', [rfReplaceAll]);
+  result := StringReplace(result, '&#39;', '''', [rfReplaceAll]);
+  result := StringReplace(result, '&gt;', '>', [rfReplaceAll]);
+  result := StringReplace(result, '&#62;', '>', [rfReplaceAll]);
+  result := StringReplace(result, '&lt;', '<', [rfReplaceAll]);
+  result := StringReplace(result, '&#60;', '<', [rfReplaceAll]);
+  result := StringReplace(result, '&#38;', '&', [rfReplaceAll]);
+End;
 
 { TDOMXML }
 
@@ -430,7 +462,7 @@ Begin
               oindex := Index;
             End;
           Until tmpNode = Nil;
-          result.NodeValue := trim(copy(Buffer, oindex, Index - oindex + 1));
+          result.NodeValue := XMLStringToString(trim(copy(Buffer, oindex, Index - oindex + 1)));
           state := SearchLTSlash;
         End;
       ReadCommend: Begin
@@ -531,7 +563,7 @@ Begin
   s := s + '>';
   // Ein Node ohne Kind Nodes
   If (High(Node.fNodes) = -1) Then Begin
-    s := s + Node.NodeValue;
+    s := s + StringToXMLString(Node.NodeValue);
     s := s + '</' + Node.NodeName + '>';
     List.Add(dp + s);
   End
@@ -542,7 +574,7 @@ Begin
       SaveNode(Node.fNodes[i], List, Depth + 1);
     End;
     If trim(Node.NodeValue) <> '' Then Begin // in der Regel sollte NodeValue = '' sein, aber man weis ja nie, erlaubt wäre es..
-      List.Add(dp + Node.NodeValue);
+      List.Add(dp + StringToXMLString(Node.NodeValue));
     End;
     s := '</' + Node.NodeName + '>';
     List.Add(dp + s);
