@@ -33,6 +33,7 @@
 (*               0.06 - Findpath (wie bei TJSONObj) implementiert             *)
 (*               0.07 - ExpandEmptyNodes                                      *)
 (*               0.08 - Erste implementierung zu "escaping"                   *)
+(*               0.09 - generisches AddChild für TDomnode                     *)
 (*                                                                            *)
 (* Known Bugs  : -Unsinnige Fehlermeldung wenn gar keine gültige xml Datei    *)
 (*                geparst werden soll.                                        *)
@@ -93,13 +94,14 @@ Type
     (*
      * Routinen zum Händischen Erstellen aus dem "nichts"
      *)
-    Function AddChild(ChildNodeName, ChildNodeValue: String): TDomNode; // Erstellt einen neuen Kindknoten und gibt diesen zurück
+    Function AddChild(ChildNodeName, ChildNodeValue: String): TDomNode; overload; // Erstellt einen neuen Kindknoten und gibt diesen zurück
+    Function AddChild(Const NewChild: TDomNode): TDomNode; overload; // Damit kann dann ein beliebiges DomNode z.B. TDeclaraionDomNode, TCommentDomNode eingefügt werden.
     Procedure AddAttribute(aAttributeName, aAttributeValue: String);
     Procedure DelAttribute(index: integer);
   End;
 
-  TCommentDomNode = Class(TDomNode);
-  TProcessingInstructionDomNode = Class(TDomNode);
+  TCommentDomNode = Class(TDomNode); // <!
+  TDeclaraionDomNode = Class(TDomNode); // <?
 
   { TDOMXML }
 
@@ -352,7 +354,7 @@ Begin
       SearchSPGT: Begin // Lesen Attribute
           If (ord(Buffer[Index]) <= 32) Or (Buffer[Index] = '>') Or (Buffer[Index] = '/') Then Begin
             If isProcessingNode Then Begin
-              result := TProcessingInstructionDomNode.Create;
+              result := TDeclaraionDomNode.Create;
             End
             Else Begin
               result := TDomNode.Create;
@@ -532,7 +534,7 @@ Begin
     End;
   End;
   // Schreiben aller Attribute und des Namens
-  If Node Is TProcessingInstructionDomNode Then Begin
+  If Node Is TDeclaraionDomNode Then Begin
     s := '<?' + Node.NodeName;
   End
   Else Begin
@@ -550,7 +552,7 @@ Begin
       List.Add(dp + s);
     End
     Else Begin
-      If Node Is TProcessingInstructionDomNode Then Begin
+      If Node Is TDeclaraionDomNode Then Begin
         s := s + '?>';
       End
       Else Begin
@@ -705,7 +707,7 @@ Begin
   fAktualTraverser := -1;
   For i := 0 To High(fNodes) Do Begin
     If (Not (fNodes[i] Is TCommentDomNode)) And
-      (Not (fNodes[i] Is TProcessingInstructionDomNode)) Then Begin
+      (Not (fNodes[i] Is TDeclaraionDomNode)) Then Begin
       result := fNodes[i];
       fAktualTraverser := i;
       exit;
@@ -723,7 +725,7 @@ Begin
   End;
   For i := fAktualTraverser + 1 To High(fNodes) Do Begin
     If (Not (fNodes[i] Is TCommentDomNode)) And
-      (Not (fNodes[i] Is TProcessingInstructionDomNode)) Then Begin
+      (Not (fNodes[i] Is TDeclaraionDomNode)) Then Begin
       result := fNodes[i];
       fAktualTraverser := i;
       exit;
@@ -814,6 +816,14 @@ Begin
   result := fNodes[high(fNodes)];
   result.NodeName := ChildNodeName;
   result.NodeValue := ChildNodeValue;
+End;
+
+Function TDomNode.AddChild(Const NewChild: TDomNode): TDomNode;
+Begin
+  setlength(fNodes, high(fNodes) + 2);
+  fNodes[high(fNodes)] := NewChild;
+  fNodes[high(fNodes)].fParent := self;
+  result := fNodes[high(fNodes)];
 End;
 
 Procedure TDomNode.AddAttribute(aAttributeName, aAttributeValue: String);

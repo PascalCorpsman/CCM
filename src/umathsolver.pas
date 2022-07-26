@@ -21,6 +21,7 @@ Unit umathsolver;
  *      +          = Positive Zahl
  *      -          = Negative Zahl
  *      trunc      = Die nächst kleinere Integer Zahl
+ *      floor      = Die nächst kleinere Integer Zahl
  *      ceil       = Die nächst größere Integer Zahl
  *      round      = Rundet zur nächsten Integer Zahl
  *
@@ -50,6 +51,7 @@ Unit umathsolver;
  *            0.05 - Trunc, Ceil, Round,  <, <=, >, >=, Max, Min
  *            0.06 - =, <>
  *            0.07 - Formatieren von Binärzahlen Nibble weise
+ *            0.08 - trunc, floor repariert
  *)
 
 Interface
@@ -688,6 +690,7 @@ Initialization
   tok.AddOperator('min');
   tok.AddOperator('max');
   tok.AddOperator('floor');
+  tok.AddOperator('trunc');
   tok.AddOperator('ceil');
   tok.AddOperator('round');
 
@@ -704,6 +707,7 @@ Initialization
   calc.AddUnOP('tan', @Tan_float);
   calc.AddUnOP('+', @Add_Floatu);
   calc.AddUnOP('-', @Sub_Floatu);
+  calc.AddUnOP('floor', @trunc_Float);
   calc.AddUnOP('trunc', @trunc_Float);
   calc.AddUnOP('ceil', @Ceil_Float);
   calc.AddUnOP('round', @Round_Float);
