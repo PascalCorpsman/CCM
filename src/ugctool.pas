@@ -31,7 +31,7 @@ Const
   API_URL = 'https://www.geocaching.com/api/proxy';
   API_LAB_URL = 'https://labs-api.geocaching.com/api';
 
-  API_Download_GPX_URL = 'https://www.geocaching.com/play/map/api/gpx/';
+  //API_Download_GPX_URL = 'https://www.geocaching.com/play/map/api/gpx/';
   Authorisation_URL = 'https://www.geocaching.com/account/oauth/token';
   LOGIN_URL = 'https://www.geocaching.com/account/signin';
   LAB_Login_URL = 'https://labs.geocaching.com/login';
@@ -1163,7 +1163,7 @@ Begin
   __VIEWSTATEGENERATOR := '';
   sl := TStringList.Create;
   CopyStreamToStrings(fClient.Document, sl);
-  states := 1; // Falls __VIEWSTATEFIELDCOUNT nicht vorhanden, nehmen wir mal 1 an ;)
+  states := 0;
   // Anzahl der Felder ermitteln
   For i := 0 To sl.count - 1 Do Begin
     If pos('id="__VIEWSTATEFIELDCOUNT" value="', sl[i]) <> 0 Then Begin
@@ -1174,6 +1174,7 @@ Begin
       break;
     End;
   End;
+  If states <= 0 Then exit;
   setlength(__VIEWSTATES, states);
   For i := 0 To high(__VIEWSTATES) Do Begin
     __VIEWSTATES[i] := '';
@@ -1202,7 +1203,6 @@ Begin
     If (__VIEWSTATEGENERATOR <> '') And b Then break;
   End;
   sl.free;
-  // Mindestens einer wurde nicht initialisiert -> Fehler
   For i := 0 To high(__VIEWSTATES) Do Begin
     If __VIEWSTATES[i] = '' Then Begin
       setlength(__VIEWSTATES, 0);

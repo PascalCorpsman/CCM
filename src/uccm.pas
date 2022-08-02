@@ -538,9 +538,9 @@ Const
    *            2.45 = Fix Anchors in SQL-Admin Dialog
    *                   Fix Export filter
    *                   New Export Filter / Button Reset "Filter"
-   *            2.46 = Check inifile on load and update "invalid" / "old" filters if needed.
-   *            2.47 = Abfangen AV wenn DL von Cache schief geht
-   *                   Reactivate old gpx download methode
+   * HP release 2.46 = Check inifile on load and update "invalid" / "old" filters if needed.
+   *                   Fix GPX-Downloading
+   *            2.47 =
    *)
 
   Version = updater_Version;
@@ -3461,9 +3461,12 @@ Begin
   Try
     ReadXMLFile(doc, Filename);
   Except
-    result := 0;
-    doc.free;
-    exit;
+    On av: Exception Do Begin
+      showmessage('Error could not import: ' + Filename + LineEnding +
+        'Errormesage: ' + av.Message);
+      doc.free;
+      exit;
+    End;
   End;
   gpx := doc.FindNode('gpx');
   If Not assigned(gpx) Then Begin
