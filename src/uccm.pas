@@ -539,8 +539,9 @@ Const
    *                   Fix Export filter
    *                   New Export Filter / Button Reset "Filter"
    * HP release 2.46 = Check inifile on load and update "invalid" / "old" filters if needed.
+   *                   Abfangen AV wenn DL von Cache schief geht
    *                   Fix GPX-Downloading
-   *            2.47 =
+   *            2.47 = Fix ToSQLString, ..
    *)
 
   Version = updater_Version;
@@ -2256,6 +2257,7 @@ End;
 Function ToSQLString(Value: String): String;
 Begin
   value := StringReplace(value, '+', '++', [rfReplaceAll]);
+  value := StringReplace(value, '-', '+5', [rfReplaceAll]); // -- ist ein Einleitender Kommentar -> das muss verhindert werden
   value := StringReplace(value, ';', '+4', [rfReplaceAll]); // Die Commit Routine reagiert empfindlich auf ";"
   value := StringReplace(value, #13, '+3', [rfReplaceAll]);
   value := StringReplace(value, '''', '+2', [rfReplaceAll]); // ' = Trennzeichen String in SQL => so wird eine SQL-Injection erschwert
@@ -2279,7 +2281,7 @@ Begin
         '2': result := result + '''';
         '3': result := result + #13;
         '4': result := result + ';';
-        '+': result := result + '+';
+        '5': result := result + '-';
       Else
         result := result + value[i + 1]; // Unbekannt
       End;
@@ -2340,10 +2342,11 @@ End;
 Function RemoveCommentFromSQLQuery(Query: String): String;
 Var
   j, i: integer;
-  instring: Boolean;
+  instring, instring2: Boolean;
 Begin
   result := Query + LineEnding; // Falls die Query mit einem Kommentar endet
-  instring := false;
+  instring := false; // " Kommentare
+  instring2 := false; // ' Kommentare
   i := 1;
   j := -1;
   While i < length(result) Do Begin
@@ -2351,8 +2354,11 @@ Begin
       If result[i] = '"' Then Begin // Die String Erkennung, darf in Kommentaren nicht getriggert werden.
         instring := Not instring;
       End;
-      If Not instring Then Begin
-        // Start eines Commentars
+      If result[i] = '''' Then Begin // Die String Erkennung, darf in Kommentaren nicht getriggert werden.
+        instring2 := Not instring2;
+      End;
+      If (Not instring) And (Not instring2) Then Begin
+        // Start eines Kommentars
         If (result[i] = '-') And (result[i + 1] = '-') Then Begin
           // Wir haben den Begin eines Kommentars gefunden
           j := i;
@@ -3461,12 +3467,9 @@ Begin
   Try
     ReadXMLFile(doc, Filename);
   Except
-    On av: Exception Do Begin
-      showmessage('Error could not import: ' + Filename + LineEnding +
-        'Errormesage: ' + av.Message);
-      doc.free;
-      exit;
-    End;
+    result := 0;
+    doc.free;
+    exit;
   End;
   gpx := doc.FindNode('gpx');
   If Not assigned(gpx) Then Begin

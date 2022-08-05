@@ -1,7 +1,7 @@
 object Form10: TForm10
-  Left = 1141
+  Left = 236
   Height = 501
-  Top = 170
+  Top = 121
   Width = 870
   ActiveControl = StringGrid1
   Caption = 'Form10'
