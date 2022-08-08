@@ -1,7 +1,7 @@
 (******************************************************************************)
 (* uupdate.pas                                                     20.12.2018 *)
 (*                                                                            *)
-(* Version : 0.03                                                             *)
+(* Version : 0.04                                                             *)
 (*                                                                            *)
 (* modified by Corpsman for personal use.                                     *)
 (*                                                                            *)
@@ -16,6 +16,7 @@
 (* Historie : 0.01 : Initialversion                                           *)
 (*            0.02 : Aufnehmen von Additionals in die Version XML Dateien     *)
 (*            0.03 : Besseres Follow_Links                                    *)
+(*            0.04 : Fix AV beim beenden nach DoUpdate_Part1                  *)
 (*                                                                            *)
 (******************************************************************************)
 Unit uupdate;
@@ -537,7 +538,7 @@ Var
 Begin
   // !! Achtung !!
   // Der Code hier mus passend zu GetVersionFileContent sein !!
-  result  := nil;
+  result := Nil;
   LastError := 'Unknown error';
   Try
     // Wenn gar nichts geladen werden konnte
@@ -595,15 +596,16 @@ Var
   v: TVersionArray;
 Begin
   v := ExtractVersionFileContents(URLContent);
+  fDownloader := Nil; // Der Thread ist fertig,das merken wir uns nun wieder..
   If assigned(fcallback) Then Begin
     fcallback(fAlwaysShowResult, v);
   End;
-  fDownloader := Nil; // Der Thread ist fertig,das merken wir uns nun wieder..
 End;
 
 Procedure TUpdater.OnFileDownloaded(Filename: String);
 Begin
   fFileDownloaded := true;
+  fDownloader := Nil; // Der Thread ist fertig,das merken wir uns nun wieder..
 End;
 
 Constructor TUpdater.Create;
@@ -701,6 +703,7 @@ Begin
   fDownloader.FreeOnTerminate := true;
   fDownloader.start;
   While Not fFileDownloaded Do Begin
+    // TODO: Hier könnte man nen Fortschrittsbalken anzeigen ..
     sleep(1);
     Application.ProcessMessages;
   End;
