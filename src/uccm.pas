@@ -542,7 +542,8 @@ Const
    *                   Abfangen AV wenn DL von Cache schief geht
    *                   Fix GPX-Downloading
    *            2.47 = Fix ToSQLString, ..
-   *            2.48 = Fix GPX-Downloading (viewstates nicht korrekt ausgelesen)
+   * HP release 2.48 = Fix GPX-Downloading (viewstates nicht korrekt ausgelesen)
+   *            2.49 = 
    *)
 
   Version = updater_Version;
