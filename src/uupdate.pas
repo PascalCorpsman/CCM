@@ -1,7 +1,7 @@
 (******************************************************************************)
 (* uupdate.pas                                                     20.12.2018 *)
 (*                                                                            *)
-(* Version : 0.04                                                             *)
+(* Version : 0.05                                                             *)
 (*                                                                            *)
 (* modified by Corpsman for personal use.                                     *)
 (*                                                                            *)
@@ -17,6 +17,7 @@
 (*            0.02 : Aufnehmen von Additionals in die Version XML Dateien     *)
 (*            0.03 : Besseres Follow_Links                                    *)
 (*            0.04 : Fix AV beim beenden nach DoUpdate_Part1                  *)
+(*            0.05 : Unter Windows warten, bis der Prozess beendet ist        *)
 (*                                                                            *)
 (******************************************************************************)
 Unit uupdate;
@@ -195,6 +196,7 @@ Type
     (*
      * Diese Routine wird vom updater aufgerufen, wenn dieser bereits
      * Aktualisiert wurde.
+     * Der Updater Kopiert dabei alle Dateien aus Workdir in das Verzeichnis in dem er selbst gerade liegt (= Zielverzeichnis)
      *)
     Function DoUpdate_Part2(SourceDir: String; StarterName: String): Boolean;
   End;
@@ -217,6 +219,10 @@ Uses ssl_openssl, HTTPSend, zipper, FileUtil, synautil,
 {$IFDEF Linux}
   Process,
 {$ENDIF}
+{$IFDEF Windows}
+  windows,
+  jwatlhelp32,
+{$ENDIF}
   forms,
   md5,
   UTF8Process;
@@ -226,9 +232,36 @@ Begin
 
 End;
 
+{$IFDEF Windows}
+
+Function processExists(exeFileName: String): Boolean;
+Var
+  ContinueLoop: Boolean;
+  FSnapshotHandle: THandle;
+  FProcessEntry32: TProcessEntry32;
+Begin
+  Result := false;
+  FSnapshotHandle := CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+  If FSnapshotHandle = INVALID_HANDLE_VALUE Then
+    Exit;
+  Try
+    FProcessEntry32.dwSize := SizeOf(FProcessEntry32);
+    ContinueLoop := Process32First(FSnapshotHandle, FProcessEntry32);
+    While Integer(ContinueLoop) <> 0 Do Begin
+      If ((UpperCase(ExtractFileName(FProcessEntry32.szExeFile)) = UpperCase(ExeFileName)) Or
+        (UpperCase(FProcessEntry32.szExeFile) = UpperCase(ExeFileName))) Then Begin
+        Result := True;
+      End;
+      ContinueLoop := Process32Next(FSnapshotHandle, FProcessEntry32);
+    End;
+  Finally
+    CloseHandle(FSnapshotHandle);
+  End;
+End;
+{$ENDIF}
+
 (*
  * Verfolgt 302 und 301 Weiterleitungen
- *
  *)
 
 Procedure Follow_Links(Connection: THTTPSend; BaseURL: String);
@@ -288,7 +321,7 @@ Begin
    * Sind Quelle und Ziel Identisch, dann wird nicht kopiert.
    * Das ist unter Windows notwendig, damit die vom Updater verwendete
    * ssl librarie nicht mit sich selbst ersetzt wird, so lange sie noch
-   * in verwendung ist.
+   * in Verwendung ist.
    *)
   If FileExists(SrcFilename) And FileExists(DestFilename) Then Begin
     md5_s := MD5Print(MD5File(SrcFilename));
@@ -297,11 +330,11 @@ Begin
       result := true;
     End
     Else Begin
-      result := CopyFile(SrcFilename, DestFilename);
+      result := FileUtil.CopyFile(SrcFilename, DestFilename);
     End;
   End
   Else Begin
-    result := CopyFile(SrcFilename, DestFilename);
+    result := FileUtil.CopyFile(SrcFilename, DestFilename);
   End;
 End;
 
@@ -670,7 +703,7 @@ Begin
   fn := ExtractFileName(version.DownloadLink);
   If (trim(fn) = '') Or (ExtractFileExt(lowercase(fn)) <> '.zip') Then exit;
   If FileExists(WorkDir + fn) Then Begin
-    If Not DeleteFile(WorkDir + fn) Then Begin
+    If Not sysutils.DeleteFile(WorkDir + fn) Then Begin
       LastError := 'Could not delete file: ' + WorkDir + fn;
       exit;
     End;
@@ -683,7 +716,7 @@ Begin
     End;
   End;
   If FileExists(ap + version.UpdaterName + OSExt) Then Begin
-    If Not DeleteFile(ap + version.UpdaterName + OSExt) Then Begin
+    If Not sysutils.DeleteFile(ap + version.UpdaterName + OSExt) Then Begin
       LastError := 'Could not delete file: ' + ap + version.UpdaterName + OSExt;
       exit;
     End;
@@ -730,7 +763,7 @@ Begin
   uz.free;
   // Nach dem Entpacken das Zip wieder löschen
   If FileExists(WorkDir + fn) Then Begin
-    If Not DeleteFile(WorkDir + fn) Then Begin
+    If Not sysutils.DeleteFile(WorkDir + fn) Then Begin
       LastError := 'Could not delete file: ' + WorkDir + fn;
       exit;
     End;
@@ -740,7 +773,7 @@ Begin
     LastError := 'Could not find: ' + WorkDir + d + version.UpdaterName + OSExt;
     exit;
   End;
-  If Not CopyFile(WorkDir + d + version.UpdaterName + OSExt, ap + version.UpdaterName + OSExt) Then Begin
+  If Not FileUtil.CopyFile(WorkDir + d + version.UpdaterName + OSExt, ap + version.UpdaterName + OSExt) Then Begin
     LastError := 'Unable to copy: ' + WorkDir + d + version.UpdaterName + OSExt + ' -> ' + ap + version.UpdaterName + OSExt;
     exit;
   End;
@@ -769,12 +802,19 @@ End;
 
 Function TUpdater.DoUpdate_Part2(SourceDir: String; StarterName: String
   ): Boolean;
+{$IFDEF Windows}
+Const
+  MaxWaitForStarterCloseTime = 10000000; // * 100ms = 1s zum "testen" ob die Zielanwendung Down geht..
+{$ENDIF}
 Var
   dest, DestDir: String;
   sl: Tstringlist;
   i: Integer;
   p: TProcessUTF8;
   StarterSource: String;
+{$IFDEF Windows}
+  maxtimeout: Integer;
+{$ENDIF}
 Begin
   result := false;
   Try
@@ -809,7 +849,7 @@ Begin
       End;
       // 3. Löschen der Quelle
       If (dest <> StarterName) Then Begin
-        If Not DeleteFile(sl[i]) Then Begin
+        If Not sysutils.DeleteFile(sl[i]) Then Begin
           LastError := LastError + 'Could not delete: ' + sl[i];
         End;
       End;
@@ -820,6 +860,19 @@ Begin
       LastError := LastError + 'missing : ' + StarterName;
       exit;
     End;
+{$IFDEF Windows}
+    // Unter Windows versuchen wir erst zu schauen ob es den Prozess noch gibt und warten ggf. ab
+    maxtimeout := 0;
+    While processExists(ExtractFileName(StarterName)) And (maxtimeout < MaxWaitForStarterCloseTime) Do Begin
+      sleep(100);
+      inc(maxtimeout);
+      If maxtimeout >= MaxWaitForStarterCloseTime Then Begin
+        LastError := LastError + StarterName + ' still running, could not replace it with new version!';
+        exit;
+      End;
+    End;
+    maxtimeout := 0;
+{$ENDIF}
     If Not CeckCopyFile(StarterSource, StarterName) Then Begin
       LastError := LastError + 'Could not copy : ' + StarterSource + ' -> ' + StarterName;
       exit;

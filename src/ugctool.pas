@@ -1163,7 +1163,7 @@ Begin
   __VIEWSTATEGENERATOR := '';
   sl := TStringList.Create;
   CopyStreamToStrings(fClient.Document, sl);
-  states := 0;
+  states := 1; // Wenn das __VIEWSTATEFIELDCOUNT feld nicht existiert mindestens eins annehmen !
   // Anzahl der Felder ermitteln
   For i := 0 To sl.count - 1 Do Begin
     If pos('id="__VIEWSTATEFIELDCOUNT" value="', sl[i]) <> 0 Then Begin
