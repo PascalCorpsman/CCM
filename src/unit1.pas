@@ -47,6 +47,7 @@ Uses
   Classes, SysUtils, FileUtil, UniqueInstance, Forms, Controls, Graphics,
   Dialogs, Menus, StdCtrls, Grids, ComCtrls, ExtDlgs, sqldb, sqlite3conn,
   uupdate // Der Dialog der Versucht raus zu kriegen ob ein Update gemacht werden muss
+  , usqlite_helper
   , uccm
   , ugctool // Für die Typen
   ;

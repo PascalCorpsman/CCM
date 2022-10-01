@@ -51,7 +51,7 @@ Implementation
 
 {$R *.lfm}
 
-Uses uccm, ulanguage, LazFileUtils, ugctoolwrapper;
+Uses usqlite_helper, uccm, ulanguage, LazFileUtils, ugctoolwrapper;
 
 { TForm42 }
 

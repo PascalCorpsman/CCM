@@ -56,7 +56,7 @@ Implementation
 
 {$R *.lfm}
 
-Uses uccm, ugctoolwrapper, ugctool, ulanguage, math;
+Uses usqlite_helper, uccm, ugctoolwrapper, ugctool, ulanguage, math;
 
 Var
   col: integer = -1;

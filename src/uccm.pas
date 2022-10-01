@@ -543,7 +543,7 @@ Const
    *                   Fix GPX-Downloading
    *            2.47 = Fix ToSQLString, ..
    * HP release 2.48 = Fix GPX-Downloading (viewstates nicht korrekt ausgelesen)
-   *            2.49 = 
+   *            2.49 = Improve SQL-Interface to new usqlite_helper.pas
    *)
 
   Version = updater_Version;
@@ -1016,15 +1016,8 @@ Function TB_StartSQLQuery(Query: String): Boolean;
  *         - Write your results to the database by
  *           SQLTransaction.Commit;
  *)
-Function CommitSQLTransactionQuery(Query: String): Boolean;
-Function TB_CommitSQLTransactionQuery(Query: String): Boolean;
-
-(*
- * Strings dürfen nicht direkt an SQL Statements übergeben werden, alle Strings müssen vorher
- * umgewandelt werden (entfernen/ Umwandeln unerlaubter Symbole ...)
- *)
-Function ToSQLString(Value: String): String;
-Function FromSQLString(Value: String): String;
+Function CommitSQLTransactionQuery(aText: String): Boolean;
+Function TB_CommitSQLTransactionQuery(aText: String): Boolean;
 
 (*
  * Importiert eine GPX-Datei so denn sie noch nicht gefunden wurde.
@@ -1239,7 +1232,7 @@ Function GetDefaultFilterFor(FilterName: String): String;
 
 Implementation
 
-Uses FileUtil, lazutf8, LazFileUtils, dialogs, IniFiles, laz2_XMLRead,
+Uses usqlite_helper, FileUtil, lazutf8, LazFileUtils, dialogs, IniFiles, laz2_XMLRead,
   zipper, math, controls, LCLIntf, umapviewer, db;
 
 Var
@@ -2256,127 +2249,19 @@ Begin
   End;
 End;
 
-Function ToSQLString(Value: String): String;
-Begin
-  value := StringReplace(value, '+', '++', [rfReplaceAll]);
-  value := StringReplace(value, '-', '+5', [rfReplaceAll]); // -- ist ein Einleitender Kommentar -> das muss verhindert werden
-  value := StringReplace(value, ';', '+4', [rfReplaceAll]); // Die Commit Routine reagiert empfindlich auf ";"
-  value := StringReplace(value, #13, '+3', [rfReplaceAll]);
-  value := StringReplace(value, '''', '+2', [rfReplaceAll]); // ' = Trennzeichen String in SQL => so wird eine SQL-Injection erschwert
-  value := StringReplace(value, '"', '+1', [rfReplaceAll]); // " =  Trennzeichen String in SQL => so wird eine SQL-Injection erschwert
-  result := StringReplace(value, #10, '+0', [rfReplaceAll]);
-End;
-
-Function FromSQLString(Value: String): String;
-Var
-  i: integer;
-Begin
-  // Das geht nicht via Stringreplace, da ein String der Form 8+13 nach 8++13
-  // übersetzt wird und die Rückübersetzung macht daraus dann 8+"3
-  result := '';
-  i := 1;
-  While i <= length(value) Do Begin
-    If value[i] = '+' Then Begin
-      Case value[i + 1] Of
-        '0': result := result + #10;
-        '1': result := result + '"';
-        '2': result := result + '''';
-        '3': result := result + #13;
-        '4': result := result + ';';
-        '5': result := result + '-';
-      Else
-        result := result + value[i + 1]; // Unbekannt
-      End;
-      inc(i);
-    End
-    Else Begin
-      result := result + value[i];
-    End;
-    inc(i);
-  End;
-End;
-
 Function ColumnExistsInTable(ColumnName, TableName: String): Boolean;
-Var
-  f: tfield;
 Begin
-  result := false;
-  StartSQLQuery('Pragma table_info(' + TableName + ')');
-  f := SQLQuery.FieldByName('name');
-  While (Not SQLQuery.EOF) Do Begin
-    If lowercase(f.AsString) = lowercase(ColumnName) Then Begin
-      result := true;
-      exit;
-    End;
-    SQLQuery.Next;
-  End;
+  result := usqlite_helper.ColumnExistsInTable(SQLQuery, ColumnName, TableName);
 End;
 
 Function ColumnExistsInTBTable(ColumnName, TableName: String): Boolean;
-Var
-  f: tfield;
 Begin
-  result := false;
-  TB_StartSQLQuery('Pragma table_info(' + TableName + ')');
-  f := TB_SQLQuery.FieldByName('name');
-  While (Not TB_SQLQuery.EOF) Do Begin
-    If lowercase(f.AsString) = lowercase(ColumnName) Then Begin
-      result := true;
-      exit;
-    End;
-    TB_SQLQuery.Next;
-  End;
+  result := usqlite_helper.ColumnExistsInTable(TB_SQLQuery, ColumnName, TableName);
 End;
 
 Function GetAllColumsFromTable(TableName: String): TStringlist;
-Var
-  f: TField;
 Begin
-  result := TStringList.Create;
-  If Not StartSQLQuery('PRAGMA table_info(' + TableName + ');') Then exit;
-  f := SQLQuery.FieldByName('name');
-  While (Not SQLQuery.EOF) Do Begin
-    result.Add(F.AsString);
-    SQLQuery.Next;
-  End;
-End;
-
-Function RemoveCommentFromSQLQuery(Query: String): String;
-Var
-  j, i: integer;
-  instring, instring2: Boolean;
-Begin
-  result := Query + LineEnding; // Falls die Query mit einem Kommentar endet
-  instring := false; // " Kommentare
-  instring2 := false; // ' Kommentare
-  i := 1;
-  j := -1;
-  While i < length(result) Do Begin
-    If j = -1 Then Begin
-      If result[i] = '"' Then Begin // Die String Erkennung, darf in Kommentaren nicht getriggert werden.
-        instring := Not instring;
-      End;
-      If result[i] = '''' Then Begin // Die String Erkennung, darf in Kommentaren nicht getriggert werden.
-        instring2 := Not instring2;
-      End;
-      If (Not instring) And (Not instring2) Then Begin
-        // Start eines Kommentars
-        If (result[i] = '-') And (result[i + 1] = '-') Then Begin
-          // Wir haben den Begin eines Kommentars gefunden
-          j := i;
-        End;
-      End;
-    End
-    Else Begin
-      // Der Kommentar endet beim cr oder lf
-      If ((result[i] = #13) Or (result[i] = #10)) Then Begin
-        delete(result, j, i - j);
-        i := j - 1;
-        j := -1;
-      End;
-    End;
-    i := i + 1;
-  End;
+  result := usqlite_helper.GetAllColumsFromTable(SQLQuery, TableName);
 End;
 
 Function TB_StartSQLQuery(Query: String): Boolean;
@@ -2384,26 +2269,9 @@ Var
   u: String;
 Begin
   Query := RemoveCommentFromSQLQuery(Query);
-  result := false;
   u := GetValue('General', 'Username', '');
   Query := StringReplace(query, '%username%', u, [rfIgnoreCase, rfReplaceAll]);
-  // Unnatürlicher Abbruch
-  If (Not assigned(tb_SQLite3Connection)) Or
-    (Not tb_SQLite3Connection.Connected) Then exit;
-  If Not assigned(tb_SQLQuery) Then exit;
-  If trim(query) = '' Then exit;
-  tb_SQLQuery.Active := false;
-  tb_SQLQuery.SQL.Clear;
-  tb_SQLQuery.SQL.Text := Query;
-  Try
-    tb_SQLQuery.Open;
-  Except
-    On e: Exception Do Begin
-      ShowMessage('Error invalid query.' + LineEnding + 'Errormessage:' + LineEnding + e.Message);
-      exit;
-    End;
-  End;
-  result := true;
+  result := usqlite_helper.StartSQLQuery(tb_SQLQuery, Query);
 End;
 
 Function StartSQLQuery(Query: String): Boolean;
@@ -2411,26 +2279,9 @@ Var
   u: String;
 Begin
   Query := RemoveCommentFromSQLQuery(Query);
-  result := false;
   u := GetValue('General', 'Username', '');
   Query := StringReplace(query, '%username%', u, [rfIgnoreCase, rfReplaceAll]);
-  // Unnatürlicher Abbruch
-  If (Not assigned(SQLite3Connection)) Or
-    (Not SQLite3Connection.Connected) Then exit;
-  If Not assigned(SQLQuery) Then exit;
-  If trim(query) = '' Then exit;
-  SQLQuery.Active := false;
-  SQLQuery.SQL.Clear;
-  SQLQuery.SQL.Text := Query;
-  Try
-    SQLQuery.Open;
-  Except
-    On e: Exception Do Begin
-      ShowMessage('Error invalid query.' + LineEnding + 'Errormessage:' + LineEnding + e.Message);
-      exit;
-    End;
-  End;
-  result := true;
+  result := usqlite_helper.StartSQLQuery(SQLQuery, Query);
 End;
 
 (*
@@ -2439,95 +2290,33 @@ End;
  *         SQLTransaction.Commit;
  *)
 
-Function TB_CommitSQLTransactionQuery(Query: String): Boolean;
+Function TB_CommitSQLTransactionQuery(aText: String): Boolean;
 Var
   u, t: String;
   i: integer;
+  instring, instring2: Boolean;
 Begin
   result := false;
   u := GetValue('General', 'Username', '');
-  Query := StringReplace(query, '%username%', u, [rfIgnoreCase, rfReplaceAll]);
-  // Unnatürlicher Abbruch
-  If (Not assigned(tb_SQLite3Connection)) Or
-    (Not tb_SQLite3Connection.Connected) Then exit;
-  If Not assigned(tb_SQLQuery) Then exit;
-  If Not assigned(tb_SQLTransaction) Then exit;
-  If trim(query) = '' Then exit;
-  tb_SQLQuery.Active := false;
-  tb_SQLQuery.SQL.Clear;
-  // Unterstützung für "Viele" Befehle hintereinander, bereinigen unnötiger Symbole
-  Query := RemoveCommentFromSQLQuery(Query);
-  For i := 1 To length(Query) Do Begin
-    If (Query[i] = #13) Or (Query[i] = #10) Then Begin
-      Query[i] := ' ';
-    End;
+  aText := StringReplace(aText, '%username%', u, [rfIgnoreCase, rfReplaceAll]);
+  result := usqlite_helper.CommitSQLTransactionQuery(tb_SQLQuery, aText, Nil);
+  If Not result Then Begin
+    tb_SQLTransaction.Rollback;
   End;
-  Query := trim(Query);
-  Try
-    Query := Query + ';';
-    While pos(';', Query) <> 0 Do Begin
-      t := copy(Query, 1, pos(';', Query));
-      delete(Query, 1, length(t));
-      If (trim(t) <> '') And (trim(t) <> ';') Then Begin
-        tb_SQLQuery.SQL.Text := t;
-        tb_SQLQuery.ExecSQL;
-        //        SQLTransaction.Commit;
-      End;
-    End;
-  Except
-    On e: Exception Do Begin
-      ShowMessage(format(RF_Error_invalid_Query, [e.Message]));
-      tb_SQLTransaction.Rollback;
-      exit;
-    End;
-  End;
-  //  SQLQuery.Active := false; // den Kommunikationskanal wieder frei geben
-  result := true;
 End;
 
-Function CommitSQLTransactionQuery(Query: String): Boolean;
+Function CommitSQLTransactionQuery(aText: String): Boolean;
 Var
   u, t: String;
   i: integer;
+  instring, instring2: Boolean;
 Begin
-  result := false;
   u := GetValue('General', 'Username', '');
-  Query := StringReplace(query, '%username%', u, [rfIgnoreCase, rfReplaceAll]);
-  // Unnatürlicher Abbruch
-  If (Not assigned(SQLite3Connection)) Or
-    (Not SQLite3Connection.Connected) Then exit;
-  If Not assigned(SQLQuery) Then exit;
-  If Not assigned(SQLTransaction) Then exit;
-  If trim(query) = '' Then exit;
-  SQLQuery.Active := false;
-  SQLQuery.SQL.Clear;
-  // Unterstützung für "Viele" Befehle hintereinander, bereinigen unnötiger Symbole
-  Query := RemoveCommentFromSQLQuery(Query);
-  For i := 1 To length(Query) Do Begin
-    If (Query[i] = #13) Or (Query[i] = #10) Then Begin
-      Query[i] := ' ';
-    End;
+  aText := StringReplace(aText, '%username%', u, [rfIgnoreCase, rfReplaceAll]);
+  result := usqlite_helper.CommitSQLTransactionQuery(SQLQuery, aText, Nil);
+  If Not result Then Begin
+    SQLTransaction.Rollback;
   End;
-  Query := trim(Query);
-  Try
-    Query := Query + ';';
-    While pos(';', Query) <> 0 Do Begin
-      t := copy(Query, 1, pos(';', Query));
-      delete(Query, 1, length(t));
-      If (trim(t) <> '') And (trim(t) <> ';') Then Begin
-        SQLQuery.SQL.Text := t;
-        SQLQuery.ExecSQL;
-        //        SQLTransaction.Commit;
-      End;
-    End;
-  Except
-    On e: Exception Do Begin
-      ShowMessage('Error invalid query.' + LineEnding + 'Errormessage:' + LineEnding + e.Message);
-      exit;
-    End;
-  End;
-  //  SQLQuery.Active := false; // den Kommunikationskanal wieder frei geben
-  result := true;
 End;
 
 Function CacheFromDB(GC_Code: String; Skip_Attributes: Boolean): TCache;

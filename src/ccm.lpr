@@ -17,7 +17,7 @@ Uses
   Unit24, Unit25, Unit26, Unit28, unit29, unit30, Unit31, Unit32, Unit33,
   Unit34, Unit35, Unit36, Unit37, Unit38, Unit39, Unit40, Unit41, ugenmathcalc,
   utokenizer, uopengl_graphikengine, umultipartformdatastream, unit42, Unit43,
-  Unit44;
+  Unit44, usqlite_helper;
 
 {$IFDEF Windows}
 {$IFDEF CPU32}

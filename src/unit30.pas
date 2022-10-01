@@ -33,7 +33,7 @@ Implementation
 
 {$R *.lfm}
 
-Uses unit1, uccm, ulanguage, lconvencoding;
+Uses unit1, usqlite_helper, uccm, ulanguage, lconvencoding;
 
 Const
   IndexCode = 0;

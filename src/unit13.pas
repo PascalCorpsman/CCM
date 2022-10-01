@@ -63,7 +63,8 @@ Implementation
 
 {$R *.lfm}
 
-Uses LazFileUtils, LazUTF8, uccm, unit17, unit1, unit20, unit7, imglist, LCLIntf,
+Uses
+  usqlite_helper, LazFileUtils, LazUTF8, uccm, unit17, unit1, unit20, unit7, imglist, LCLIntf,
   ugctoolwrapper, ulanguage;
 
 Function DTToIndex(DT: Single): integer;
@@ -210,6 +211,7 @@ Begin
 End;
 
 (* Das hier ist fast identisch zu Form42.HTMLGetImageX *)
+
 Procedure TForm13.HTMLGetImageX(Sender: TIpHtmlNode; Const URL: String;
   Var Picture: TPicture);
 Var

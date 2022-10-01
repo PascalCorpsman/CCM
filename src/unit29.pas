@@ -185,7 +185,7 @@ Implementation
 
 {$R *.lfm}
 
-Uses Unit1, uccm, LCLType, ulanguage;
+Uses Unit1, usqlite_helper, uccm, LCLType, ulanguage;
 
 { TForm29 }
 

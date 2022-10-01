@@ -114,6 +114,7 @@ Implementation
 Uses lazutf8, math, dglOpenGL, uopengl_graphikengine, ugraphics, uOpenGL_ASCII_Font,
   ugctoolwrapper,
   uvectormath,
+  usqlite_helper,
   uccm,
   unit1, // Main Form
   unit13, // Preview des Caches

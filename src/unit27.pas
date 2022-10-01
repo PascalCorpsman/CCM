@@ -105,6 +105,7 @@ Implementation
 {$R *.lfm}
 
 Uses
+  usqlite_helper,
   uccm,
   Unit1, // Hauptfenster
   Unit18, // Skript Editor online Hilfe

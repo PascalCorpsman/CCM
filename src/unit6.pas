@@ -52,7 +52,7 @@ Implementation
 
 {$R *.lfm}
 
-Uses unit1, unit27, uccm, LCLType, ulanguage;
+Uses unit1, unit27, usqlite_helper, uccm, LCLType, ulanguage;
 
 { TForm6 }
 

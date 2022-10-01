@@ -139,6 +139,7 @@ Implementation
 Uses
   unit1,
   unit27,
+  usqlite_helper,
   uccm,
   ulanguage,
   LCLIntf,

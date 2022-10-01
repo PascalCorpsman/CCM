@@ -34,7 +34,7 @@ Implementation
 
 {$R *.lfm}
 
-Uses uccm, lazutf8, LazFileUtils, ulanguage;
+Uses usqlite_helper, uccm, lazutf8, LazFileUtils, ulanguage;
 
 { TForm20 }
 

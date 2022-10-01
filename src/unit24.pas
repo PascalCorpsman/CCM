@@ -50,6 +50,7 @@ Implementation
 {$R *.lfm}
 
 Uses
+  usqlite_helper,
   uccm,
   unit1,
   unit25,

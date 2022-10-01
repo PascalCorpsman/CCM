@@ -51,7 +51,7 @@ Implementation
 
 {$R *.lfm}
 
-Uses uccm, LazFileUtils, ulanguage;
+Uses usqlite_helper, uccm, LazFileUtils, ulanguage;
 
 Const
   ColChecked = 0;

@@ -62,7 +62,7 @@ Implementation
 
 {$R *.lfm}
 
-Uses uccm, ulanguage, ugctoolwrapper, unit42, unit4, LCLIntf, LazFileUtils;
+Uses usqlite_helper, uccm, ulanguage, ugctoolwrapper, unit42, unit4, LCLIntf, LazFileUtils;
 
 Const
   TB_DiscoverCode_Col = 0;

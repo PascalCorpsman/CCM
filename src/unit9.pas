@@ -6,7 +6,7 @@ Interface
 
 Uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  process, UTF8Process, uccm, lclintf;
+  process, UTF8Process, usqlite_helper, uccm, lclintf;
 
 Type
 

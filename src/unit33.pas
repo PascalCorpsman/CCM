@@ -6,7 +6,7 @@ Interface
 
 Uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  Grids, Menus, ExtDlgs, uccm;
+  Grids, Menus, ExtDlgs, usqlite_helper, uccm;
 
 Type
 
