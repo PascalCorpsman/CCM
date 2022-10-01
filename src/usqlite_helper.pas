@@ -61,6 +61,8 @@ Function CommitSQLTransactionQuery(Const SQLQuery: TSQLQuery; aText: String; SQL
 
 Function ColumnExistsInTable(Const SQLQuery: TSQLQuery; ColumnName, TableName: String): Boolean;
 Function GetAllColumsFromTable(Const SQLQuery: TSQLQuery; TableName: String): TStringlist;
+Function GetPrimkeyFromTable(Const SQLQuery: TSQLQuery; TableName: String): String;
+
 
 (*
  * Entfernt alle SQL-Kommentare aus einer Query
@@ -162,6 +164,10 @@ Begin
   result := false;
   // Unnatürlicher Abbruch
   If Not assigned(SQLQuery) Then exit;
+  If (Not assigned(SQLQuery.SQLConnection)) Or (Not SQLQuery.SQLConnection.Connected) Then Begin
+    ShowMessage('Error, not connected.');
+    exit;
+  End;
   If trim(query) = '' Then exit;
   SQLQuery.Active := false;
   SQLQuery.SQL.Clear;
@@ -187,6 +193,10 @@ Begin
   result := false;
   //Unnatürlicher Abbruch
   If Not assigned(SQLQuery) Then exit;
+  If (Not assigned(SQLQuery.SQLConnection)) Or (Not SQLQuery.SQLConnection.Connected) Then Begin
+    ShowMessage('Error, not connected.');
+    exit;
+  End;
   If trim(aText) = '' Then exit;
   SQLQuery.Active := false;
   SQLQuery.SQL.Clear;
@@ -240,6 +250,11 @@ Var
   f: tfield;
 Begin
   result := false;
+  If Not assigned(SQLQuery) Then exit;
+  If (Not assigned(SQLQuery.SQLConnection)) Or (Not SQLQuery.SQLConnection.Connected) Then Begin
+    ShowMessage('Error, not connected.');
+    exit;
+  End;
   StartSQLQuery(SQLQuery, 'Pragma table_info(' + TableName + ')');
   f := SQLQuery.FieldByName('name');
   While (Not SQLQuery.EOF) Do Begin
@@ -257,10 +272,40 @@ Var
   f: TField;
 Begin
   result := TStringList.Create;
+  If Not assigned(SQLQuery) Then exit;
+  If (Not assigned(SQLQuery.SQLConnection)) Or (Not SQLQuery.SQLConnection.Connected) Then Begin
+    ShowMessage('Error, not connected.');
+    exit;
+  End;
   If Not StartSQLQuery(SQLQuery, 'PRAGMA table_info(' + TableName + ');') Then exit;
   f := SQLQuery.FieldByName('name');
   While (Not SQLQuery.EOF) Do Begin
     result.Add(F.AsString);
+    SQLQuery.Next;
+  End;
+End;
+
+Function GetPrimkeyFromTable(Const SQLQuery: TSQLQuery; TableName: String
+  ): String;
+Var
+  pk, nf: TField;
+Begin
+  result := '';
+  If Not assigned(SQLQuery) Then exit;
+  If (Not assigned(SQLQuery.SQLConnection)) Or (Not SQLQuery.SQLConnection.Connected) Then Begin
+    ShowMessage('Error, not connected.');
+    exit;
+  End;
+  StartSQLQuery(SQLQuery, 'PRAGMA table_info( ' + TableName + ' ); ');
+  If SQLQuery.EOF Then exit;
+  nf := SQLQuery.FieldByName('Name');
+  pk := SQLQuery.FieldByName('PK');
+  If (Not assigned(nf)) Or (Not assigned(pk)) Then exit;
+  While Not SQLQuery.EOF Do Begin
+    If pk.AsString = '1' Then Begin
+      result := nf.AsString;
+      exit;
+    End;
     SQLQuery.Next;
   End;
 End;
