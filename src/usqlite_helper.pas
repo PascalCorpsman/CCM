@@ -1,7 +1,7 @@
 (******************************************************************************)
 (* uSQL_Helper                                                     01.10.2022 *)
 (*                                                                            *)
-(* Version     : 0.01                                                         *)
+(* Version     : 0.02                                                         *)
 (*                                                                            *)
 (* Autor       : Corpsman                                                     *)
 (*                                                                            *)
@@ -23,6 +23,7 @@
 (* Warranty    : There is no warranty, use at your own risk.                  *)
 (*                                                                            *)
 (* History     : 0.01 - Initial version                                       *)
+(*               0.02 - Add GetTypeOfTableColumn                              *)
 (*                                                                            *)
 (* Known Bugs  : none                                                         *)
 (*                                                                            *)
@@ -37,17 +38,21 @@ Interface
 Uses
   sqldb, Classes, SysUtils;
 
-(*
- * Startet eine SQLQuery im Anschluss muss diese nur noch ausgewertet werden.
- * Result = false, Fehler
- * Result = True, Auswertung via :
- *
- *  While (Not SQLQuery.EOF) Do Begin
- *    -- Auswertung des jeweiligen Datensatzes
- *    SQLQuery.Next;
- *  End;
- *  SQLQuery.Active := false; // -- Optional beenden des Kommunikationskanals
- *)
+Type
+  // Source: https://www.sqlite.org/datatype3.html
+  TSQLColumnType = (ctNull, ctInteger, ctNumeric, ctReal, ctText, ctBlob);
+
+  (*
+   * Startet eine SQLQuery im Anschluss muss diese nur noch ausgewertet werden.
+   * Result = false, Fehler
+   * Result = True, Auswertung via :
+   *
+   *  While (Not SQLQuery.EOF) Do Begin
+   *    -- Auswertung des jeweiligen Datensatzes
+   *    SQLQuery.Next;
+   *  End;
+   *  SQLQuery.Active := false; // -- Optional beenden des Kommunikationskanals
+   *)
 Function StartSQLQuery(Const SQLQuery: TSQLQuery; Query: String): Boolean;
 
 (*
@@ -62,7 +67,12 @@ Function CommitSQLTransactionQuery(Const SQLQuery: TSQLQuery; aText: String; SQL
 Function ColumnExistsInTable(Const SQLQuery: TSQLQuery; ColumnName, TableName: String): Boolean;
 Function GetAllColumsFromTable(Const SQLQuery: TSQLQuery; TableName: String): TStringlist;
 Function GetPrimkeyFromTable(Const SQLQuery: TSQLQuery; TableName: String): String;
+Function GetTypeOfTableColumn(Const SQLQuery: TSQLQuery; ColumnName, TableName: String): TSQLColumnType;
 
+(*
+ * Exportiert den Inhalt der Tabelle Tablename als SQLite Statements in Filename
+ *)
+Function ExportTableContent(Const SQLQuery: TSQLQuery; Const Filename: String; TableName: String): Boolean;
 
 (*
  * Entfernt alle SQL-Kommentare aus einer Query
@@ -308,6 +318,102 @@ Begin
     End;
     SQLQuery.Next;
   End;
+End;
+
+Function GetTypeOfTableColumn(Const SQLQuery: TSQLQuery; ColumnName,
+  TableName: String): TSQLColumnType;
+
+  Function StrtoSQLColumnType(ct: String): TSQLColumnType;
+  Begin
+    ct := lowercase(trim(ct));
+    Case ct Of
+      'text': result := ctText;
+      'numeric': result := ctNumeric;
+      'integer': result := ctInteger;
+      'real': result := ctReal;
+      'blob': result := ctBlob;
+      '': result := ctNull;
+    Else Begin
+        Raise Exception.Create('StrtoSQLColumnType: unknown type: ' + ct);
+      End;
+    End;
+  End;
+
+Var
+  tf, nf: TField;
+Begin
+  If Not assigned(SQLQuery) Then Begin
+    Raise Exception.Create('invalid SQLQuery');
+  End;
+  // Das geht leider nicht, da es nur funktioniert, wenn die Tabelle wenigstens eine Zeile beinhaltet
+  // StartSQLQuery(SQLQuery, 'SELECT typeof(' + ColumnName + ') FROM ' + TableName);
+
+  StartSQLQuery(SQLQuery, 'PRAGMA table_info(' + TableName + ')');
+  If SQLQuery.EOF Then Begin
+    Raise Exception.Create('No result');
+  End;
+  nf := SQLQuery.FieldByName('Name');
+  tf := SQLQuery.FieldByName('type');
+  While Not SQLQuery.EOF Do Begin
+    If lowercase(trim(nf.AsString)) = lowercase(trim(ColumnName)) Then Begin
+      result := StrtoSQLColumnType(tf.AsString);
+      exit;
+    End;
+    SQLQuery.Next;
+  End;
+  Raise Exception.Create('Unable to find ' + ColumnName + ' in ' + TableName);
+End;
+
+Function ExportTableContent(Const SQLQuery: TSQLQuery; Const Filename: String;
+  TableName: String): Boolean;
+Var
+  data, Prefix: String;
+  i: Integer;
+  sl, Res: TStringList;
+  defformat: TFormatSettings;
+Begin
+  defformat := DefaultFormatSettings;
+  defformat.DecimalSeparator := '.';
+  result := false;
+  StartSQLQuery(SQLQuery, 'Select * from ' + TableName);
+  Prefix := 'INSERT INTO ' + TableName + ' (';
+  If SQLQuery.Fields.Count = 0 Then exit; // Die Tabelle ist Leer
+  sl := TStringList.Create;
+  SQLQuery.Fields.GetFieldNames(sl);
+  For i := 0 To sl.Count - 1 Do Begin
+    If i <> 0 Then Prefix := Prefix + ', ';
+    Prefix := Prefix + sl[i];
+  End;
+  sl.free;
+  Prefix := Prefix + ') VALUES (';
+  res := TStringList.Create;
+  res.add('--');
+  res.add('-- Content of ' + TableName);
+  res.add('--');
+  res.add('');
+  While (Not SQLQuery.EOF) Do Begin
+    data := '';
+    For i := 0 To SQLQuery.Fields.Count - 1 Do Begin
+      If i <> 0 Then data := data + ', ';
+      // Fließkomma Zahlen müssen "englisch" exportiert werden !
+      If SQLQuery.Fields[i].DataType = ftFloat Then Begin
+        data := data + FloatToStr(SQLQuery.Fields[i].AsFloat, defformat);
+      End
+      Else Begin
+        data := data + '''' + SQLQuery.Fields[i].AsString + '''';
+      End;
+    End;
+    res.add(Prefix + data + ');');
+    SQLQuery.Next;
+  End;
+  If res.count = 4 Then Begin
+    showmessage('Table ' + TableName + ' has no content, will not be stored.');
+  End
+  Else Begin
+    res.SaveToFile(Filename);
+  End;
+  result := true;
+  res.free;
 End;
 
 End.

@@ -43,7 +43,7 @@ Workaround : Durch anpassen der Bindungsstärke der Unären Operanden kann diese
 
 (*
  * If you get a compiler error with missing file
- * just create a file namend "genmathcalc.inc" in your project folder and
+ * just create a file namend "ugenmathcalc.inc" in your project folder and
  * insert the following content:
  *
  * ---------- Content of file ----------
