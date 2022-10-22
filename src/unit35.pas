@@ -39,7 +39,7 @@ Implementation
 
 {$R *.lfm}
 
-Uses math, uccm, Unit1, ulanguage;
+Uses usqlite_helper, math, uccm, Unit1, ulanguage;
 
 Var
   scol: integer = -1;
@@ -221,7 +221,7 @@ Begin
       inc(result.y);
       Continue;
     End;
-    d := StrToTime(SQLQuery.Fields[0].AsString);
+    d := StrToTime(FromSQLString(SQLQuery.Fields[0].AsString));
     If d <> -1 Then Begin
       years := strtoint(FormatDateTime('YYYY', d)) - 2000 + 1;
       month := strtoint(FormatDateTime('MM', d));
