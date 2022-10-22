@@ -1558,16 +1558,16 @@ Procedure TForm1.StringGrid1DrawCell(Sender: TObject; aCol, aRow: Integer;
   aRect: TRect; aState: TGridDrawState);
 Var
   c: TColor;
-  w, h, jj, ii, s, x, y: integer;
+  w, h, jj, ii, IconCol, x, y: integer;
   sr: TStringGrid;
   t: String;
 Begin
   // Alle Stringgrids, welche Cacheinformationen Zeichnen nutzen die selbe Render Routine
-  s := -1; // Stringgrid ohne Bildchen
-  If sender = StringGrid1 Then s := MainColType; // Form1 ists Spalte 0
-  If sender = Form10.StringGrid1 Then s := GPSImportColType; // Form10 ists Spalte 1
-  If sender = Form17.StringGrid1 Then s := WayPointColSym; // Form17 ists Spalte 0
-  If Sender = Form22.StringGrid1 Then s := LogOnlineColType; // Form22 ists Spalte 1
+  IconCol := -1; // Stringgrid ohne Bildchen
+  If sender = StringGrid1 Then IconCol := MainColType; // Form1 ists Spalte 0
+  If sender = Form10.StringGrid1 Then IconCol := GPSImportColType; // Form10 ists Spalte 1
+  If sender = Form17.StringGrid1 Then IconCol := WayPointColSym; // Form17 ists Spalte 0
+  If Sender = Form22.StringGrid1 Then IconCol := LogOnlineColType; // Form22 ists Spalte 1
   If ((sender = Form22.StringGrid1) And (arow > 0) And (acol = LogOnlineColFav)) Or
     ((sender = Form10.StringGrid1) And (arow > 0) And (acol = GPSImportColFav)) Then Begin // Der Log Online Dialog rendert zusätzlich noch Favs ;)
     sr := Sender As TStringGrid;
@@ -1603,7 +1603,7 @@ Begin
     sr.Canvas.Pen.Color := c;
   End;
 
-  If (arow > 0) And (acol = s) Then Begin // Das Rendern der Icons und D/T-Wertungen
+  If (arow > 0) And (acol = IconCol) Then Begin // Das Rendern der Icons und D/T-Wertungen
     sr := Sender As TStringGrid;
     c := sr.Canvas.Pen.Color;
     sr.Canvas.Pen.Color := clNone;
@@ -2502,7 +2502,7 @@ Var
   username: String;
 Begin
   StartSQLQuery('Select G_Type, cor_lat, cor_lon, g_Found, G_ARCHIVED, Customer_Flag from caches where name = "' + CacheName + '"');
-  result := SQLQuery1.Fields[0].AsString;
+  result := FromSQLString(SQLQuery1.Fields[0].AsString);
   If (SQLQuery1.Fields[1].AsFloat <> -1) And (SQLQuery1.Fields[2].AsFloat <> -1) Then Begin
     result := AddCacheTypeSpezifier(result, 'C');
   End;

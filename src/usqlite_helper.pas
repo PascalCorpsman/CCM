@@ -1,7 +1,7 @@
 (******************************************************************************)
 (* uSQL_Helper                                                     01.10.2022 *)
 (*                                                                            *)
-(* Version     : 0.02                                                         *)
+(* Version     : 0.03                                                         *)
 (*                                                                            *)
 (* Autor       : Corpsman                                                     *)
 (*                                                                            *)
@@ -24,6 +24,7 @@
 (*                                                                            *)
 (* History     : 0.01 - Initial version                                       *)
 (*               0.02 - Add GetTypeOfTableColumn                              *)
+(*               0.03 - Add TableExists                                       *)
 (*                                                                            *)
 (* Known Bugs  : none                                                         *)
 (*                                                                            *)
@@ -64,6 +65,7 @@ Function StartSQLQuery(Const SQLQuery: TSQLQuery; Query: String): Boolean;
  *)
 Function CommitSQLTransactionQuery(Const SQLQuery: TSQLQuery; aText: String; SQLTransaction: TSQLTransaction = Nil): Boolean;
 
+Function TableExists(Const SQLQuery: TSQLQuery; TableName: String): Boolean;
 Function ColumnExistsInTable(Const SQLQuery: TSQLQuery; ColumnName, TableName: String): Boolean;
 Function GetAllColumsFromTable(Const SQLQuery: TSQLQuery; TableName: String): TStringlist;
 Function GetPrimkeyFromTable(Const SQLQuery: TSQLQuery; TableName: String): String;
@@ -252,6 +254,18 @@ Begin
   If assigned(SQLTransaction) Then Begin
     SQLQuery.Active := false; // den Kommunikationskanal wieder frei geben, darf aber nur wenn auch commited wurde !
   End;
+End;
+
+Function TableExists(Const SQLQuery: TSQLQuery; TableName: String): Boolean;
+Begin
+  result := false;
+  If Not assigned(SQLQuery) Then exit;
+  If (Not assigned(SQLQuery.SQLConnection)) Or (Not SQLQuery.SQLConnection.Connected) Then Begin
+    ShowMessage('Error, not connected.');
+    exit;
+  End;
+  StartSQLQuery(SQLQuery, 'Select name from sqlite_master where type=''table'' and name=''' + TableName + '''');
+  result := Not SQLQuery.EOF;
 End;
 
 Function ColumnExistsInTable(Const SQLQuery: TSQLQuery; ColumnName,
