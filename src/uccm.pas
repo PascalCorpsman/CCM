@@ -543,7 +543,8 @@ Const
    *                   Fix GPX-Downloading
    *            2.47 = Fix ToSQLString, ..
    * HP release 2.48 = Fix GPX-Downloading (viewstates nicht korrekt ausgelesen)
-   *            2.49 = Improve SQL-Interface to new usqlite_helper.pas
+   * HP release 2.49 = Improve SQL-Interface to new usqlite_helper.pas
+   *            2.50 = 
    *)
 
   Version = updater_Version;
