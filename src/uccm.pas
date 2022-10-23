@@ -544,7 +544,8 @@ Const
    *            2.47 = Fix ToSQLString, ..
    * HP release 2.48 = Fix GPX-Downloading (viewstates nicht korrekt ausgelesen)
    * HP release 2.49 = Improve SQL-Interface to new usqlite_helper.pas
-   *            2.50 = 
+   *            2.50 = Auto Scroll down Jasmer view
+   *            2.51 =
    *)
 
   Version = updater_Version;

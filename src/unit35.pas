@@ -263,6 +263,7 @@ Begin
     g := g + k;
   End;
   StringGrid1.Cells[StringGrid1.ColCount - 1, StringGrid1.RowCount - 1] := inttostr(g);
+  StringGrid1.TopRow := StringGrid1.RowCount - 1;
   StringGrid1.EndUpdate(true);
 End;
 

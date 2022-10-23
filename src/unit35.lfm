@@ -1,17 +1,17 @@
 object Form35: TForm35
   Left = 293
-  Height = 516
+  Height = 600
   Top = 131
   Width = 920
   Caption = 'Jasmer Matrix'
-  ClientHeight = 516
+  ClientHeight = 600
   ClientWidth = 920
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '2.0.0.4'
+  LCLVersion = '2.3.0.0'
   object StringGrid1: TStringGrid
     Left = 8
-    Height = 465
+    Height = 549
     Top = 8
     Width = 902
     Anchors = [akTop, akLeft, akRight, akBottom]
@@ -66,7 +66,7 @@ object Form35: TForm35
   object Button1: TButton
     Left = 8
     Height = 25
-    Top = 481
+    Top = 565
     Width = 902
     Anchors = [akLeft, akRight, akBottom]
     Caption = 'OK'
