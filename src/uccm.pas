@@ -545,7 +545,8 @@ Const
    * HP release 2.48 = Fix GPX-Downloading (viewstates nicht korrekt ausgelesen)
    * HP release 2.49 = Improve SQL-Interface to new usqlite_helper.pas
    *            2.50 = Auto Scroll down Jasmer view
-   *            2.51 =
+   * HP release 2.51 = Fix open Cache in Browser
+   *            2.52 =
    *)
 
   Version = updater_Version;
@@ -1800,13 +1801,8 @@ End;
 
 Procedure OpenCacheInBrowser(GC_Code: String);
 Begin
-  StartSQLQuery('Select url from caches where name ="' + ToSQLString(GC_Code) + '"');
-  If SQLQuery.EOF Then Begin
-    OpenURL(URL_OpenCacheListing + GC_Code);
-  End
-  Else Begin
-    OpenURL(SQLQuery.Fields[0].AsString);
-  End;
+  // Cache URL is broken so use the default method that works always !
+  OpenURL(URL_OpenCacheListing + GC_Code);
 End;
 
 (*
