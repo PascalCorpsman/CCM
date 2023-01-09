@@ -1,14 +1,37 @@
-(*
- * Original .c File taken from here : http://www.zorc.breitbandkatze.de/crc.html
- *
- * Original Source for .c File taken from here : http://www.tty1.net/pycrc/
- * and translated by Corpsman www.Corpsman.de to Freepascal
- *
- * Historie : 0.01 - Initial version
- *            0.02 - Added CalcCRC32
- *            0.03 - Added CalculateCRClen
- *            0.04 - Fixed CRC-Calculation for Order = 32
- *)
+(******************************************************************************)
+(* ucrc.pas                                                        ??.??.???? *)
+(*                                                                            *)
+(* Version     : 0.04                                                         *)
+(*                                                                            *)
+(* Author      : Uwe Schächterle (Corpsman)                                   *)
+(*                                                                            *)
+(* Support     : www.Corpsman.de                                              *)
+(*                                                                            *)
+(* Description : FPC-Module for calculation CRC-Checksums                     *)
+(*     Original .c File taken from here :                                     *)
+(*                        http://www.zorc.breitbandkatze.de/crc.html          *)
+(*   Original Source for .c File taken from here : http://www.tty1.net/pycrc/ *)
+(*   and translated by Corpsman www.Corpsman.de to Freepascal                 *)
+(*                                                                            *)
+(* License     : See the file license.md, located under:                      *)
+(*  https://github.com/PascalCorpsman/Software_Licenses/blob/main/license.md  *)
+(*  for details about the license.                                            *)
+(*                                                                            *)
+(*               It is not allowed to change or remove this text from any     *)
+(*               source file of the project.                                  *)
+(*                                                                            *)
+(* Warranty    : There is no warranty, neither in correctness of the          *)
+(*               implementation, nor anything other that could happen         *)
+(*               or go wrong, use at your own risk.                           *)
+(*                                                                            *)
+(* Known Issues: none                                                         *)
+(*                                                                            *)
+(* History     : 0.01 - Initial version                                       *)
+(*               0.02 - Added CalcCRC32                                       *)
+(*               0.03 - Added CalculateCRClen                                 *)
+(*               0.04 - Fixed CRC-Calculation for Order = 32                  *)
+(*                                                                            *)
+(******************************************************************************)
 Unit ucrc;
 
 {$MODE objfpc}{$H+}

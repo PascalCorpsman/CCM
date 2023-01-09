@@ -29,7 +29,7 @@ object Form1: TForm1
   end
   object Edit2: TEdit
     Left = 125
-    Height = 25
+    Height = 26
     Hint = 'If value is negative, than the cache has to have at least the given distance'
     Top = 38
     Width = 205
@@ -61,7 +61,7 @@ object Form1: TForm1
   end
   object ComboBox1: TComboBox
     Left = 125
-    Height = 29
+    Height = 30
     Top = 72
     Width = 205
     Anchors = [akTop, akLeft, akRight]
@@ -106,8 +106,8 @@ object Form1: TForm1
   end
   object StatusBar1: TStatusBar
     Left = 0
-    Height = 23
-    Top = 460
+    Height = 24
+    Top = 459
     Width = 408
     Panels = <    
       item
@@ -123,7 +123,7 @@ object Form1: TForm1
   end
   object ComboBox2: TComboBox
     Left = 125
-    Height = 27
+    Height = 28
     Hint = 'Will compare against Cache Subject or GC-Code'
     Top = 8
     Width = 205
@@ -372,6 +372,7 @@ object Form1: TForm1
       ''
     )
     Params = <>
+    Macros = <>
     Left = 56
     Top = 248
   end
@@ -787,6 +788,7 @@ object Form1: TForm1
       ''
     )
     Params = <>
+    Macros = <>
     Left = 144
     Top = 248
   end

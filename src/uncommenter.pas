@@ -1,16 +1,34 @@
-(*
-
-Ver 0.03
-
-Changelog :
-
-0.01 : Basic Implementation
-0.02 : Conversion to Unicode, Linux, Removed "UseUnderLinux" inserted Compilerswitches, to do that.
-0.03 : Erste Version für StringLiterale (default, deaktiviert)
-
-Known Bugs:
-
-*)
+(******************************************************************************)
+(* uncommenter.pas                                                 ??.??.???? *)
+(*                                                                            *)
+(* Version     : 0.03                                                         *)
+(*                                                                            *)
+(* Author      : Uwe Schächterle (Corpsman)                                   *)
+(*                                                                            *)
+(* Support     : www.Corpsman.de                                              *)
+(*                                                                            *)
+(* Description : Removes "comments" from a string, using configurable rules.  *)
+(*                                                                            *)
+(* License     : See the file license.md, located under:                      *)
+(*  https://github.com/PascalCorpsman/Software_Licenses/blob/main/license.md  *)
+(*  for details about the license.                                            *)
+(*                                                                            *)
+(*               It is not allowed to change or remove this text from any     *)
+(*               source file of the project.                                  *)
+(*                                                                            *)
+(* Warranty    : There is no warranty, neither in correctness of the          *)
+(*               implementation, nor anything other that could happen         *)
+(*               or go wrong, use at your own risk.                           *)
+(*                                                                            *)
+(* Known Issues: none                                                         *)
+(*                                                                            *)
+(* History     : 0.01 - Initial version                                       *)
+(*               0.02 - Conversion to Unicode, Linux, Removed "UseUnderLinux" *)
+(*                      inserted Compilerswitches, to do that.                *)
+(*               0.03 - Erste Version für StringLiterale (default,            *)
+(*                      deaktiviert)                                          *)
+(*                                                                            *)
+(******************************************************************************)
 
 Unit uncommenter;
 

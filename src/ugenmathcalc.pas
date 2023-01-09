@@ -1,45 +1,57 @@
 (******************************************************************************)
-(* Erstellt von Corpsman | Targetsoft                               1.11.2007 *)
-(* Support : www.Corpsman.de                                                  *)
+(* ugenmathcalc.pas                                                 1.11.2007 *)
 (*                                                                            *)
-(* Diese Unit zeigt die Implementierung eines Generischen Mathe solvers.      *)
-(* die Klasse TGenMathCalc kann benutzt werden um Verschiedenste              *)
-(* Mathematische Ausdrücke zu berechnen.                                      *)
-(* die genau Nutzung ist im Sample zu ersehen.                                *)
+(* Version     : 0.11                                                         *)
+(*                                                                            *)
+(* Author      : Uwe Schächterle (Corpsman)                                   *)
+(*                                                                            *)
+(* Support     : www.Corpsman.de                                              *)
+(*                                                                            *)
+(* Description : Diese Unit zeigt die Implementierung eines Generischen Mathe *)
+(*               solvers. Die Klasse TGenMathCalc kann benutzt werden um      *)
+(*               Verschiedenste Mathematische Ausdrücke zu berechnen.         *)
+(*               Die genau Nutzung ist im Sample zu ersehen.                  *)
+(*                                                                            *)
+(* License     : See the file license.md, located under:                      *)
+(*  https://github.com/PascalCorpsman/Software_Licenses/blob/main/license.md  *)
+(*  for details about the license.                                            *)
+(*                                                                            *)
+(*               It is not allowed to change or remove this text from any     *)
+(*               source file of the project.                                  *)
+(*                                                                            *)
+(* Warranty    : There is no warranty, neither in correctness of the          *)
+(*               implementation, nor anything other that could happen         *)
+(*               or go wrong, use at your own risk.                           *)
+(*                                                                            *)
+(* Known Issues:                                                              *)
+(*              - bei Unären Operanden, kann es vorkommen, das ein noch nicht *)
+(*                evaluierter Baum geschluckt wird                            *)
+(*                => Dann wird das Ergebniss ungültig.                        *)
+(*                Workaround : Durch anpassen der Bindungsstärke der Unären   *)
+(*                             Operanden kann dieses Problem meistens         *)
+(*                             umschifft werden. Wenn nicht fängt der Code    *)
+(*                             dies nun mittels AV ab.                        *)
+(*                                                                            *)
+(* History     : 0.01 - Initial version                                       *)
+(*               0.02 - Conversion to Unicode                                 *)
+(*               0.03 - Added Short Circuit BinOP                             *)
+(*               0.04 - Added Support for Random Values, Raise Exception if   *)
+(*                      Internal Symbol is in workdata                        *)
+(*               0.05 - Added Bugfix with "Raise Exception if Internal Symbol *)
+(*                      is in workdata"                                       *)
+(*               0.06 - Added Support for handling Unary Operands with same   *)
+(*                      symbol than Binary Operands                           *)
+(*               0.07 - Added visualize routine for calculated trees          *)
+(*               0.08 - Added raise exceptions on invalid calculated formulas *)
+(*                      (see known bugs)                                      *)
+(*               0.09 - Fixed parsing direction for binary Operands           *)
+(*               0.10 - Anpassungen für 64-Bit Systeme                        *)
+(*               0.11 - Fix Memleak bei Short-Circuit Evaluation              *)
 (*                                                                            *)
 (******************************************************************************)
-
 Unit ugenmathcalc;
 
 {$MODE objfpc}{$H+}
-
-(*
-
-Ver 0.11
-
-Changelog :
-
-0.01 : Basic Implementation
-0.02 : Conversion to Unicode
-0.03 : Added Short Circuit BinOP
-0.04 : Added Support for Random Values, Raise Exception if Internal Symbol is in workdata
-0.05 : Added Bugfix with "Raise Exception if Internal Symbol is in workdata"
-0.06 : Added Support for handling Unary Operands with same symbol than Binary Operands
-0.07 : Added visualize routine for calculated trees
-0.08 : Added raise exceptions on invalid calculated formulas (see known bugs)
-0.09 : Fixed parsing direction for binary Operands
-0.10 : Anpassungen für 64-Bit Systeme
-0.11 : Fix Memleak bei Short-Circuit Evaluation
-
-Bekannte Bugs :
-
--bei Unären Operanden, kann es vorkommen, das ein noch nicht evaluierter Baum geschluckt wird
- => Dann wird das Ergebniss ungültig.
-
-Workaround : Durch anpassen der Bindungsstärke der Unären Operanden kann dieses Problem meistens
-             umschifft werden. Wenn nicht fängt der Code dies nun mittels AV ab.
-
-*)
 
 (*
  * If you get a compiler error with missing file

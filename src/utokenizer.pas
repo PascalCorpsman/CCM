@@ -1,22 +1,43 @@
-(*
-
-Ver 0.06
-
-Changelog :
-
-0.01 : Basic Implementation
-0.02 : Conversion to Unicode, Linux, Removed "UseUnderLinux" inserted Compilerswitches, to do that.
-0.03 : Bugfix, Operatoren die Präfixe von anderen Operatoren sind müssen "sortiert" betrachtet werden.
-0.04 : Rule String Erkennung,
-       Wenn AddRule(a,b) gemacht wurde und im String Steht
-       ...a...ba..b..
-       Wird wird das token
-       a...b...b
-       ausgegeben
-0.05 : Anpassungen für 64-Bit Systeme
-0.06 : Fix Bug (mit workaround), letztes Token nicht sauber geparst.
-*)
-
+(******************************************************************************)
+(* utokenizer.pas                                                  ??.??.???? *)
+(*                                                                            *)
+(* Version     : 0.06                                                         *)
+(*                                                                            *)
+(* Author      : Uwe Schächterle (Corpsman)                                   *)
+(*                                                                            *)
+(* Support     : www.Corpsman.de                                              *)
+(*                                                                            *)
+(* Description : <Module_description>                                         *)
+(*                                                                            *)
+(* License     : See the file license.md, located under:                      *)
+(*  https://github.com/PascalCorpsman/Software_Licenses/blob/main/license.md  *)
+(*  for details about the license.                                            *)
+(*                                                                            *)
+(*               It is not allowed to change or remove this text from any     *)
+(*               source file of the project.                                  *)
+(*                                                                            *)
+(* Warranty    : There is no warranty, neither in correctness of the          *)
+(*               implementation, nor anything other that could happen         *)
+(*               or go wrong, use at your own risk.                           *)
+(*                                                                            *)
+(* Known Issues: none                                                         *)
+(*                                                                            *)
+(* History     : 0.01 - Initial version                                       *)
+(*               0.02 - Conversion to Unicode, Linux, Removed "UseUnderLinux" *)
+(*                      inserted Compilerswitches, to do that.                *)
+(*               0.03 - Bugfix, Operatoren die Präfixe von anderen Operatoren *)
+(*                      sind müssen "sortiert" betrachtet werden.             *)
+(*               0.04 - Rule String Erkennung,                                *)
+(*                      Wenn AddRule(a,b) gemacht wurde und im String Steht   *)
+(*                      ...a...ba..b..                                        *)
+(*                      Wird wird das token                                   *)
+(*                      a...b...b                                             *)
+(*                      ausgegeben                                            *)
+(*               0.05 - Anpassungen für 64-Bit Systeme                        *)
+(*               0.06 - Fix Bug (mit workaround), letztes Token nicht sauber  *)
+(*                      geparst.                                              *)
+(*                                                                            *)
+(******************************************************************************)
 Unit utokenizer;
 
 {$MODE ObjFPC}{$H+}
@@ -80,12 +101,12 @@ Implementation
 
 Function PtrIntToPtr(p: PtrInt): Pointer Inline;
 Begin
-  result := {%H-}Pointer(p); // Kommt hier immer noch ein Hinweis, dann hat die Codeformatierung zwischen } und P ein Leerzeichen gemacht, das darf nicht sein.
+  result := {%H-} Pointer(p); // Kommt hier immer noch ein Hinweis, dann hat die Codeformatierung zwischen } und P ein Leerzeichen gemacht, das darf nicht sein.
 End;
 
 Function PtrToPtrInt(p: Pointer): Ptrint Inline;
 Begin
-  result := {%H-}Ptrint(p); // Kommt hier immer noch ein Hinweis, dann hat die Codeformatierung zwischen } und P ein Leerzeichen gemacht, das darf nicht sein.
+  result := {%H-} Ptrint(p); // Kommt hier immer noch ein Hinweis, dann hat die Codeformatierung zwischen } und P ein Leerzeichen gemacht, das darf nicht sein.
 End;
 
 Function Max(v1, v2: integer): integer;

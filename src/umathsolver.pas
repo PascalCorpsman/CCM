@@ -1,3 +1,38 @@
+(******************************************************************************)
+(* umathsolver.pas                                                 ??.??.???? *)
+(*                                                                            *)
+(* Version     : 0.01                                                         *)
+(*                                                                            *)
+(* Author      : Uwe Schächterle (Corpsman)                                   *)
+(*                                                                            *)
+(* Support     : www.Corpsman.de                                              *)
+(*                                                                            *)
+(* Description : <Module_description>                                         *)
+(*                                                                            *)
+(* License     : See the file license.md, located under:                      *)
+(*  https://github.com/PascalCorpsman/Software_Licenses/blob/main/license.md  *)
+(*  for details about the license.                                            *)
+(*                                                                            *)
+(*               It is not allowed to change or remove this text from any     *)
+(*               source file of the project.                                  *)
+(*                                                                            *)
+(* Warranty    : There is no warranty, neither in correctness of the          *)
+(*               implementation, nor anything other that could happen         *)
+(*               or go wrong, use at your own risk.                           *)
+(*                                                                            *)
+(* Known Issues: none                                                         *)
+(*                                                                            *)
+(* History     : 0.01 - Initial version                                       *)
+(*               0.02 - Einfügen Operanden "<<" und ">>"                      *)
+(*               0.03 - Einfügen Operand "mod"                                *)
+(*               0.04 - Decimalseparator raus geführt                         *)
+(*               0.05 - Trunc, Ceil, Round,  <, <=, >, >=, Max, Min           *)
+(*               0.06 - =, <>                                                 *)
+(*               0.07 - Formatieren von Binärzahlen Nibble weise              *)
+(*               0.08 - trunc, floor repariert                                *)
+(*                                                                            *)
+(******************************************************************************)
+
 Unit umathsolver;
 
 {$MODE objfpc}{$H+}
@@ -42,16 +77,6 @@ Unit umathsolver;
  *      >=         = Größer Gleich  => [0,1]
  *      =          = Gleich         => [0,1]
  *      <>         = Ungleich       => [0,1]
- *)
-(*
- * Historie : 0.01 - Initialversion
- *            0.02 - Einfügen Operanden "<<" und ">>"
- *            0.03 - Einfügen Operand "mod"
- *            0.04 - Decimalseparator raus geführt
- *            0.05 - Trunc, Ceil, Round,  <, <=, >, >=, Max, Min
- *            0.06 - =, <>
- *            0.07 - Formatieren von Binärzahlen Nibble weise
- *            0.08 - trunc, floor repariert
  *)
 
 Interface
