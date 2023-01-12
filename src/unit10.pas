@@ -322,7 +322,7 @@ Begin
       End;
       form10.StringGrid1.Cells[GPSImportColCacheName, j + oCount] := FromSQLString(SQLQuery.Fields[0].AsString);
       // Hier wird Absichtlich kein CacheNameToCacheType aufgerufen, da wir gerade dabei sind das ding als Geloggt zu loggen, ..
-      form10.StringGrid1.Cells[GPSImportColType, j + oCount] := SQLQuery.Fields[1].AsString + format('|%fx%f', [SQLQuery.Fields[2].AsFloat, SQLQuery.Fields[3].AsFloat], DefFormat);
+      form10.StringGrid1.Cells[GPSImportColType, j + oCount] := FromSQLString(SQLQuery.Fields[1].AsString) + format('|%fx%f', [SQLQuery.Fields[2].AsFloat, SQLQuery.Fields[3].AsFloat], DefFormat);
       // Wenn die aus irgend einem Grund schon als CustomFlag gesetzt ist sollte das der User dennoch sehen.
       If SQLQuery.Fields[6].AsString = '1' Then Begin
         form10.StringGrid1.Cells[GPSImportColType, j + oCount] := AddCacheTypeSpezifier(form10.StringGrid1.Cells[GPSImportColType, j + oCount], 'U');
@@ -336,17 +336,17 @@ Begin
       End;
       // TODO: die Strings 'event'  und 'webcam cache' müssen durch globale Constaten ersetzt werden..
       // Einen Event können wir nicht finden, den müssen wir Attended setzen
-      If pos('event', lowercase(SQLQuery.Fields[1].AsString)) <> 0 Then Begin
+      If pos('event', lowercase(FromSQLString(SQLQuery.Fields[1].AsString))) <> 0 Then Begin
         If trim(form10.StringGrid1.Cells[GPSImportColCacheFoundState, j + oCount]) = inttostr(LogtypeToLogtypeIndex(ltFoundIt)) Then Begin
           form10.StringGrid1.Cells[GPSImportColCacheFoundState, j + oCount] := inttostr(LogtypeToLogtypeIndex(ltAttended));
-          m := m + SQLQuery.Fields[0].AsString + LineEnding;
+          m := m + FromSQLString(SQLQuery.Fields[0].AsString) + LineEnding;
         End;
       End;
       // Einen Webcam Cache können wir nicht finden, aber ein Photo davon machen
-      If pos('webcam cache', lowercase(SQLQuery.Fields[1].AsString)) <> 0 Then Begin
+      If pos('webcam cache', lowercase(FromSQLString(SQLQuery.Fields[1].AsString))) <> 0 Then Begin
         If trim(form10.StringGrid1.Cells[GPSImportColCacheFoundState, j + oCount]) = inttostr(LogtypeToLogtypeIndex(ltFoundIt)) Then Begin
           form10.StringGrid1.Cells[GPSImportColCacheFoundState, j + oCount] := inttostr(LogtypeToLogtypeIndex(ltWebcamPhotoTaken));
-          m := m + SQLQuery.Fields[0].AsString + LineEnding;
+          m := m + FromSQLString(SQLQuery.Fields[0].AsString) + LineEnding;
         End;
       End;
     End;

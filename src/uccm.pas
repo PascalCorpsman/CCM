@@ -560,7 +560,8 @@ Const
    * HP release 2.49 = Improve SQL-Interface to new usqlite_helper.pas
    *            2.50 = Auto Scroll down Jasmer view
    * HP release 2.51 = Fix open Cache in Browser
-   *            2.52 =
+   *            2.52 = Fix Anzeigename Multis in Fieldnotes kaputt
+   *            2.53 =
    *)
 
   Version = updater_Version;
