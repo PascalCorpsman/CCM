@@ -25,13 +25,11 @@ Uses
 {$IFDEF Windows}
   windows,
 {$ENDIF}
-  Forms, lazopenglcontext, imagesforlazarus, Unit1, Unit2, Unit3, Unit4, Unit5,
-  Unit6, Unit7, Unit8, Unit9, Unit10, Unit11, Unit12, Unit13, Unit14, Unit15,
-  Unit16, Unit17, Unit18, Unit19, Unit20, Unit21, unit22, unit27, Unit23,
-  Unit24, Unit25, Unit26, Unit28, unit29, unit30, Unit31, Unit32, Unit33,
-  Unit34, Unit35, Unit36, Unit37, Unit38, Unit39, Unit40, Unit41, ugenmathcalc,
-  utokenizer, uopengl_graphikengine, umultipartformdatastream, unit42, Unit43,
-  Unit44, usqlite_helper;
+  Forms, Unit1, Unit2, Unit3, Unit4, Unit5, Unit6, Unit7, Unit8, Unit9, Unit10, 
+  Unit11, Unit12, Unit13, Unit14, Unit15, Unit16, Unit17, Unit18, Unit19, Unit20, 
+  Unit21, unit22, unit27, Unit23, Unit24, Unit25, Unit26, Unit28, unit29, unit30, 
+  Unit31, Unit32, Unit33, Unit34, Unit35, Unit36, Unit37, Unit38, Unit39, Unit40, 
+  Unit41, unit42, Unit43, Unit44;
 
 {$IFDEF Windows}
 {$IFDEF CPU32}
