@@ -68,6 +68,7 @@ Var
   m: Tmemo;
   im: Timage;
   tmp, s: String;
+  d: TDateTime;
 Begin
   // Alte Logs Löschen
   For i := ComponentCount - 1 Downto 0 Do Begin
@@ -94,7 +95,7 @@ Begin
     l.name := 'Label1_' + inttostr(t);
     l.left := 8;
     l.top := 0;
-    l.caption := SQLQuery.Fields[0].AsString;
+    l.caption := FromSQLString(SQLQuery.Fields[0].AsString);
     // Type
     l := TLabel.Create(g);
     l.Parent := g;
@@ -142,7 +143,8 @@ Begin
     l.top := 0;
     l.Anchors := [akTop, akRight];
     l.Alignment := taRightJustify;
-    l.caption := copy(SQLQuery.Fields[2].AsString, 1, 10);
+    d := StrToTime(FromSQLString(SQLQuery.Fields[2].AsString));
+    l.caption := FormatDateTime('YYYY-MM-DD', d);
     // Logtext
     m := TMemo.Create(g);
     m.Parent := g;

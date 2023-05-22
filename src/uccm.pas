@@ -561,7 +561,8 @@ Const
    *            2.50 = Auto Scroll down Jasmer view
    * HP release 2.51 = Fix open Cache in Browser
    *            2.52 = Fix Anzeigename Multis in Fieldnotes kaputt
-   *            2.53 =
+   *            2.53 = Fix Zeitstempel mit +00:00 (andere Zeitzonen) wurden nicht umgewandelt -> damit in der Zukunft = Fehler
+   *                   Anzeige Logdatum in Log ansicht war kaputt
    *)
 
   Version = updater_Version;
@@ -2193,6 +2194,9 @@ Function StrToTime(value: String): TDateTime;
 Var
   s: String;
 Begin
+  (*
+   * Step 1: Value so umwandeln, dass es dem unten liegenden Format string angepasst ist.
+   *)
   If length(value) = 0 Then Begin
     result := -1;
     exit;
@@ -2200,6 +2204,10 @@ Begin
   // Bei Manchen Datensätzen stehen die ms noch mit dran
   If pos('.', value) <> 0 Then Begin
     value := copy(value, 1, pos('.', value) - 1);
+  End;
+  // Bei Manchen Datensätzen ist noch eine Zeitverschiebung mit angegeben -> die werfen wir mal dezent weg ..
+  If pos('+', value) <> 0 Then Begin
+    value := copy(value, 1, pos('+', value) - 1);
   End;
   // Bei Manchen Datensätzen, fehlt hinten das ss (z.B. wenn man exakt zur Vollen Minute geloggt hat)
   s := copy(value, pos(':', value) + 1, length(value));
@@ -2213,6 +2221,9 @@ Begin
   End;
   // Manche Datensätze haben hinten das Z nicht, also reparieren wir mal *g*.
   If (lowercase(value[length(value)]) <> 'z') Then value := value + 'Z';
+  (*
+   * Step 2: die eigentliche convertierung
+   *)
   result := StrToDateTimeFormat(value, 'YYYY-MM-DD''T''HH:NN:SS''Z''');
 End;
 
