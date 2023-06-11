@@ -1,0 +1,1 @@
+for license see: https://github.com/PascalCorpsman/Software_Licenses/blob/main/license.md
