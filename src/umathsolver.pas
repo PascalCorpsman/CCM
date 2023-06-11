@@ -484,6 +484,17 @@ Begin
   Result_is_Float := true;
 End;
 
+Function tanh_Float(v1: Pointer): Pointer;
+Var
+  res: pmp_float;
+Begin
+  new(res);
+  mpf_init(res^);
+  mpf_tanh(pmp_float(v1)^, res^);
+  result := res;
+  Result_is_Float := true;
+End;
+
 Function div_Float(v1, v2: Pointer): Pointer;
 Var
   res: pmp_float;
@@ -730,6 +741,7 @@ Initialization
   calc.AddUnOP('sin', @Sin_float);
   calc.AddUnOP('cos', @Cos_float);
   calc.AddUnOP('tan', @Tan_float);
+  calc.AddUnOP('tanh', @Tanh_float);
   calc.AddUnOP('+', @Add_Floatu);
   calc.AddUnOP('-', @Sub_Floatu);
   calc.AddUnOP('floor', @trunc_Float);

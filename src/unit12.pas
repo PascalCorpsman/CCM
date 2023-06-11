@@ -96,7 +96,7 @@ Type
     { public declarations }
     Procedure ClearCacheStats;
     Function ReloadCachesFromDB: integer;
-    Procedure VisualiseCaches(Selector: integer);
+    Procedure VisualiseCaches(Selector: integer; FinalRun: Boolean);
   End;
 
 Var
@@ -117,7 +117,7 @@ End;
 
 Procedure TForm12.ComboBox1Change(Sender: TObject);
 Begin
-  VisualiseCaches(ComboBox1.ItemIndex);
+  VisualiseCaches(ComboBox1.ItemIndex, true);
 End;
 
 Procedure TForm12.ComboBox1DrawItem(Control: TWinControl; Index: Integer;
@@ -185,19 +185,22 @@ End;
 
 Procedure TForm12.SpeedButton112Click(Sender: TObject);
 Var
-  sIndex: integer;
+  selector, sIndex: integer;
   x, y, i, j: integer;
 Begin
-  // Selektiert nach Size
+  // Selektiert nach Size und Selector
   sIndex := TSpeedButton(sender).ImageIndex;
 
   form1.StringGrid1.BeginUpdate;
   form1.ResetMainGridCaptions;
   form1.StringGrid1.RowCount := 1;
+  selector := ComboBox1.ItemIndex;
   For x := 1 To 9 Do Begin
     For y := 1 To 9 Do Begin
       For i := 0 To length(fcaches[x - 1, y - 1]) - 1 Do Begin
-        If (fcaches[x - 1, y - 1][i].Size = sIndex) Then Begin
+        If (fcaches[x - 1, y - 1][i].Size = sIndex) And
+          ((selector = PreviewIndexAll) Or
+          (fcaches[x - 1, y - 1][i].Kind = selector)) Then Begin
           form1.StringGrid1.RowCount := form1.StringGrid1.RowCount + 1;
           For j := 0 To form1.StringGrid1.ColCount - 1 Do Begin
             Form1.StringGrid1.Cells[j, form1.StringGrid1.RowCount - 1] := fcaches[x - 1, y - 1][i].MainFormInfo[j];
@@ -397,7 +400,6 @@ Var
   a: Array Of TSAttribute;
   c, x, y, z, i, j: Integer;
   f1, f2: Double;
-  l: TLabel;
 Begin
   result := 0;
   scol := 0;
@@ -417,13 +419,6 @@ Begin
       setlength(fcaches[x, y], high(fcaches[x, y]) + 2);
       fcaches[x, y][high(fcaches[x, y])].GC_Code := form1.StringGrid1.Cells[MainColGCCode, i];
       fcaches[x, y][high(fcaches[x, y])].Size := CacheSizeToIndex(SQLQuery.Fields[3].AsString);
-      l := TLabel(FindComponent('Label' + inttostr(5 + fcaches[x, y][high(fcaches[x, y])].Size)));
-      If assigned(l) Then Begin
-        l.caption := inttostr(strtoint(l.caption) + 1);
-      End
-      Else Begin
-        // Damn, das darf nicht vorkommen
-      End;
       setlength(fcaches[x, y][high(fcaches[x, y])].MainFormInfo, form1.StringGrid1.ColCount);
       For j := 0 To form1.StringGrid1.ColCount - 1 Do Begin
         fcaches[x, y][high(fcaches[x, y])].MainFormInfo[j] := form1.StringGrid1.Cells[j, i];
@@ -467,7 +462,7 @@ Begin
   End;
   // Wir zeigen die ersten Zwischenergebnisse schon mal an, dann muss der User nicht so lange warten.
   ComboBox1.ItemIndex := 0;
-  VisualiseCaches(PreviewIndexAll);
+  VisualiseCaches(PreviewIndexAll, false);
   If Not form12.Visible Then Begin
     form12.show;
   End;
@@ -516,7 +511,7 @@ Begin
   setlength(a, 0);
   // -- Ende Optimierter Block }
   ComboBox1.ItemIndex := 0;
-  VisualiseCaches(PreviewIndexAll);
+  VisualiseCaches(PreviewIndexAll, true);
   (*
    * Getestet mit einer Abfrage von ca 4477 Caches
    * Orig                =  2330 ms (Aufbau Stringgrid = 900ms, Aufbau Attribute = 1430ms)
@@ -525,7 +520,7 @@ Begin
    *)
 End;
 
-Procedure TForm12.VisualiseCaches(Selector: integer);
+Procedure TForm12.VisualiseCaches(Selector: integer; FinalRun: Boolean);
 Var
   Attributes: Array Of Record
     id: integer;
@@ -567,12 +562,20 @@ Var
   Function CountOf(Const Data: Array Of TCacheStat; Selector: integer): integer;
   Var
     i: integer;
+    l: TLabel;
   Begin
     result := 0;
     For i := 0 To high(data) Do Begin
       If data[i].Kind = Selector Then Begin
         inc(result);
         CountAttribs(data[i].Attributes);
+        l := TLabel(FindComponent('Label' + inttostr(5 + data[i].Size)));
+        If assigned(l) Then Begin
+          l.caption := inttostr(strtoint(l.caption) + 1);
+        End
+        Else Begin
+          // Damn, das darf nicht vorkommen
+        End;
       End;
     End;
   End;
@@ -581,7 +584,7 @@ Var
   c, d, t, x, y, i, j, k: Integer;
   b: TBitmap;
   img: TImage;
-  l: TLabel;
+  lpos, lneg, l: TLabel;
   p: TScrollBox;
 Begin
   //  Löschen aller alten Attribute und dazugehörigen Labels..
@@ -591,6 +594,14 @@ Begin
   For i := ScrollBox2.ComponentCount - 1 Downto 0 Do Begin
     If (ScrollBox2.Components[i] Is TImage) Or (ScrollBox2.Components[i] Is TLabel) Then ScrollBox2.Components[i].Free;
   End;
+  label5.caption := '0';
+  label6.caption := '0';
+  label7.caption := '0';
+  label8.caption := '0';
+  label9.caption := '0';
+  label10.caption := '0';
+  label11.caption := '0';
+  label12.caption := '0';
   setlength(Attributes, 200); // Egal wie Groß wird im zweifel erweitert
   For i := 0 To high(Attributes) Do Begin // Alle Uninitialisiert
     Attributes[i].id := -1;
@@ -607,6 +618,13 @@ Begin
         d := d + (j + 2) * length(fcaches[i, j]); // Aufsummieren der 2 Fachen D-Summe
         For k := 0 To high(fcaches[i, j]) Do Begin
           CountAttribs(fcaches[i, j][k].Attributes);
+          l := TLabel(FindComponent('Label' + inttostr(5 + fcaches[i, j][k].Size)));
+          If assigned(l) Then Begin
+            l.caption := inttostr(strtoint(l.caption) + 1);
+          End
+          Else Begin
+            // Damn, das darf nicht vorkommen
+          End;
         End;
       End
       Else Begin
@@ -643,18 +661,20 @@ Begin
     label4.caption := format('%s %s: %0.2f' + LineEnding + '%s %s: %0.2f', [R_average, R_Difficulty, d / (2 * x), R_average, R_terrain, t / (2 * x)]);
   End;
   // Visualisieren der oben gesammelten Attribut informationen
+  lpos := Nil;
+  lneg := Nil;
   If (high(Attributes) = -1) Or (Attributes[0].id = -1) Then Begin
     // Wenn das Gerade der Pass ist wo die Attribute noch fehlen, dann zeigen wir das dem User an
-    l := TLabel.Create(ScrollBox1);
-    l.Parent := ScrollBox1;
-    l.left := 15;
-    l.top := 15;
-    l.caption := r_Loading;
-    l := TLabel.Create(ScrollBox2);
-    l.Parent := ScrollBox2;
-    l.left := 15;
-    l.top := 15;
-    l.caption := r_Loading;
+    lpos := TLabel.Create(ScrollBox1);
+    lpos.Parent := ScrollBox1;
+    lpos.left := 15;
+    lpos.top := 15;
+    lpos.caption := r_Loading;
+    lneg := TLabel.Create(ScrollBox2);
+    lneg.Parent := ScrollBox2;
+    lneg.left := 15;
+    lneg.top := 15;
+    lneg.caption := r_Loading;
   End;
   ScrollBox1.DisableAlign;
   ScrollBox2.DisableAlign;
@@ -689,6 +709,11 @@ Begin
     l.left := img.left;
     l.top := img.top + img.Height;
     l.caption := inttostr(Attributes[i].Count);
+  End;
+  // Es Gibt Attribute, aber keine Passen -> aus den Labeln muss nun ein "Keine"
+  If FinalRun And assigned(lpos) Then Begin
+    lpos.Caption := R_Not_Found;
+    lneg.Caption := R_Not_Found;
   End;
   ScrollBox1.EnableAlign;
   ScrollBox2.EnableAlign;

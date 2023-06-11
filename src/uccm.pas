@@ -562,7 +562,9 @@ Const
    * HP release 2.51 = Fix open Cache in Browser
    *            2.52 = Fix Anzeigename Multis in Fieldnotes kaputt
    *            2.53 = Fix Zeitstempel mit +00:00 (andere Zeitzonen) wurden nicht umgewandelt -> damit in der Zukunft = Fehler
-   *                   Anzeige Logdatum in Log ansicht war kaputt
+   *                   Anzeige Logdatum in Log Ansicht war kaputt
+   * HP release 2.54 = Fix Anzeige bei 81iger Matrix stimmte mit filtern für Attribute und Size nicht.
+   *            2.55 = 
    *)
 
   Version = updater_Version;
