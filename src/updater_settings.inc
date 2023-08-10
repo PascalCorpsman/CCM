@@ -15,7 +15,7 @@
 
 Const
 
-  updater_Version = '2.55';
+  updater_Version = '2.56';
 
   updater_AppName = 'ccm';
   updater_StarterName = 'ccm';
