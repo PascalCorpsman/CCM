@@ -186,6 +186,7 @@ Begin
     '" = Escape character' + LineEnding + LineEnding +
     '|| = String Concatenation' + LineEnding +
     '+3 = NewLine' + LineEnding + LineEnding +
+    '+5 = -' + LineEnding + LineEnding +
     'https://www.sqlite.org/lang.html = Language information');
 End;
 

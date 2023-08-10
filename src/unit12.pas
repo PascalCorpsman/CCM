@@ -20,7 +20,7 @@ Interface
 
 Uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, Grids,
-  StdCtrls, ExtCtrls, Buttons, Types, uccm;
+  StdCtrls, ExtCtrls, Buttons, Types, usqlite_helper, uccm;
 
 Const
   PreviewIndexUnknown = -1; // Es gibt mehr als die unten gelisteten Cachetypen, alle anderen stehen dann hier..
@@ -426,7 +426,7 @@ Begin
       (*
        * Ist a bissl Unglücklich aber die IconIndexe von Form1 müssen hier in die Iconindexe der Previewform umgewandelt werden
        *)
-      Case form1.CacheTypeToIconIndex(SQLQuery.Fields[2].AsString) Of
+      Case form1.CacheTypeToIconIndex(FromSQLString(SQLQuery.Fields[2].AsString)) Of
         MainImageIndexTraditionalCache: fcaches[x, y][high(fcaches[x, y])].Kind := PreviewIndexTraditionalCache;
         MainImageIndexMultiCache: fcaches[x, y][high(fcaches[x, y])].Kind := PreviewIndexMultiCache;
         MainImageIndexMysterieCache: fcaches[x, y][high(fcaches[x, y])].Kind := PreviewIndexMysterieCache;
@@ -449,7 +449,7 @@ Begin
       While Not SQLQuery.EOF Do Begin
         fcaches[x, y][high(fcaches[x, y])].Attributes[c].id := SQLQuery.Fields[0].AsInteger;
         fcaches[x, y][high(fcaches[x, y])].Attributes[c].inc := SQLQuery.Fields[1].AsInteger;
-        fcaches[x, y][high(fcaches[x, y])].Attributes[c].Attribute_Text := SQLQuery.Fields[2].AsString;
+        fcaches[x, y][high(fcaches[x, y])].Attributes[c].Attribute_Text := FromSQLString(SQLQuery.Fields[2].AsString);
         inc(c);
         If c > high(fcaches[x, y][high(fcaches[x, y])].Attributes) Then Begin // Überlaufschutz sollte es je doch mal mehr attribute geben ...
           setlength(fcaches[x, y][high(fcaches[x, y])].Attributes, high(fcaches[x, y][high(fcaches[x, y])].Attributes) + 26);

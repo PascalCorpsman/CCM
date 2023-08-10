@@ -317,7 +317,7 @@ Begin
       lat := SQLQuery.Fields[0].AsFloat;
       lon := SQLQuery.Fields[1].AsFloat;
       If GetValue('General', 'ExportPOIMysteriesOrigCoords', '0') = '1' Then Begin // Das Exportiert den Mysterie mit seinen Original Koordinaten
-        If SQLQuery.Fields[4].AsString = Unknown_Cache Then Begin
+        If FromSQLString(SQLQuery.Fields[4].AsString) = Unknown_Cache Then Begin
           If (abs(lat - clat) > t) Or (abs(lon - clon) > t) Then Begin // Nur Mysteries, welche auch Tatsächlich veränderte Koords haben
             wp.Name := form1.StringGrid1.cells[MainColGCCode, i];
             wp.GC_Code := form1.StringGrid1.cells[MainColGCCode, i];
@@ -337,7 +337,7 @@ Begin
         End;
       End;
       If GetValue('General', 'ExludeModifiedPOIMysteries', '1') = '1' Then Begin // Das macht das "!" bei exportieren Mysteries wieder weg
-        If SQLQuery.Fields[4].AsString = Unknown_Cache Then Begin
+        If FromSQLString(SQLQuery.Fields[4].AsString) = Unknown_Cache Then Begin
           lat := clat;
           lon := clon;
         End;

@@ -564,7 +564,9 @@ Const
    *            2.53 = Fix Zeitstempel mit +00:00 (andere Zeitzonen) wurden nicht umgewandelt -> damit in der Zukunft = Fehler
    *                   Anzeige Logdatum in Log Ansicht war kaputt
    * HP release 2.54 = Fix Anzeige bei 81iger Matrix stimmte mit filtern für Attribute und Size nicht.
-   *            2.55 = 
+   * HP release 2.55 = Fix g_Type wurde an ettlichen Stellen nicht mittels FromSQLString gelesen
+   *                   Fix custom Filter mit Multi's waren kaputt
+   *            2.56 = 
    *)
 
   Version = updater_Version;
@@ -4240,17 +4242,17 @@ Begin
     'export': result :=
       'where' + LineEnding +
         '-- All Mysteries, that have corrected Koordinates' + LineEnding +
-        ' ((((c.G_TYPE = "Unknown Cache") and' + LineEnding +
+        ' ((((c.G_TYPE = "' + ToSQLString(Unknown_Cache) + '") and' + LineEnding +
         '    (c.cor_lat <> -1) and' + LineEnding +
         '    (c.cor_lon <> -1)) or' + LineEnding +
         '-- All Bonus Mysteries' + LineEnding +
-        '    ((c.G_TYPE = "Unknown Cache") and' + LineEnding +
+        '    ((c.G_TYPE = "' + ToSQLString(Unknown_Cache) + '") and' + LineEnding +
         '     (c.g_Name like "%Bonus%")) or' + LineEnding +
         '-- All Bonus Mysteries' + LineEnding +
-        '    ((c.G_TYPE = "Unknown Cache") and' + LineEnding +
+        '    ((c.G_TYPE = "' + ToSQLString(Unknown_Cache) + '") and' + LineEnding +
         '     (c.g_Name like "%Challenge%")) or' + LineEnding +
         '-- All other caches' + LineEnding +
-        '     (c.G_TYPE <> "Unknown Cache")))' + LineEnding +
+        '     (c.G_TYPE <> "' + ToSQLString(Unknown_Cache) + '")))' + LineEnding +
         '-- The Cache is aviable and not found' + LineEnding +
         '   and c.G_ARCHIVED = 0' + LineEnding +
         '   and c.G_FOUND = 0' + LineEnding +
@@ -4275,7 +4277,7 @@ Begin
     'mysteries not solved yet': result :=
       'where' + LineEnding +
         '-- All Mysteries, that not have corrected coordinates' + LineEnding +
-        '((c.G_TYPE = "Unknown Cache") and' + LineEnding +
+        '((c.G_TYPE = "' + ToSQLString(Unknown_Cache) + '") and' + LineEnding +
         ' (c.cor_lat = -1) and' + LineEnding +
         ' (c.cor_lon = -1))' + LineEnding +
         '-- The cache is aviable and not found' + LineEnding +
@@ -4299,9 +4301,9 @@ Begin
         '-- them on demand.' + LineEnding +
         '--' + LineEnding +
         '-- Selection by cache type' + LineEnding +
-        '-- and (c.G_TYPE = "Unknown Cache") -- Only Mysteries' + LineEnding +
-        '-- and (c.G_TYPE = "Traditional Cache") -- Only Tradies' + LineEnding +
-        '-- and (c.G_TYPE = "Multi-cache") -- Only Multies' + LineEnding +
+        '-- and (c.G_TYPE = "' + ToSQLString(Unknown_Cache) + '") -- Only Mysteries' + LineEnding +
+        '-- and (c.G_TYPE = "' + ToSQLString(Traditional_Cache) + '") -- Only Tradies' + LineEnding +
+        '-- and (c.G_TYPE = "' + ToSQLString(Multi_cache) + '") -- Only Multies' + LineEnding +
         '--' + LineEnding +
         '-- Selection by D-T Rating' + LineEnding +
         '-- if you want more than one D-T criteria at the same time' + LineEnding +

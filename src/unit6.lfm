@@ -1,8 +1,8 @@
 object Form6: TForm6
-  Left = 295
+  Left = 326
   Height = 363
-  Hint = 'Global variables:'#13#10'%username% = username'#13#10'-- = Comment'#13#10'Like parameters :'#13#10'  % = any character'#13#10'  _  = exact 1 character'
-  Top = 163
+  Hint = 'Global variables:'#13#10'%username% = username'#13#10'-- = Comment'#13#10'+5 = -'#13#10'Like parameters :'#13#10'  % = any character'#13#10'  _  = exact 1 character'
+  Top = 119
   Width = 937
   Caption = 'Form6'
   ClientHeight = 363
@@ -12,19 +12,19 @@ object Form6: TForm6
   LCLVersion = '2.3.0.0'
   object Label1: TLabel
     Left = 8
-    Height = 16
+    Height = 15
     Top = 8
-    Width = 31
+    Width = 26
     Caption = 'Filter'
     ParentFont = False
   end
   object ComboBox1: TComboBox
     Left = 56
-    Height = 27
+    Height = 23
     Top = 8
     Width = 782
     Anchors = [akTop, akLeft, akRight]
-    ItemHeight = 0
+    ItemHeight = 15
     OnChange = ComboBox1Change
     ParentFont = False
     TabOrder = 0
@@ -32,17 +32,17 @@ object Form6: TForm6
   end
   object Label2: TLabel
     Left = 8
-    Height = 16
+    Height = 15
     Top = 48
-    Width = 37
+    Width = 32
     Caption = 'Query'
     ParentFont = False
   end
   object Label3: TLabel
     Left = 56
-    Height = 64
+    Height = 60
     Top = 48
-    Width = 872
+    Width = 763
     Caption = 'Select '#10'  distinct c.G_TYPE, c.NAME, c.G_NAME, c.lat, c.lon, c.cor_lat, c.cor_lon, c.G_DIFFICULTY, c.G_TERRAIN, c.Fav'#10'from '#10'  caches c '
     Font.Name = 'Courier New'
     ParentFont = False

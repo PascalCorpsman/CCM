@@ -1130,7 +1130,7 @@ Begin
     c.G_Placed_By := '';
     c.G_Owner_ID := 0;
     c.G_Owner := '';
-    c.G_Type := Geocache_Lab_Cache;
+    c.G_Type := ToSQLString(Geocache_Lab_Cache);
     c.G_Container := '';
     c.G_Difficulty := 0;
     c.G_Terrain := 0;
@@ -2397,6 +2397,12 @@ Begin
     CommitSQLTransactionQuery('Alter Table caches_new rename to caches');
     SQLTransaction1.Commit;
     cl.free;
+  End;
+  // Ab Version 2.47 macht die Funktion ToSQLString aus "-" ein +5 -> Damit werden "Multi-Cache" typen ungültig
+  StartSQLQuery('Select count(*) from caches where g_type = "Multi-cache"');
+  If SQLQuery1.Fields[0].AsInteger <> 0 Then Begin
+    CommitSQLTransactionQuery('Update caches set g_type = "' + ToSQLString(Multi_cache) + '" where g_type = "Multi-cache"'); // Alle Caches die schon da waren sind keine Light Caches
+    SQLTransaction1.Commit; // -- Es bleibt zu Prüfen ob man sich das sparen kann, dann ginge es schneller ...
   End;
   caption := format(RF_Connected_To, [ExtractFileNameOnly(FileName)]);
   Setvalue('General', 'LastDB', FileName);
