@@ -32,7 +32,13 @@ https://www.corpsman.de/klickcounter.php?url=download/ccm.zip
 Setup files:
 https://www.corpsman.de/klickcounter.php?url=download/ccmsetup.zip
 
-See installation instructions under
+## Installation instructions
+
+Step by step installation guide (Windows and Linux)
+
+0:43: Linux installation<br>
+1:05: Windows installation<br>
+2:00: setup CCM with the Wizard<br>
 
 https://www.youtube.com/watch?v=XDlOMkwiAGs
 
