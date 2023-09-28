@@ -566,7 +566,7 @@ Const
    * HP release 2.54 = Fix Anzeige bei 81iger Matrix stimmte mit filtern für Attribute und Size nicht.
    * HP release 2.55 = Fix g_Type wurde an ettlichen Stellen nicht mittels FromSQLString gelesen
    *                   Fix custom Filter mit Multi's waren kaputt
-   *            2.56 = 
+   *            2.56 = Fix invalid g_type values on DB-Load and after import
    *)
 
   Version = updater_Version;
@@ -4241,7 +4241,7 @@ Begin
   Case lowercase(trim(FilterName)) Of
     'export': result :=
       'where' + LineEnding +
-        '-- All Mysteries, that have corrected Koordinates' + LineEnding +
+        '-- All Mysteries, that have corrected coordinates' + LineEnding +
         ' ((((c.G_TYPE = "' + ToSQLString(Unknown_Cache) + '") and' + LineEnding +
         '    (c.cor_lat <> -1) and' + LineEnding +
         '    (c.cor_lon <> -1)) or' + LineEnding +
@@ -4258,17 +4258,17 @@ Begin
         '   and c.G_FOUND = 0' + LineEnding +
         'union' + LineEnding +
         '-- Select Caches that have Bonus or Challange' + LineEnding +
-        'select' + LineEnding +
-        '  distinct c.G_TYPE, c.NAME, c.G_NAME, c.lat, c.lon, c.cor_lat, c.cor_lon, c.G_DIFFICULTY, c.G_TERRAIN, c.Fav' + LineEnding +
-        ' from caches c' + LineEnding +
-        'inner join attributes a on a.cache_name = c.name -- include the attribute database to be able to search fith attributes' + LineEnding +
-        'where' + LineEnding +
-        '-- Bonus cache' + LineEnding +
-        ' (((a.id = 69) and (a.inc = 1)) or' + LineEnding +
-        '-- Challenge cache' + LineEnding +
-        '  ((a.id = 71) and (a.inc = 1)))' + LineEnding +
-        '   and c.G_ARCHIVED = 0' + LineEnding +
-        '   and c.G_FOUND = 0';
+        '  select' + LineEnding +
+        '    distinct c.G_TYPE, c.NAME, c.G_NAME, c.lat, c.lon, c.cor_lat, c.cor_lon, c.G_DIFFICULTY, c.G_TERRAIN, c.Fav' + LineEnding +
+        '  from caches c' + LineEnding +
+        '    inner join attributes a on a.cache_name = c.name -- include the attribute database to be able to search for attributes' + LineEnding +
+        '  where' + LineEnding +
+        '    -- Bonus cache' + LineEnding +
+        '    (((a.id = 69) and (a.inc = 1)) or' + LineEnding +
+        '    -- Challenge cache' + LineEnding +
+        '    ((a.id = 71) and (a.inc = 1)))' + LineEnding +
+        '    and c.G_ARCHIVED = 0' + LineEnding +
+        '    and c.G_FOUND = 0';
 
     'founds': result :=
       'where' + LineEnding +

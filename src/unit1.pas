@@ -400,6 +400,7 @@ Type
     Function OnCompereCorrectedCoords_Online_to_Locale(GC_Code: String; localeLat, localeLon: Double; Var onlineLat: Double; Var onlineLon: Double): TUserCoordResult;
     Function OnNoteEdit(GC_Code: String; Var Note: String): Boolean; // Callback für den DB->Online Dialog
     Procedure CheckIniFileVersion();
+    Procedure FixCacheTypeNames();
   public
     { public declarations }
     Procedure RefreshDataBaseCacheCountinfo();
@@ -2333,6 +2334,33 @@ Begin
   SetValue('General', 'Version', Version);
 End;
 
+Procedure TForm1.FixCacheTypeNames();
+Var
+  NeedCommit: Boolean;
+
+  Procedure CkeckFix(InvalidTypeName, ValidTypeName: String);
+  Begin
+    StartSQLQuery('Select count(*) from caches c where c.g_type = "' + InvalidTypeName + '"');
+    If SQLQuery1.Fields[0].AsInteger <> 0 Then Begin
+      CommitSQLTransactionQuery('Update caches set g_type = "' + ValidTypeName + '" where g_type = "' + InvalidTypeName + '"');
+      NeedCommit := true;
+    End;
+  End;
+
+Begin
+  NeedCommit := false;
+  (*
+   * Das hier ist mehr ein Hack, als was "schönes", aber so bleibt die DB wenigstens "Gültig"
+   *)
+  CkeckFix('Traditioneller Cache', Traditional_Cache);
+  CkeckFix('Virtueller Cache', Virtual_Cache);
+  CkeckFix('Adventure Lab', Geocache_Lab_Cache);
+
+  If NeedCommit Then Begin
+    SQLTransaction.Commit;
+  End;
+End;
+
 Function TForm1.OpenDataBase(FileName: String; ResetGui: Boolean): Boolean;
 Var
   cl: TStringList;
@@ -2412,6 +2440,7 @@ Begin
     StatusBar1.Panels[MainSBarInfo].Text := '';
   End;
   RefreshDataBaseCacheCountinfo(); // Das muss immer gemacht werden, damit die Statistiken auch immer stimmen
+  FixCacheTypeNames();
   result := OpenTBDatabase;
 End;
 
@@ -2427,6 +2456,9 @@ Begin
   SplitCacheType(CacheType, ct, ti, dt);
   result := MainIndexUnknownImage;
   ct := lowercase(ct);
+  (*
+   * Kann diese Routine einen Typ nicht finden, dann muss dieser ggf. in "FixCacheTypeNames" repariert werden!
+   *)
   If lowercase(Traditional_Cache) = ct Then result := MainImageIndexTraditionalCache;
   If lowercase(Unknown_Cache) = ct Then result := MainImageIndexMysterieCache;
   If lowercase(Multi_cache) = ct Then result := MainImageIndexMultiCache;
@@ -2644,6 +2676,7 @@ Begin
   If form4.visible Then form4.close;
   RefreshDataBaseCacheCountinfo();
   self.Enabled := true;
+  FixCacheTypeNames();
   // Nun da alles Importiert ist, werden alle Datensätze angewählt, die Nicht importiert wurden, und noch nicht archiviert sind.
   ComboBox2.text := '';
   Edit2.text := '';
