@@ -2355,6 +2355,7 @@ Begin
   CkeckFix('Traditioneller Cache', Traditional_Cache);
   CkeckFix('Virtueller Cache', Virtual_Cache);
   CkeckFix('Adventure Lab', Geocache_Lab_Cache);
+  CkeckFix('Mystery Cache', Unknown_Cache);
 
   If NeedCommit Then Begin
     SQLTransaction.Commit;

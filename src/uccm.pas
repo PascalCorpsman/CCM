@@ -567,6 +567,7 @@ Const
    * HP release 2.55 = Fix g_Type wurde an ettlichen Stellen nicht mittels FromSQLString gelesen
    *                   Fix custom Filter mit Multi's waren kaputt
    *            2.56 = Fix invalid g_type values on DB-Load and after import
+   *            2.57 = Fix loading Field notes from L4C
    *)
 
   Version = updater_Version;
@@ -1554,6 +1555,7 @@ Begin
   result := ltWriteNote; // Wenn wir nicht wissen was es sein soll, dann ist es immer ein Write Note
   value := trim(lowercase(value));
   Case value Of
+    '': result := ltFoundit; // Das kann bei einem Webcam Cache vorkommen der mittels L4C geloggt wurde
     'attended': result := ltAttended;
     'found it': result := ltFoundit;
     'needs maintenance': result := ltNeedsMaintenance;
@@ -3858,7 +3860,7 @@ Var
   sl: TStringList;
   m2, m: TMemoryStream;
   p, si: int64;
-  s, t: String;
+  s, t, buffer: String;
   c: WideChar;
   inString: Boolean;
   b1, b2: Byte;
@@ -3943,27 +3945,34 @@ Begin
     If t = '"' Then
       inString := Not inString;
     If (t = #10) And (Not inString) Then Begin
-      setlength(result, high(Result) + 2);
-      result[high(result)].GC_Code := trim(copy(s, 1, pos(',', s) - 1));
-      delete(s, 1, pos(',', s));
-      result[high(result)].Date := trim(copy(s, 1, pos(',', s) - 1));
-      delete(s, 1, pos(',', s));
-      result[high(result)].Logtype := EnglishStringToLogType(trim(copy(s, 1, pos(',', s) - 1)));
-      delete(s, 1, pos('"', s));
-      // Befinden sich mehrere " im Text, dann sind die alle Doppelt
-      // nur das 1. und letzte beschränkt den String, alle anderen müssen zu " konvertiert werden.
-      result[high(result)].Comment := copy(s, 1, PosRev('"', s) - 1);
-      result[high(result)].Comment := StringReplace(result[high(result)].Comment, '""', '"', [rfReplaceAll]);
-      result[high(result)].Fav := false;
-      result[high(result)].TBs := Nil;
-      result[high(result)].reportProblem := rptNoProblem;
-      result[high(result)].Image := '';
-      // Wenn beim Import ein Need Maintenance kommt, dann machen wir den Grundsätzlich zum Write note, der User kann das später wieder ändern wenn er mag.
-      If result[high(result)].Logtype = ltNeedsMaintenance Then Begin
-        result[high(result)].Logtype := ltWriteNote;
-        result[high(result)].reportProblem := rptOther;
+      Try
+        buffer := s;
+        setlength(result, high(Result) + 2);
+        result[high(result)].GC_Code := trim(copy(s, 1, pos(',', s) - 1));
+        delete(s, 1, pos(',', s));
+        result[high(result)].Date := trim(copy(s, 1, pos(',', s) - 1));
+        delete(s, 1, pos(',', s));
+        result[high(result)].Logtype := EnglishStringToLogType(trim(copy(s, 1, pos(',', s) - 1)));
+        delete(s, 1, pos('"', s));
+        // Befinden sich mehrere " im Text, dann sind die alle Doppelt
+        // nur das 1. und letzte beschränkt den String, alle anderen müssen zu " konvertiert werden.
+        result[high(result)].Comment := copy(s, 1, PosRev('"', s) - 1);
+        result[high(result)].Comment := StringReplace(result[high(result)].Comment, '""', '"', [rfReplaceAll]);
+        result[high(result)].Fav := false;
+        result[high(result)].TBs := Nil;
+        result[high(result)].reportProblem := rptNoProblem;
+        result[high(result)].Image := '';
+        // Wenn beim Import ein Need Maintenance kommt, dann machen wir den Grundsätzlich zum Write note, der User kann das später wieder ändern wenn er mag.
+        If result[high(result)].Logtype = ltNeedsMaintenance Then Begin
+          result[high(result)].Logtype := ltWriteNote;
+          result[high(result)].reportProblem := rptOther;
+        End;
+        s := '';
+      Except
+        On av: Exception Do Begin
+          Raise exception.Create(av.message + lineending + 'on line: ' + buffer);
+        End;
       End;
-      s := '';
     End
     Else Begin
       s := s + t;
