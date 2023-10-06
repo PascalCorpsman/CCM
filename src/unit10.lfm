@@ -218,6 +218,11 @@ object Form10: TForm10
       Caption = 'Deselect'
       OnClick = MenuItem23Click
     end
+    object MenuItem34: TMenuItem
+      Caption = 'Mark all'
+      ShortCut = 16449
+      OnClick = MenuItem34Click
+    end
     object MenuItem22: TMenuItem
       Caption = '-'
     end

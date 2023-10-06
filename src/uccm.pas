@@ -568,6 +568,7 @@ Const
    *                   Fix custom Filter mit Multi's waren kaputt
    *            2.56 = Fix invalid g_type values on DB-Load and after import
    *            2.57 = Fix loading Field notes from L4C
+   *                   Improve Error messages in Log Dialog
    *)
 
   Version = updater_Version;

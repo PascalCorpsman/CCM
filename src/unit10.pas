@@ -67,6 +67,7 @@ Type
     MenuItem31: TMenuItem;
     MenuItem32: TMenuItem;
     MenuItem33: TMenuItem;
+    MenuItem34: TMenuItem;
     MenuItem4: TMenuItem;
     MenuItem5: TMenuItem;
     MenuItem6: TMenuItem;
@@ -110,6 +111,7 @@ Type
     Procedure MenuItem30Click(Sender: TObject);
     Procedure MenuItem32Click(Sender: TObject);
     Procedure MenuItem33Click(Sender: TObject);
+    Procedure MenuItem34Click(Sender: TObject);
     Procedure MenuItem3Click(Sender: TObject);
     Procedure MenuItem5Click(Sender: TObject);
     Procedure MenuItem6Click(Sender: TObject);
@@ -788,6 +790,12 @@ Begin
   SetSelectedProblemTo(rptNoProblem);
 End;
 
+Procedure TForm10.MenuItem34Click(Sender: TObject);
+Begin
+  // Select all
+  StringGrid1.Selection := Rect(0, 1, StringGrid1.ColCount - 1, StringGrid1.RowCount - 1);
+End;
+
 Procedure TForm10.MenuItem3Click(Sender: TObject);
 Begin
   form1.MenuItem50Click(Nil);
@@ -1344,7 +1352,7 @@ End;
 Procedure TForm10.Button5Click(Sender: TObject);
 Var
   s: String;
-  i, id: Integer;
+  cnt, i, id: Integer;
   b: boolean;
 Begin
   // Mark as Logged
@@ -1355,8 +1363,10 @@ Begin
     showmessage(R_Error_could_not_log_when_username_and_userid_is_not_set);
     exit;
   End;
+  cnt := 0;
   For i := 1 To StringGrid1.RowCount - 1 Do Begin
     If StringGrid1.Cells[GPSImportColChecked, i] = '1' Then Begin
+      inc(cnt);
       If form10.StringGrid1.Cells[GPSImportColCacheName, i] = R_Not_In_Database Then Begin // Wenn der Eintrag nicht in der DB ist, kann er auch nicht geloggt werden
         If ((trim(StringGrid1.Cells[GPSImportColCacheFoundState, i]) = inttostr(LogtypeToLogtypeIndex(ltFoundit))) Or
           (trim(StringGrid1.Cells[GPSImportColCacheFoundState, i]) = inttostr(LogtypeToLogtypeIndex(ltAttended))) Or
@@ -1400,7 +1410,12 @@ Begin
     showmessage(R_Warning_some_caches_where_not_in_database_Could_not_mark_all_caches_in_db);
   End
   Else Begin
-    showmessage(r_Finished);
+    If cnt = 0 Then Begin
+      ShowMessage(R_Noting_Selected);
+    End
+    Else Begin
+      showmessage(r_Finished);
+    End;
   End;
   Button5.Caption := Button5.Caption + ' ✔';
 End;
