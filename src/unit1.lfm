@@ -4,7 +4,7 @@ object Form1: TForm1
   Top = 120
   Width = 408
   Caption = 'Form1'
-  ClientHeight = 483
+  ClientHeight = 505
   ClientWidth = 408
   Menu = MainMenu1
   OnCloseQuery = FormCloseQuery
@@ -107,7 +107,7 @@ object Form1: TForm1
   object StatusBar1: TStatusBar
     Left = 0
     Height = 24
-    Top = 459
+    Top = 481
     Width = 408
     Panels = <    
       item
@@ -372,6 +372,7 @@ object Form1: TForm1
       ''
     )
     Params = <>
+    Macros = <>
     Left = 56
     Top = 248
   end
@@ -787,6 +788,7 @@ object Form1: TForm1
       ''
     )
     Params = <>
+    Macros = <>
     Left = 144
     Top = 248
   end

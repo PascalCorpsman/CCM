@@ -751,7 +751,12 @@ Begin
     list[i - r.top].Image := '';
   End;
   Form10FieldNotesFilename := '';
-  Form10.LoadFieldNoteList(self, list, false);
+  If form29.visible Then Begin
+    Form10.LoadFieldNoteList(form29, list, false);
+  End
+  Else Begin
+    Form10.LoadFieldNoteList(self, list, false);
+  End;
 End;
 
 Procedure TForm1.MenuItem75Click(Sender: TObject);

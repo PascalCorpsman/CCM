@@ -1412,6 +1412,7 @@ Begin
   Else Begin
     If cnt = 0 Then Begin
       ShowMessage(R_Noting_Selected);
+      exit;
     End
     Else Begin
       showmessage(r_Finished);
