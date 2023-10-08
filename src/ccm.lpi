@@ -210,7 +210,7 @@
         <UnitName Value="Unit16"/>
       </Unit20>
       <Unit21>
-        <Filename Value="../../Sample/DatenSteuerung/umapviewer.pas"/>
+        <Filename Value="../../Sample/OpenGL/umapviewer.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit21>
       <Unit22>
