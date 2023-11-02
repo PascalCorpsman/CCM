@@ -684,7 +684,7 @@ Var
 Begin
   // Nachträgliches anfügen weiterer GC-Codes
   s := InputBox(R_Enter_GC_Codes, R_Enter_GC_Codes + ':', '');
-  s := StringReplace(s, ',', ' ', [rfReplaceAll]) + ',';
+  s := StringReplace(s, ' ', ',', [rfReplaceAll]) + ',';
   If trim(s) = '' Then exit;
   // Aus der Eingabe eine Gültige TFieldNoteList erzeugen
   list := Nil;
