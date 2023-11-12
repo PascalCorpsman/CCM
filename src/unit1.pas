@@ -2361,6 +2361,7 @@ Begin
   CkeckFix('Virtueller Cache', Virtual_Cache);
   CkeckFix('Adventure Lab', Geocache_Lab_Cache);
   CkeckFix('Mystery Cache', Unknown_Cache);
+  CkeckFix('Multi', Multi_cache);
 
   If NeedCommit Then Begin
     SQLTransaction.Commit;
@@ -4548,6 +4549,7 @@ Begin
     ComboBox1.ItemIndex := 0;
     t := gettickcount64;
     i := ImportDirectory(form8.Edit1.Text);
+    FixCacheTypeNames();
     t := gettickcount64 - t;
     showmessage(format(RF_Imported_Caches_in, [i, PrettyTime(t)], DefFormat));
     If StringGrid1.RowCount <> 1 Then Begin

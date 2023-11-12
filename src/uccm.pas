@@ -571,6 +571,7 @@ Const
    *                   Improve Error messages in Log Dialog
    *                   Fix Online Log dialog did not pop over custom filter
    *                   Fix Online Log dialog did not import multiple Caches when entered as "spaced" list
+   *                   Fix Cachly Multi import wrong Icon
    *)
 
   Version = updater_Version;
