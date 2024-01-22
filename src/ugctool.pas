@@ -903,6 +903,29 @@ Begin
   result := Length(CleanUpUserNote(UserNote)) <= 2499; // Offiziell sind es 2500, aber wir bauen ein klein bisschen Sicherheit ein.
 End;
 
+(*
+ * Listing = HTML-Seite eines TB'S
+ *)
+
+Function ExtractTB_Code(Const listing: TStringlist): String;
+Var
+  i, j, k: integer;
+Begin
+  //  <a href="https://coord.info/TB8KVZX" class="CoordInfoLink">
+  result := '';
+  For i := 0 To listing.Count - 1 Do Begin
+    If pos('https://coord.info/', listing[i]) <> 0 Then Begin
+      j := pos('https://coord.info/', listing[i]) + Length('https://coord.info/');
+      For k := j + 1 To length(listing[i]) Do Begin
+        If listing[i][k] = '"' Then Begin
+          result := copy(listing[i], j, k - j);
+          exit;
+        End;
+      End;
+    End;
+  End;
+End;
+
 { TCoordElement }
 
 Constructor TCoordElement.Create(Lat, Lon: Double; UserToken: String);
@@ -2256,25 +2279,6 @@ Function TGCTool.GetTBLogRecord(TBCode: String): TTravelbugRecord;
     End;
   End;
 
-  Function ExtractTB_Code(Const listing: TStringlist): String;
-  Var
-    i, j, k: integer;
-  Begin
-    //  <a href="https://coord.info/TB8KVZX" class="CoordInfoLink">
-    result := '';
-    For i := 0 To listing.Count - 1 Do Begin
-      If pos('https://coord.info/', listing[i]) <> 0 Then Begin
-        j := pos('https://coord.info/', listing[i]) + Length('https://coord.info/');
-        For k := j + 1 To length(listing[i]) Do Begin
-          If listing[i][k] = '"' Then Begin
-            result := copy(listing[i], j, k - j);
-            exit;
-          End;
-        End;
-      End;
-    End;
-  End;
-
   Function ExtractReleasedDate(Const listing: TStringlist): String;
   Var
     i, j, k: integer;
@@ -2447,7 +2451,11 @@ Begin
   For i := 0 To sl.count - 1 Do Begin
     If pos('ctl00_ContentBody_OptionTable', sl[i]) <> 0 Then b := true;
     If b Then Begin
-      If pos('/images/logtypes/48.png', sl[i]) <> 0 Then Begin
+      If pos('/images/logtypes/13.png', sl[i]) <> 0 Then Begin // Retrieved it
+        result.LogState := lsDiscovered;
+        result.Comment := ExtractLog(sl);
+      End;
+      If pos('/images/logtypes/48.png', sl[i]) <> 0 Then Begin // Discovered it
         result.LogState := lsDiscovered;
         result.Comment := ExtractLog(sl);
       End;
@@ -2501,25 +2509,6 @@ Begin
 End;
 
 Function TGCTool.DiscoverTB(Data: TTravelbugRecord): Boolean;
-
-  Function ExtractTB_Code(Const listing: TStringlist): String;
-  Var
-    i, j, k: integer;
-  Begin
-    //  <a href="https://coord.info/TB8KVZX" class="CoordInfoLink">
-    result := '';
-    For i := 0 To listing.Count - 1 Do Begin
-      If pos('https://coord.info/', listing[i]) <> 0 Then Begin
-        j := pos('https://coord.info/', listing[i]) + Length('https://coord.info/');
-        For k := j + 1 To length(listing[i]) Do Begin
-          If listing[i][k] = '"' Then Begin
-            result := copy(listing[i], j, k - j);
-            exit;
-          End;
-        End;
-      End;
-    End;
-  End;
 
   Function ExtractButtonURL(Const listing: TStringlist): String;
   Var

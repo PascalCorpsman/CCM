@@ -573,7 +573,7 @@ Const
    *                   Fix Online Log dialog did not import multiple Caches when entered as "spaced" list
    *                   Fix Cachly Multi import wrong Icon
    * HP release 2.58 = Fix TB'discovering was broken
-   *            2.59 =
+   *            2.59 = Fix Retrieved TB's where not counted as "discovered" TB's
    *)
 
   Version = updater_Version;
