@@ -321,7 +321,7 @@ Type
 
     Function postAPI(Path: String; Filename: String): String; overload; // Upload eines Bildes unter Verwendung einer Multipart Form
     Function postAPI(Path: String; Params: TJSONObj): String; overload;
-    Function postJSON(URL: String; Params: TJSONObj): String; overload;
+    Function postJSON(URL: String; Params: TJSONObj; AddToHeader: String = ''): String; overload;
 
     Function patchAPI(Path: String): String;
 
@@ -503,6 +503,7 @@ Uses
   LazFileUtils,
   ulanguage,
   umultipartformdatastream,
+  DateUtils,
   ssl_Openssl;
 
 Function LogStateToOption(State: TLogtype): String;
@@ -1285,7 +1286,7 @@ Begin
   result := postJSON(API_URL + path, Params);
 End;
 
-Function TGCTool.postJSON(URL: String; Params: TJSONObj): String;
+Function TGCTool.postJSON(URL: String; Params: TJSONObj; AddToHeader: String): String;
 Var
   body: TStringlist;
   t: String;
@@ -1294,6 +1295,9 @@ Begin
   RefreshAPIToken; // Hohlen eines API-Tokens, falls notwendig
   fClient.Clear; // Löscht Header, Body und Mimetype
   fClient.MimeType := 'application/json';
+  If AddToHeader <> '' Then Begin
+    fClient.Headers.Add(AddToHeader);
+  End;
   body := TStringList.Create;
   t := params.ToString();
   body.Add(t);
@@ -2498,17 +2502,33 @@ End;
 
 Function TGCTool.DiscoverTB(Data: TTravelbugRecord): Boolean;
 
-  Function ExtractButtonURL(): String;
+  Function ExtractTB_Code(Const listing: TStringlist): String;
   Var
-    sl: TStringList;
+    i, j, k: integer;
+  Begin
+    //  <a href="https://coord.info/TB8KVZX" class="CoordInfoLink">
+    result := '';
+    For i := 0 To listing.Count - 1 Do Begin
+      If pos('https://coord.info/', listing[i]) <> 0 Then Begin
+        j := pos('https://coord.info/', listing[i]) + Length('https://coord.info/');
+        For k := j + 1 To length(listing[i]) Do Begin
+          If listing[i][k] = '"' Then Begin
+            result := copy(listing[i], j, k - j);
+            exit;
+          End;
+        End;
+      End;
+    End;
+  End;
+
+  Function ExtractButtonURL(Const listing: TStringlist): String;
+  Var
     i: Integer;
   Begin
     result := '';
-    sl := TStringList.Create;
-    CopyStreamToStrings(fClient.Document, sl);
-    For i := 0 To sl.count - 1 Do Begin
-      If pos('href="log.aspx?wid=', sl[i]) <> 0 Then Begin
-        result := copy(sl[i], pos('href="log.aspx?wid=', sl[i]), length(sl[i]));
+    For i := 0 To listing.count - 1 Do Begin
+      If pos('href="log.aspx?wid=', listing[i]) <> 0 Then Begin
+        result := copy(listing[i], pos('href="log.aspx?wid=', listing[i]), length(listing[i]));
         result := copy(result, pos('"', result) + 1, length(result));
         result := copy(result, 1, pos('"', result) - 1);
         break;
@@ -2516,15 +2536,58 @@ Function TGCTool.DiscoverTB(Data: TTravelbugRecord): Boolean;
     End;
     // Todo: Klären ob man hier evtl HTMLStringToString einsetzen muss
     result := StringReplace(result, '&amp;', '&', [rfReplaceAll]);
+  End;
+
+  Function Extract_csrfToken(): String;
+  Var
+    sl: TStringList;
+    i: SizeInt;
+    t: String;
+  Begin
+    result := '';
+    sl := TStringList.Create;
+    CopyStreamToStrings(fclient.Document, sl);
+    i := pos('"csrfToken":"', sl.text);
+    If i <> 0 Then Begin
+      t := copy(sl.text, i + length('"csrfToken":"'), length(sl.text));
+      result := copy(t, 1, pos('"', t) - 1);
+    End;
+    //  "csrfToken":"ZD4tpsJn-I5gLaYAjwSc3KDDoTU0Xo11fn9c"
     sl.free;
+  End;
+
+  (*
+   * Wandelt das Logdatum das vom CCM als "DD.MM.YYYY" kommt um in
+   * 'YYYY-MM-DD''T''HH:NN:SS''Z'''
+   *)
+  Function ConvertLogdate(aDate: String): String;
+  Var
+    Value: TDateTime;
+  Begin
+    value := ScanDateTime('DD.MM.YYYY', aDate);
+    result := GetTime(value);
+  End;
+
+  Function TravelbugRecordToJSon(): TJSONObj;
+  Var
+    jn: TJSONNode;
+  Begin
+    //  '{"images":[],"logDate":"2024-01-21T16:43:18.520Z","logText":"TEST","logType":48,"trackingCode":"xxxxxx","usedFavoritePoint":false}'
+    jn := TJSONNode.Create;
+    jn.AddObj(TJSONNodeObj.Create('Images', TJSONArray.Create));
+    jn.AddObj(TJSONValue.Create('logDate', ConvertLogdate(data.LogDate), true));
+    jn.AddObj(TJSONValue.Create('logText', data.Comment, true));
+    jn.AddObj(TJSONValue.Create('logType', TBLogStateToOption(tlDiscoveredIt), false));
+    jn.AddObj(TJSONValue.Create('trackingCode', data.Discover_Code, true));
+    jn.AddObj(TJSONValue.Create('usedFavoritePoint', 'false', false));
+    result := jn;
   End;
 
 Var
   postURL: String;
-  Body: TStringlist;
-  __VIEWSTATES: TStringArray;
-  __VIEWSTATEGENERATOR: String;
-  i: integer;
+  sl: TStringlist;
+  res, CSRFToken: String;
+  jo: TJSONObj;
 Begin
   result := false;
   fLastError := '';
@@ -2540,59 +2603,38 @@ Begin
   fClient.Headers.Clear;
   fClient.HTTPMethod('GET', TrackableListingURL + 'details.aspx?tracker=' + lowercase(data.Discover_Code));
   Follow_Links(TrackableListingURL + 'details.aspx?tracker=' + lowercase(data.Discover_Code));
-  postURL := ExtractButtonURL();
+  sl := TStringList.Create;
+  CopyStreamToStrings(fclient.Document, sl);
+  postURL := ExtractButtonURL(sl);
   If postURL = '' Then Begin
     fLastError := 'Could not extract discoverbutton id';
+    sl.free;
     exit;
   End;
-  // Aufrufen der Logseite
+  data.TB_Code := ExtractTB_Code(sl);
+  If data.TB_Code = '' Then Begin
+    fLastError := 'Could not extract TB_Code';
+    sl.free;
+    exit;
+  End;
+  sl.free;
+  // Aufruf Log Seite:
   fClient.Headers.Clear;
   fClient.HTTPMethod('GET', TrackableListingURL + postURL);
   Follow_Links(TrackableListingURL + postURL);
-  ExtractViewStates(__VIEWSTATES, __VIEWSTATEGENERATOR);
-  If (length(__VIEWSTATES) = 0) Or
-    (__VIEWSTATEGENERATOR = '') Then Begin
-    fLastError := 'TGCTool.DiscoverTB: Could not extract viewstates';
+  CSRFToken := Extract_csrfToken();
+  If CSRFToken = '' Then Begin
+    fLastError := 'Could not extract crf token';
     exit;
   End;
-  Body := TStringList.Create;
-  body.Text :=
-    '__EVENTTARGET=' +
-    '&__EVENTARGUMENT=' +
-    '&__VIEWSTATEFIELDCOUNT=' + inttostr(length(__VIEWSTATES));
-  For i := 0 To high(__VIEWSTATES) Do Begin
-    If i = 0 Then Begin
-      body.text := body.text + '&__VIEWSTATE=' + EncodeURI(__VIEWSTATES[0]);
-    End
-    Else Begin
-      body.text := body.text + '&__VIEWSTATE' + inttostr(i) + '=' + EncodeURI(__VIEWSTATES[i]);
-    End;
-  End;
-  body.text := body.text +
-    '&__VIEWSTATEGENERATOR=' + __VIEWSTATEGENERATOR +
-    '&ctl00%24ContentBody%24LogBookPanel1%24uxLogCreationSource=Old' +
-    '&ctl00%24ContentBody%24LogBookPanel1%24LogContainsHtml=' +
-    '&ctl00%24ContentBody%24LogBookPanel1%24LogContainsUbb=' +
-    '&ctl00%24ContentBody%24LogBookPanel1%24uxRawLogText=' +
-    '&ctl00%24ContentBody%24LogBookPanel1%24IsEditLog=False' +
-    '&ctl00%24ContentBody%24LogBookPanel1%24ddLogType=48' +
-    '&ctl00%24ContentBody%24LogBookPanel1%24uxDateVisited=' + data.LogDate +
-    '&ctl00%24ContentBody%24LogBookPanel1%24tbCode=' + data.Discover_Code +
-    '&ctl00%24ContentBody%24LogBookPanel1%24uxLogInfo=' + EncodeURI(data.Comment) +
-    '&ctl00%24ContentBody%24LogBookPanel1%24btnSubmitLog=Logeintrag+%C3%BCbermitteln' +
-    '&ctl00%24ContentBody%24uxVistOtherTrackableTB=';
-  fClient.MimeType := 'application/x-www-form-urlencoded';
-  fClient.Headers.Clear;
-  fClient.Headers.Add('Referer: ' + TrackableListingURL + postURL);
-  fClient.Document.Clear;
-  CopyStringsToStream(body, fClient.Document);
-  // Der Eigentliche Log
-  fClient.HTTPMethod('POST', TrackableListingURL + postURL);
-  Body.free;
-  result := fClient.ResultCode = 302; // Wenn wir weiter Geleitet werden ist alles gut ;)
-  //  Der Resultcode ist 302 aber dennoch wird nicht geloggt.
+  postURL := 'https://www.geocaching.com/api/live/v1/logs/' + data.TB_Code + '/trackableLog';
+  jo := TravelbugRecordToJSon();
+  res := postJSON(postURL, jo, 'CSRF-Token: ' + CSRFToken);
+  jo.free;
+  // Kleine Heuristik, die Prüft ob das Loggen erfolgreich war ..
+  result := pos('"id":48', res) <> 0;
   If Not result Then Begin
-    fLastError := 'Could not discover [HTMLResult=' + inttostr(fClient.ResultCode) + ']';
+    fLastError := 'Could not discover [HTMLResult=' + inttostr(fClient.ResultCode) + ']' + LineEnding + fLastError;
   End;
 End;
 

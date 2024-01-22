@@ -572,6 +572,8 @@ Const
    *                   Fix Online Log dialog did not pop over custom filter
    *                   Fix Online Log dialog did not import multiple Caches when entered as "spaced" list
    *                   Fix Cachly Multi import wrong Icon
+   * HP release 2.58 = Fix TB'discovering was broken
+   *            2.59 =
    *)
 
   Version = updater_Version;
@@ -2326,9 +2328,7 @@ End;
 
 Function TB_CommitSQLTransactionQuery(aText: String): Boolean;
 Var
-  u, t: String;
-  i: integer;
-  instring, instring2: Boolean;
+  u: String;
 Begin
   result := false;
   u := GetValue('General', 'Username', '');
@@ -2341,9 +2341,7 @@ End;
 
 Function CommitSQLTransactionQuery(aText: String): Boolean;
 Var
-  u, t: String;
-  i: integer;
-  instring, instring2: Boolean;
+  u: String;
 Begin
   u := GetValue('General', 'Username', '');
   aText := StringReplace(aText, '%username%', u, [rfIgnoreCase, rfReplaceAll]);
