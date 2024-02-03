@@ -1,7 +1,7 @@
 (******************************************************************************)
 (* uGraphiks.pas                                                   ??.??.???? *)
 (*                                                                            *)
-(* Version     : 0.09                                                         *)
+(* Version     : 0.11                                                         *)
 (*                                                                            *)
 (* Author      : Uwe Schächterle (Corpsman)                                   *)
 (*                                                                            *)
@@ -36,6 +36,8 @@
 (*                      added foldImage                                       *)
 (*                      add Wrap Modes                                        *)
 (*               0.09 - added floodfill                                       *)
+(*               0.10 - FIX: revert 90* Rotation images back to old algorithm *)
+(*               0.11 - FIX: revert 90* Rotations to matrix multiplications   *)
 (*                                                                            *)
 (******************************************************************************)
 
@@ -765,7 +767,6 @@ Var
   b: Byte;
   i, j: Integer;
 Begin
-  //  Bitmap.pixelformat := pf24bit; -- Das Darf nicht drin sein, sonst sind evtl alle Werte 0 !!!
   TempIntfImg := TLazIntfImage.Create(0, 0);
   TempIntfImg.LoadFromBitmap(Bitmap.Handle, Bitmap.MaskHandle);
   For j := 0 To bitmap.height - 1 Do
@@ -788,7 +789,11 @@ Var
   m: TMatrix3x3;
 Begin
   m := IdentityMatrix3x3;
+  m[0, 0] := 1;
   m[1, 1] := -1;
+  // Revert Middlepoint shifting
+  m[0, 2] := 0.5;
+  m[1, 2] := 0.5;
   MulImage(Bitmap, m, imNone, wmBlack);
 End;
 
@@ -798,6 +803,10 @@ Var
 Begin
   m := IdentityMatrix3x3;
   m[0, 0] := -1;
+  m[1, 1] := 1;
+  // Revert Middlepoint shifting
+  m[0, 2] := 0.5;
+  m[1, 2] := 0.5;
   MulImage(Bitmap, m, imNone, wmBlack);
 End;
 
@@ -807,9 +816,12 @@ Var
 Begin
   m := IdentityMatrix3x3;
   m[0, 0] := 0;
-  m[1, 0] := 1;
-  m[0, 1] := -1;
   m[1, 1] := 0;
+  m[0, 1] := -1;
+  m[1, 0] := 1;
+  // Revert Middlepoint shifting
+  m[0, 2] := 0.5;
+  m[1, 2] := 0.5;
   MulImage(Bitmap, m, imNone, wmBlack);
 End;
 
@@ -819,9 +831,12 @@ Var
 Begin
   m := IdentityMatrix3x3;
   m[0, 0] := 0;
-  m[1, 0] := -1;
-  m[0, 1] := 1;
   m[1, 1] := 0;
+  m[0, 1] := 1;
+  m[1, 0] := -1;
+  // Revert Middlepoint shifting
+  m[0, 2] := 0.5;
+  m[1, 2] := 0.5;
   MulImage(Bitmap, m, imNone, wmBlack);
 End;
 
@@ -832,6 +847,9 @@ Begin
   m := IdentityMatrix3x3;
   m[0, 0] := -1;
   m[1, 1] := -1;
+  // Revert Middlepoint shifting
+  m[0, 2] := 0.5;
+  m[1, 2] := 0.5;
   MulImage(Bitmap, m, imNone, wmBlack);
 End;
 
