@@ -574,8 +574,9 @@ Const
    *                   Fix Cachly Multi import wrong Icon
    * HP release 2.58 = Fix TB'discovering was broken
    *            2.59 = Fix Retrieved TB's where not counted as "discovered" TB's
-   *            2.60 = Fix reduce "blocking" due light cache downloading (is now skipable)
+   * HP release 2.60 = Fix reduce "blocking" due light cache downloading (is now skipable)
    *                   Fix lite cache downloading was broken
+   *            2.61 = 
    *)
 
   Version = updater_Version;
