@@ -7,18 +7,18 @@ object Form40: TForm40
   ClientHeight = 600
   ClientWidth = 314
   FormStyle = fsStayOnTop
+  LCLVersion = '3.99.0.0'
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  LCLVersion = '2.3.0.0'
   object Button1: TButton
     Left = 8
     Height = 25
     Top = 560
     Width = 289
     Caption = 'Close'
-    OnClick = Button1Click
     TabOrder = 0
+    OnClick = Button1Click
   end
   object CheckBox1: TCheckBox
     Left = 8
@@ -26,8 +26,8 @@ object Form40: TForm40
     Top = 8
     Width = 80
     Caption = 'Hide own'
-    OnClick = CheckBox1Click
     TabOrder = 1
+    OnClick = CheckBox1Click
   end
   object CheckBox2: TCheckBox
     Left = 8
@@ -35,8 +35,8 @@ object Form40: TForm40
     Top = 32
     Width = 97
     Caption = 'Hide founds'
-    OnClick = CheckBox2Click
     TabOrder = 2
+    OnClick = CheckBox2Click
   end
   object CheckBox3: TCheckBox
     Left = 8
@@ -45,10 +45,10 @@ object Form40: TForm40
     Width = 22
     Color = clDefault
     Font.Color = clMaroon
-    OnClick = CheckBox3Click
     ParentColor = False
     ParentFont = False
     TabOrder = 3
+    OnClick = CheckBox3Click
   end
   object GroupBox1: TGroupBox
     Left = 8
@@ -65,8 +65,8 @@ object Form40: TForm40
       Top = 0
       Width = 41
       Caption = 'All'
-      OnClick = CheckBox4Click
       TabOrder = 0
+      OnClick = CheckBox4Click
     end
     object CheckBox5: TCheckBox
       Left = 8
@@ -74,8 +74,8 @@ object Form40: TForm40
       Top = 24
       Width = 54
       Caption = 'Tradi'
-      OnClick = CheckBox5Click
       TabOrder = 1
+      OnClick = CheckBox5Click
     end
     object CheckBox6: TCheckBox
       Left = 64
@@ -83,8 +83,8 @@ object Form40: TForm40
       Top = 24
       Width = 56
       Caption = 'Multi'
-      OnClick = CheckBox6Click
       TabOrder = 2
+      OnClick = CheckBox6Click
     end
     object CheckBox7: TCheckBox
       Left = 120
@@ -92,8 +92,8 @@ object Form40: TForm40
       Top = 24
       Width = 73
       Caption = 'Mystery'
-      OnClick = CheckBox7Click
       TabOrder = 3
+      OnClick = CheckBox7Click
     end
     object CheckBox8: TCheckBox
       Left = 120
@@ -101,8 +101,8 @@ object Form40: TForm40
       Top = 0
       Width = 71
       Caption = 'exclude'
-      OnClick = CheckBox8Click
       TabOrder = 4
+      OnClick = CheckBox8Click
     end
     object CheckBox9: TCheckBox
       Left = 192
@@ -110,8 +110,8 @@ object Form40: TForm40
       Top = 24
       Width = 64
       Caption = 'Events'
-      OnClick = CheckBox9Click
       TabOrder = 5
+      OnClick = CheckBox9Click
     end
   end
   object Button2: TButton
@@ -120,8 +120,8 @@ object Form40: TForm40
     Top = 384
     Width = 289
     Caption = 'Merge all cached caches into actual database'
-    OnClick = Button2Click
     TabOrder = 5
+    OnClick = Button2Click
   end
   object Button3: TButton
     Left = 8
@@ -129,8 +129,8 @@ object Form40: TForm40
     Top = 416
     Width = 289
     Caption = 'Merge all visual caches into actual database'
-    OnClick = Button3Click
     TabOrder = 6
+    OnClick = Button3Click
   end
   object GroupBox2: TGroupBox
     Left = 8
@@ -165,8 +165,8 @@ object Form40: TForm40
       Top = 104
       Width = 232
       Caption = 'Start recording'
-      OnClick = Button4Click
       TabOrder = 2
+      OnClick = Button4Click
     end
     object CheckBox10: TCheckBox
       Left = 16
@@ -174,8 +174,8 @@ object Form40: TForm40
       Top = 8
       Width = 74
       Caption = 'Enabled'
-      OnClick = CheckBox10Click
       TabOrder = 3
+      OnClick = CheckBox10Click
     end
     object Label2: TLabel
       Left = 136
@@ -186,7 +186,7 @@ object Form40: TForm40
     end
     object Edit1: TEdit
       Left = 173
-      Height = 25
+      Height = 26
       Top = 8
       Width = 80
       TabOrder = 4
@@ -198,8 +198,8 @@ object Form40: TForm40
       Top = 144
       Width = 100
       Caption = 'Export route'
-      OnClick = Button5Click
       TabOrder = 5
+      OnClick = Button5Click
     end
     object Button6: TButton
       Left = 146
@@ -207,8 +207,8 @@ object Form40: TForm40
       Top = 144
       Width = 100
       Caption = 'Import route'
-      OnClick = Button6Click
       TabOrder = 6
+      OnClick = Button6Click
     end
     object RadioButton3: TRadioButton
       Left = 16
@@ -244,10 +244,10 @@ object Form40: TForm40
     Width = 22
     Color = clDefault
     Font.Color = clMaroon
-    OnClick = CheckBox11Click
     ParentColor = False
     ParentFont = False
     TabOrder = 8
+    OnClick = CheckBox11Click
   end
   object Label3: TLabel
     Left = 32
@@ -265,8 +265,8 @@ object Form40: TForm40
     Top = 488
     Width = 289
     Caption = 'Merge all cached LABs into actual database'
-    OnClick = Button7Click
     TabOrder = 9
+    OnClick = Button7Click
   end
   object Button8: TButton
     Left = 8
@@ -274,8 +274,8 @@ object Form40: TForm40
     Top = 520
     Width = 289
     Caption = 'Merge all visual LABs into actual database'
-    OnClick = Button8Click
     TabOrder = 10
+    OnClick = Button8Click
   end
   object CheckBox12: TCheckBox
     Left = 8

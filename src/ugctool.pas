@@ -2948,7 +2948,7 @@ Begin
     End;
     //params := params + '&app=cgeo'; // -- Das scheint es nicht zu brauchen, dann sagen wir, wer wir sind.
     params := params + '&app=ccm'; // Wir sagen wer wir sind.
-    res := getAPI('/web/search', params);
+    res := getAPI('/web/search/v2', params);
     //sl := TStringList.Create;
     //sl.LoadFromFile('/home/corpsman/Desktop/dl_0.txt');
     //res := sl.Text;

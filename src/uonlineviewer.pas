@@ -35,6 +35,8 @@ Type
     a, b: Integer;
   End;
 
+  TWaitEvent = Procedure(Sender: TObject; Delay: Int64) Of Object;
+
   { TOnlineViewer }
 
   TOnlineViewer = Class
@@ -71,6 +73,8 @@ Type
   public
     EnableDownloading: Boolean; // Nur wenn True, wird überhaupt geladen
     EnableLABDownloading: Boolean; // Nur wenn True, wird überhaupt geladen
+
+    WaitEvent: TWaitEvent;
     Property CacheCount: integer read GetCacheCount;
     Property CacheLabCount: integer read GetCacheLabCount;
     (*
@@ -238,7 +242,14 @@ Begin
   While (retries > 0) And (Not Valid) Do Begin
     arr := GCTsearchMap(vp, sp, Valid);
     If Not Valid Then Begin
-      sleep(5000);
+      // Über den Event kann der User Abbrechen, wenn es ihm zu lange dauert ..
+      If assigned(WaitEvent) Then Begin
+        WaitEvent(self, 5000);
+        If (Not EnableDownloading) Then exit;
+      End
+      Else Begin
+        Sleep(5000);
+      End;
     End;
     dec(retries);
   End;
@@ -437,6 +448,7 @@ End;
 Constructor TOnlineViewer.Create(Control: TOpenGLControl);
 Begin
   Inherited create();
+  WaitEvent := Nil;
   ResetCache;
   fOpenGLControl := Control;
   fHideOwn := true;
@@ -703,6 +715,7 @@ Begin
     lat := latmi;
     While lat < latma Do Begin
       RefreshCachesInBlock(lat, lon);
+      If (Not EnableDownloading) Then exit;
       lat := lat + GridStep * 1000;
       If (abs(lat) Mod 100000) >= 60000 Then Begin // die 10000 Koordinate läuft von 0.59 also muss sie bei 60 um 40 erhöht werden
         lat := lat + 40000;

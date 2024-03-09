@@ -91,6 +91,7 @@ Type
     fRoute: Array Of TVector2;
     Procedure MergeLiteCachesToDB(Const Caches: TLiteCacheArray);
     Procedure MergeLabsCachesToDB(Const Labs: TLABCacheInfoArray);
+    Procedure OnWaitEvent(Sender: TObject; Delay: Int64);
   public
     Function GetSplashHint(x, y: integer): String;
     Function GetLabAt(x, y: integer): TLABCacheInfo;
@@ -534,6 +535,9 @@ End;
 
 Procedure TForm40.FormCloseQuery(Sender: TObject; Var CanClose: boolean);
 Begin
+  // Stop any loading
+  fOnlineViewer.EnableDownloading := false;
+  fOnlineViewer.EnableLABDownloading := false;
   CheckBox3.Checked := false;
   CheckBox10.Checked := false;
   ClearCaches();
@@ -545,6 +549,7 @@ Begin
   caption := 'Online mode configurator';
   fRoute := Nil;
   fOnlineViewer := TOnlineViewer.create(form15.OpenGLControl1);
+  fOnlineViewer.WaitEvent := @OnWaitEvent;
   Constraints.MinHeight := Height;
   Constraints.MaxHeight := Height;
   Constraints.MinWidth := Width;
@@ -617,6 +622,18 @@ Begin
   t := GetTickCount64 - t;
   form1.RefreshDataBaseCacheCountinfo;
   Showmessage(format(RF_Script_finished_in, [PrettyTime(t)], DefFormat));
+End;
+
+Procedure TForm40.OnWaitEvent(Sender: TObject; Delay: Int64);
+Var
+  t: QWord;
+Begin
+  t := GetTickCount64;
+  While t + Delay >= GetTickCount64 Do Begin
+    sleep(1);
+    Application.ProcessMessages;
+    If Not fOnlineViewer.EnableDownloading Then exit;
+  End;
 End;
 
 Function TForm40.GetSplashHint(x, y: integer): String;
