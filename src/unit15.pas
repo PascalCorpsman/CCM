@@ -54,6 +54,7 @@ Type
     MenuItem22: TMenuItem;
     MenuItem23: TMenuItem;
     MenuItem24: TMenuItem;
+    MenuItem25: TMenuItem;
     MenuItem3: TMenuItem;
     MenuItem4: TMenuItem;
     MenuItem5: TMenuItem;
@@ -81,6 +82,7 @@ Type
     Procedure MenuItem21Click(Sender: TObject);
     Procedure MenuItem22Click(Sender: TObject);
     Procedure MenuItem24Click(Sender: TObject);
+    Procedure MenuItem25Click(Sender: TObject);
     Procedure MenuItem2Click(Sender: TObject);
     Procedure MenuItem3Click(Sender: TObject);
     Procedure MenuItem4Click(Sender: TObject);
@@ -653,6 +655,47 @@ Begin
   mv.EmptyTileCache;
   OpenGLControl1Paint(Nil);
   showmessage(format(RF_Finished_deleted_files, [c]));
+End;
+
+Procedure TForm15.MenuItem25Click(Sender: TObject);
+Var
+  value: String;
+  lat, lon: Double;
+  sa: TStringArray;
+Begin
+  // Center at coordinate
+  value := '';
+  If InputQuery(R_Question, r_enter_search_text, false, value) Then Begin
+    value := uppercase(value);
+    If (pos('N', value) <> 0) Or (pos('S', value) <> 0) Then Begin
+      // Annahme einer DEG Koordinate
+      If Not StringToCoord(value, lat, lon) Then Begin
+        showmessage(RF_Error_unable_to_decode_location);
+        exit;
+      End;
+    End
+    Else Begin
+      // Annahme einer DEC Koordinate (wie sie von maps.google.com kommt :) )
+      // Diese so umformatieren dass aus möglichst vielen Anfangsbedingungen
+      // "Zahl","Zahl","Zahl","Zahl"
+      // wird
+      value := StringReplace(value, '.', ',', [rfReplaceAll]);
+      value := StringReplace(value, ' ', ',', [rfReplaceAll]);
+      While pos(',,', value) <> 0 Do Begin
+        value := StringReplace(value, ',,', ',', [rfReplaceAll]);
+      End;
+      sa := value.Split(',');
+      If length(sa) <> 4 Then Begin
+        showmessage(RF_Error_unable_to_decode_location);
+        exit;
+      End;
+      lat := StrToFloat(sa[0] + FormatSettings.DecimalSeparator + sa[1]);
+      lon := StrToFloat(sa[2] + FormatSettings.DecimalSeparator + sa[3]);
+    End;
+    mv.Zoom := 14;
+    mv.CenterLongLat(lon, lat);
+    OpenGLControl1Paint(Nil);
+  End;
 End;
 
 Procedure TForm15.MenuItem2Click(Sender: TObject);

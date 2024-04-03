@@ -576,7 +576,7 @@ Const
    *            2.59 = Fix Retrieved TB's where not counted as "discovered" TB's
    * HP release 2.60 = Fix reduce "blocking" due light cache downloading (is now skipable)
    *                   Fix lite cache downloading was broken
-   *            2.61 = 
+   *            2.61 = Center at coodinate (in Map view)
    *)
 
   Version = updater_Version;

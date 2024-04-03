@@ -1,7 +1,7 @@
 object Form15: TForm15
-  Left = 258
+  Left = 661
   Height = 471
-  Top = 94
+  Top = 224
   Width = 714
   Caption = 'Form15'
   ClientHeight = 471
@@ -91,8 +91,12 @@ object Form15: TForm15
       end
     end
     object MenuItem21: TMenuItem
-      Caption = 'Center at'
+      Caption = 'Center at cache'
       OnClick = MenuItem21Click
+    end
+    object MenuItem25: TMenuItem
+      Caption = 'Center at coordinate'
+      OnClick = MenuItem25Click
     end
     object MenuItem12: TMenuItem
       Caption = '-'
