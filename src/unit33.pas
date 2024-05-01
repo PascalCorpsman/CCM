@@ -498,7 +498,7 @@ Begin
   End;
   If form4.visible Then form4.hide;
   If j <> k Then Begin
-    showmessage(R_Error_could_not_discover_all_TBs_see_table);
+    showmessage(R_Error_could_not_discover_all_TBs_see_table + LineEnding + GCTGetLastError);
   End
   Else Begin
     showmessage(R_Finished);

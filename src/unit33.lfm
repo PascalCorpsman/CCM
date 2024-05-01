@@ -6,10 +6,10 @@ object Form33: TForm33
   Caption = 'Form33'
   ClientHeight = 532
   ClientWidth = 809
+  Position = poScreenCenter
+  LCLVersion = '3.99.0.0'
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  Position = poScreenCenter
-  LCLVersion = '2.1.0.0'
   object Button1: TButton
     Left = 144
     Height = 25
@@ -17,8 +17,8 @@ object Form33: TForm33
     Width = 500
     Anchors = [akLeft, akRight, akBottom]
     Caption = 'Discover all selected'
-    OnClick = Button1Click
     TabOrder = 4
+    OnClick = Button1Click
   end
   object StringGrid1: TStringGrid
     Left = 8
@@ -68,14 +68,14 @@ object Form33: TForm33
   end
   object Edit1: TEdit
     Left = 96
-    Height = 25
+    Height = 26
     Top = 8
     Width = 512
     Anchors = [akTop, akLeft, akRight]
-    OnKeyPress = Edit1KeyPress
-    OnKeyUp = Edit1KeyUp
     TabOrder = 0
     Text = 'Edit1'
+    OnKeyPress = Edit1KeyPress
+    OnKeyUp = Edit1KeyUp
   end
   object Button2: TButton
     Left = 616
@@ -84,8 +84,8 @@ object Form33: TForm33
     Width = 75
     Anchors = [akTop, akRight]
     Caption = 'Add to list'
-    OnClick = Button2Click
     TabOrder = 1
+    OnClick = Button2Click
   end
   object Button3: TButton
     Left = 8
@@ -94,8 +94,8 @@ object Form33: TForm33
     Width = 60
     Anchors = [akLeft, akBottom]
     Caption = 'All'
-    OnClick = Button3Click
     TabOrder = 6
+    OnClick = Button3Click
   end
   object Button4: TButton
     Left = 76
@@ -104,8 +104,8 @@ object Form33: TForm33
     Width = 60
     Anchors = [akLeft, akBottom]
     Caption = 'None'
-    OnClick = Button4Click
     TabOrder = 7
+    OnClick = Button4Click
   end
   object Button5: TButton
     Left = 144
@@ -114,8 +114,8 @@ object Form33: TForm33
     Width = 500
     Anchors = [akLeft, akRight, akBottom]
     Caption = 'Set comment for selected'
-    OnClick = Button5Click
     TabOrder = 3
+    OnClick = Button5Click
   end
   object Button6: TButton
     Left = 144
@@ -124,8 +124,8 @@ object Form33: TForm33
     Width = 500
     Anchors = [akLeft, akRight, akBottom]
     Caption = 'Close'
-    OnClick = Button6Click
     TabOrder = 5
+    OnClick = Button6Click
   end
   object Button7: TButton
     Left = 8
@@ -134,8 +134,8 @@ object Form33: TForm33
     Width = 128
     Anchors = [akLeft, akBottom]
     Caption = 'Delete selected'
-    OnClick = Button7Click
     TabOrder = 8
+    OnClick = Button7Click
   end
   object Button8: TButton
     Left = 696
@@ -145,10 +145,10 @@ object Form33: TForm33
     Width = 109
     Anchors = [akTop, akRight]
     Caption = 'Import commalist'
-    OnClick = Button8Click
     ParentShowHint = False
     ShowHint = True
     TabOrder = 9
+    OnClick = Button8Click
   end
   object Button9: TButton
     Left = 8
@@ -157,8 +157,8 @@ object Form33: TForm33
     Width = 128
     Anchors = [akLeft, akBottom]
     Caption = 'Export commalist'
-    OnClick = Button9Click
     TabOrder = 10
+    OnClick = Button9Click
   end
   object PopupMenu1: TPopupMenu
     Left = 117

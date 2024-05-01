@@ -57,6 +57,7 @@ Const
   //  TrackableURL = 'https://www.geocaching.com/api/proxy/trackable/activities';
   FavouritesURL = 'https://www.geocaching.com/datastore/favorites.svc';
   TrackableListingURL = 'https://www.geocaching.com/track/';
+  TrackabkeGetCSRFTokenUrl = 'https://www.geocaching.com/api/auth/csrf';
 
   (*
    * If you get a compiler error at this point, than you cloned the source from the
@@ -2609,8 +2610,8 @@ Begin
   sl.free;
   // Aufruf Log Seite:
   fClient.Headers.Clear;
-  fClient.HTTPMethod('GET', TrackableListingURL + postURL);
-  Follow_Links(TrackableListingURL + postURL);
+  fClient.HTTPMethod('GET', TrackabkeGetCSRFTokenUrl);
+  Follow_Links(TrackabkeGetCSRFTokenUrl);
   CSRFToken := Extract_csrfToken();
   If CSRFToken = '' Then Begin
     fLastError := 'Could not extract crf token';
