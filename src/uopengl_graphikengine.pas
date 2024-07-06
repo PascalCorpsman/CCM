@@ -1,7 +1,7 @@
 (******************************************************************************)
 (* uOpenGLGraphikEngine.pas                                        ??.??.???? *)
 (*                                                                            *)
-(* Version     : 0.09                                                         *)
+(* Version     : 0.10                                                         *)
 (*                                                                            *)
 (* Author      : Uwe Schächterle (Corpsman)                                   *)
 (*                                                                            *)
@@ -37,6 +37,7 @@
 (*               0.07 - LoadAlphaPNGGraphik                                   *)
 (*               0.08 - Fix Memleaks                                          *)
 (*               0.09 - Fix LoadAlphaColorGraphik                             *)
+(*               0.10 - Fix speedup graphik loading                           *)
 (*                                                                            *)
 (******************************************************************************)
 Unit uopengl_graphikengine;
@@ -674,7 +675,7 @@ Begin
   If FileExists(Filename) Then Begin
     Data := LowerCase(Filename);
     // Graphik bereits geladen
-    For i := 0 To high(Fimages) Do
+    For i := 0 To high(Fimages) Do Begin
       If Fimages[i].Name = Data Then Begin
         result := Fimages[i];
 {$IFDEF DEBUGGOUTPUT}
@@ -684,9 +685,9 @@ Begin
 {$ENDIF}
         exit;
       End;
+    End;
     // Graphik mus geladen werden
     b := TBitmap.create;
-    //{$IFNDEF FPC}
     If lowercase(ExtractFileExt(Filename)) = '.jpg' Then Begin
       jp := TJPEGImage.create;
       jp.LoadFromFile(Filename);
@@ -700,20 +701,9 @@ Begin
       png.free;
     End
     Else Begin
-      //{$ELSE}
-      //    If lowercase(ExtractFileExt(Filename)) = '.jpg' Then Begin
-      //      jp := TJPEGImage.create;
-      //      jp.LoadFromFile(Filename);
-      //      b.assign(jp);
-      //      jp.free;
-      //    end;
-      //{$ENDIF}
       b.LoadFromFile(Filename);
-      //{$IFNDEF FPC}
     End;
-    //{$ENDIF}
 
-//    b.PixelFormat := pf24bit;
     // create the raw image
     IntfImg1 := TLazIntfImage.Create(0, 0);
     nw := b.width;
@@ -735,18 +725,14 @@ Begin
             b2.PixelFormat := pf24bit;
             b2.width := nw;
             b2.height := nh;
-            // b2.canvas.StretchDraw(rect(0, 0, nw, nh), b);
             If Stretch = smStretch Then Begin
               Stretchdraw(b2.canvas, rect(0, 0, nw, nh), b, imBilinear);
             End
             Else Begin
               Stretchdraw(b2.canvas, rect(0, 0, nw, nh), b, imNearestNeighbour);
             End;
-
-            b.Width := nw;
-            b.height := nh;
-            b.canvas.draw(0, 0, b2);
-            b2.free;
+            b.free;
+            b := b2;
           End;
         End;
       smClamp: Begin
@@ -758,10 +744,8 @@ Begin
             b2.width := nw;
             b2.height := nh;
             b2.canvas.Draw(0, 0, b);
-            b.Width := nw;
-            b.height := nh;
-            b.canvas.draw(0, 0, b2);
-            b2.free;
+            b.free;
+            b := b2;
           End;
         End;
     End;
@@ -877,10 +861,8 @@ Begin
           Else Begin
             Stretchdraw(b2.canvas, rect(0, 0, nw, nh), b, imNearestNeighbour);
           End;
-          b.Width := nw;
-          b.height := nh;
-          b.canvas.draw(0, 0, b2);
-          b2.free;
+          b.free;
+          b := b2;
         End;
       End;
     smClamp: Begin
@@ -892,10 +874,8 @@ Begin
           b2.width := nw;
           b2.height := nh;
           b2.canvas.Draw(0, 0, b);
-          b.Width := nw;
-          b.height := nh;
-          b.canvas.draw(0, 0, b2);
-          b2.free;
+          b.free;
+          b := b2;
         End;
       End;
   End;
@@ -1185,10 +1165,8 @@ Begin
           Else Begin
             Stretchdraw(b2.canvas, rect(0, 0, nw, nh), b, imNearestNeighbour);
           End;
-          b.Width := nw;
-          b.height := nh;
-          b.canvas.draw(0, 0, b2);
-          b2.free;
+          b.free;
+          b := b2;
         End;
       End;
     smClamp: Begin
@@ -1200,10 +1178,8 @@ Begin
           b2.width := nw;
           b2.height := nh;
           b2.canvas.Draw(0, 0, b);
-          b.Width := nw;
-          b.height := nh;
-          b.canvas.draw(0, 0, b2);
-          b2.free;
+          b.free;
+          b := b2;
         End;
       End;
   End;
@@ -1339,7 +1315,7 @@ Begin
   If FileExists(Filename) Then Begin
     Data := LowerCase(Filename);
     // Graphik bereits geladen
-    For i := 0 To high(Fimages) Do
+    For i := 0 To high(Fimages) Do Begin
       If Fimages[i].Name = Data Then Begin
         result := Fimages[i];
 {$IFDEF DEBUGGOUTPUT}
@@ -1349,6 +1325,7 @@ Begin
 {$ENDIF}
         exit;
       End;
+    End;
     // Graphik mus geladen werden
     b := TBitmap.create;
     If lowercase(ExtractFileExt(Filename)) = '.jpg' Then Begin
@@ -1366,20 +1343,10 @@ Begin
       png.free;
     End
     Else Begin
-      //{$ELSE}
-      //    If lowercase(ExtractFileExt(Filename)) = '.jpg' Then Begin
-      //      jp := TJPEGImage.create;
-      //      jp.LoadFromFile(Filename);
-      //      b.assign(jp);
-      //      jp.free;
-      //    end;
-      //{$ENDIF}
       b.LoadFromFile(Filename);
-      //{$IFNDEF FPC}
     End;
     // create the raw image
     IntfImg1 := TLazIntfImage.Create(0, 0);
-    // b.PixelFormat := pf24bit;
     nw := b.width;
     nh := b.height;
     ow := b.width;
@@ -1406,10 +1373,8 @@ Begin
             Else Begin
               Stretchdraw(b2.canvas, rect(0, 0, nw, nh), b, imNearestNeighbour);
             End;
-            b.Width := nw;
-            b.height := nh;
-            b.canvas.draw(0, 0, b2);
-            b2.free;
+            b.free;
+            b := b2;
           End;
         End;
       smClamp: Begin
@@ -1421,10 +1386,8 @@ Begin
             b2.width := nw;
             b2.height := nh;
             b2.canvas.Draw(0, 0, b);
-            b.Width := nw;
-            b.height := nh;
-            b.canvas.draw(0, 0, b2);
-            b2.free;
+            b.free;
+            b := b2;
           End;
         End;
     End;
@@ -1555,10 +1518,8 @@ Begin
           Else Begin
             Stretchdraw(b2.canvas, rect(0, 0, nw, nh), g, imNearestNeighbour);
           End;
-          g.Width := nw;
-          g.height := nh;
-          g.canvas.draw(0, 0, b2);
-          b2.free;
+          g.free;
+          g := b2;
         End;
         If (nw <> a.width) Or (nh <> a.height) Then Begin
           b2 := TBitmap.create;
@@ -1571,10 +1532,8 @@ Begin
           Else Begin
             Stretchdraw(b2.canvas, rect(0, 0, nw, nh), a, imNearestNeighbour);
           End;
-          a.Width := nw;
-          a.height := nh;
-          a.canvas.draw(0, 0, b2);
-          b2.free;
+          a.free;
+          a := b2;
         End;
       End;
     smClamp: Begin
@@ -1586,10 +1545,8 @@ Begin
           b2.width := nw;
           b2.height := nh;
           b2.canvas.Draw(0, 0, g);
-          g.Width := nw;
-          g.height := nh;
-          g.canvas.draw(0, 0, b2);
-          b2.free;
+          g.free;
+          g := b2;
         End;
         If (nw <> a.width) Or (nh <> a.height) Then Begin
           b2 := TBitmap.create;
@@ -1597,10 +1554,8 @@ Begin
           b2.width := nw;
           b2.height := nh;
           b2.canvas.Draw(0, 0, a);
-          a.Width := nw;
-          a.height := nh;
-          a.canvas.draw(0, 0, b2);
-          b2.free;
+          a.free;
+          a := b2;
         End;
       End;
   End;
@@ -1610,9 +1565,7 @@ Begin
   writeln('OpenGL Buffer : ' + FileSizetoString(OpenGLBufCount));
 {$ENDIF}
   If IsPowerOfTwo(g.width) And IsPowerOfTwo(g.Height) Then Begin
-    //    g.pixelformat := pf24bit;
-    //    a.pixelformat := pf24bit;
-        // create the raw image
+    // create the raw image
     Graphik_intf := TLazIntfImage.Create(0, 0);
     Alpha_intf := TLazIntfImage.Create(0, 0);
 
@@ -1728,7 +1681,6 @@ Begin
   Else Begin
     b.LoadFromFile(Graphik);
   End;
-  // b.PixelFormat := pf24bit;
   If lowercase(ExtractFileExt(AlphaMask)) = '.jpg' Then Begin
     jp := TJPEGImage.create;
     jp.LoadFromFile(AlphaMask);
@@ -1744,7 +1696,6 @@ Begin
   Else Begin
     a.LoadFromFile(AlphaMask);
   End;
-  // a.PixelFormat := pf24bit;
   // create the raw image
   IntfImg1 := TLazIntfImage.Create(0, 0);
   IntfImg2 := TLazIntfImage.Create(0, 0);
@@ -1767,17 +1718,14 @@ Begin
           b2.PixelFormat := pf24bit;
           b2.width := nw;
           b2.height := nh;
-          // b2.canvas.StretchDraw(rect(0, 0, nw, nh), b);
           If Stretch = smStretch Then Begin
             Stretchdraw(b2.canvas, rect(0, 0, nw, nh), b, imBilinear);
           End
           Else Begin
             Stretchdraw(b2.canvas, rect(0, 0, nw, nh), b, imNearestNeighbour);
           End;
-          b.Width := nw;
-          b.height := nh;
-          b.canvas.draw(0, 0, b2);
-          b2.free;
+          b.free;
+          b := b2;
         End;
         If (nw <> a.width) Or (nh <> a.height) Then Begin
           b2 := TBitmap.create;
@@ -1785,10 +1733,8 @@ Begin
           b2.width := nw;
           b2.height := nh;
           b2.canvas.StretchDraw(rect(0, 0, nw, nh), a);
-          a.Width := nw;
-          a.height := nh;
-          a.canvas.draw(0, 0, b2);
-          b2.free;
+          a.free;
+          a := b2;
         End;
       End;
     smClamp: Begin
@@ -1800,10 +1746,8 @@ Begin
           b2.width := nw;
           b2.height := nh;
           b2.canvas.Draw(0, 0, b);
-          b.Width := nw;
-          b.height := nh;
-          b.canvas.draw(0, 0, b2);
-          b2.free;
+          b.free;
+          b := b2;
         End;
         If (nw <> a.width) Or (nh <> a.height) Then Begin
           b2 := TBitmap.create;
@@ -1811,10 +1755,8 @@ Begin
           b2.width := nw;
           b2.height := nh;
           b2.canvas.Draw(0, 0, a);
-          a.Width := nw;
-          a.height := nh;
-          a.canvas.draw(0, 0, b2);
-          b2.free;
+          a.free;
+          a := b2;
         End;
       End;
   End;
@@ -1934,7 +1876,6 @@ Begin
   IntfImg2.CreateBitmaps(ImgHandle, ImgMaskHandle, false);
   a.Handle := ImgHandle;
   a.MaskHandle := ImgMaskHandle;
-  //a.SaveToFile(Graphik + 'alpha.bmp');
   IntfImg2.free;
   IntfImg1.free;
   result := LoadAlphaGraphik(b, a, Graphik, Stretch);
@@ -1952,7 +1893,7 @@ Var
   i, j: Integer;
 Begin
   result := false;
-  For i := 0 To high(FImages) Do
+  For i := 0 To high(FImages) Do Begin
     If FImages[i].Image = Value Then Begin
       result := true;
       glDeleteTextures(1, @value);
@@ -1962,6 +1903,7 @@ Begin
       setlength(FImages, high(FImages));
       exit;
     End;
+  End;
 End;
 
 Initialization

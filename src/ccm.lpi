@@ -60,7 +60,7 @@
         <PackageName Value="LCL"/>
       </Item8>
     </RequiredPackages>
-    <Units Count="76">
+    <Units Count="77">
       <Unit0>
         <Filename Value="ccm.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -541,6 +541,10 @@
         <Filename Value="../../Sample/DatenSteuerung/ufifo.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit75>
+      <Unit76>
+        <Filename Value="../../Sample/OpenGL/uopengl_font_common.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit76>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
