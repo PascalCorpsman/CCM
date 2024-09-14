@@ -24,7 +24,15 @@ Interface
 
 Uses
   Classes, SysUtils, FileUtil, OpenGLContext, Forms, Controls, Graphics,
-  Dialogs, Menus, ExtCtrls, types, umapviewer;
+  Dialogs, Menus, ExtCtrls, StdCtrls, types, umapviewer, uonlineviewer
+  , usqlite_helper // Muss vor uccm eingebunden werden !
+  , uccm
+  , ugctoolwrapper
+  , uvectormath
+  ;
+
+Const
+  RouteFileVersion: uint32 = 2;
 
 Type
 
@@ -37,6 +45,35 @@ Type
   { TForm15 }
 
   TForm15 = Class(TForm)
+    Button1: TButton;
+    Button10: TButton;
+    Button2: TButton;
+    Button3: TButton;
+    Button4: TButton;
+    Button5: TButton;
+    Button6: TButton;
+    Button7: TButton;
+    Button8: TButton;
+    Button9: TButton;
+    CheckBox1: TCheckBox;
+    CheckBox10: TCheckBox;
+    CheckBox11: TCheckBox;
+    CheckBox12: TCheckBox;
+    CheckBox2: TCheckBox;
+    CheckBox3: TCheckBox;
+    CheckBox4: TCheckBox;
+    CheckBox5: TCheckBox;
+    CheckBox6: TCheckBox;
+    CheckBox7: TCheckBox;
+    CheckBox8: TCheckBox;
+    CheckBox9: TCheckBox;
+    Edit1: TEdit;
+    GroupBox1: TGroupBox;
+    GroupBox2: TGroupBox;
+    GroupBox3: TGroupBox;
+    Label1: TLabel;
+    Label2: TLabel;
+    Label3: TLabel;
     MenuItem1: TMenuItem;
     MenuItem10: TMenuItem;
     MenuItem11: TMenuItem;
@@ -51,7 +88,6 @@ Type
     MenuItem2: TMenuItem;
     MenuItem20: TMenuItem;
     MenuItem21: TMenuItem;
-    MenuItem22: TMenuItem;
     MenuItem23: TMenuItem;
     MenuItem24: TMenuItem;
     MenuItem25: TMenuItem;
@@ -65,12 +101,41 @@ Type
     MenuItem60: TMenuItem;
     MenuItem62: TMenuItem;
     MenuItem63: TMenuItem;
+    OpenDialog1: TOpenDialog;
     OpenGLControl1: TOpenGLControl;
     PopupMenu1: TPopupMenu;
+    RadioButton1: TRadioButton;
+    RadioButton2: TRadioButton;
+    RadioButton3: TRadioButton;
+    RadioButton4: TRadioButton;
+    SaveDialog1: TSaveDialog;
+    Procedure Button10Click(Sender: TObject);
+    Procedure Button1Click(Sender: TObject);
+    Procedure Button2Click(Sender: TObject);
+    Procedure Button3Click(Sender: TObject);
+    Procedure Button4Click(Sender: TObject);
+    Procedure Button5Click(Sender: TObject);
+    Procedure Button6Click(Sender: TObject);
+    Procedure Button7Click(Sender: TObject);
+    Procedure Button8Click(Sender: TObject);
+    Procedure Button9Click(Sender: TObject);
+    Procedure CheckBox10Click(Sender: TObject);
+    Procedure CheckBox11Click(Sender: TObject);
+    Procedure CheckBox1Click(Sender: TObject);
+    Procedure CheckBox2Click(Sender: TObject);
+    Procedure CheckBox3Click(Sender: TObject);
+    Procedure CheckBox4Click(Sender: TObject);
+    Procedure CheckBox5Click(Sender: TObject);
+    Procedure CheckBox6Click(Sender: TObject);
+    Procedure CheckBox7Click(Sender: TObject);
+    Procedure CheckBox8Click(Sender: TObject);
+    Procedure CheckBox9Click(Sender: TObject);
     Procedure FormCloseQuery(Sender: TObject; Var CanClose: boolean);
     Procedure FormCreate(Sender: TObject);
     Procedure FormDestroy(Sender: TObject);
     Procedure FormKeyDown(Sender: TObject; Var Key: Word; Shift: TShiftState);
+    Procedure Label1Click(Sender: TObject);
+    Procedure Label3Click(Sender: TObject);
     Procedure MenuItem10Click(Sender: TObject);
     Procedure MenuItem13Click(Sender: TObject);
     Procedure MenuItem14Click(Sender: TObject);
@@ -80,7 +145,6 @@ Type
     Procedure MenuItem1Click(Sender: TObject);
     Procedure MenuItem20Click(Sender: TObject);
     Procedure MenuItem21Click(Sender: TObject);
-    Procedure MenuItem22Click(Sender: TObject);
     Procedure MenuItem24Click(Sender: TObject);
     Procedure MenuItem25Click(Sender: TObject);
     Procedure MenuItem2Click(Sender: TObject);
@@ -106,12 +170,42 @@ Type
     Procedure OpenGLControl1Resize(Sender: TObject);
   private
     { private declarations }
-  public
-    { public declarations }
-    mv: TMapViewer; // TODO: Oh man, Räumt hier mal wieder jemand auf ?
+    fOnlineViewer: TOnlineViewer;
+    renderedCached: Integer;
+    fRoute: Array Of TVector2;
+
+    mv: TMapViewer;
     Procedure CenterCaches(Sender: TObject);
     Function CalcZoomLevel(Distance: int64): integer;
     Procedure AddUserPointAt(lat, lon: Double);
+
+    Function GetSplashHint(x, y: integer): String;
+    Function GetLabAt(x, y: integer): TLABCacheInfo;
+    Procedure ChangeIconTo(CacheHint: String; OpenGLIndex: integer);
+    Procedure ResetIcon(CacheHint: String);
+    Procedure ResetAllIcons();
+
+    Function GetCachedCacheCount(): TPoint;
+    Procedure RenderViewPort(vp: TViewport);
+
+    Procedure AddRoutePoint(x, y: integer);
+    Procedure DelRoutePoint(x, y: integer);
+    Procedure IncPointOrder(x, y: integer);
+    Procedure DecPointOrder(x, y: integer);
+
+    Procedure RenderRoutePoints(vp: TViewport);
+    Function GetAllCachedCaches(): TLiteCacheArray;
+    Procedure ClearCaches();
+
+    Procedure MergeLiteCachesToDB(Const Caches: TLiteCacheArray);
+    Procedure MergeLabsCachesToDB(Const Labs: TLABCacheInfoArray);
+    Procedure OnWaitEvent(Sender: TObject; Delay: Int64);
+
+  public
+    { public declarations }
+
+    Function InitFormular(): boolean;
+    Function GetAllCachesAround(vp: TViewport): TLiteCacheArray;
   End;
 
 Var
@@ -128,16 +222,13 @@ Implementation
 {$R *.lfm}
 
 Uses lazutf8, math, dglOpenGL, uopengl_graphikengine, ugraphics, uOpenGL_ASCII_Font,
-  ugctoolwrapper,
-  uvectormath,
-  usqlite_helper,
-  uccm,
+
   unit1, // Main Form
+  unit4, // Der Info Dialog, dass man sieht dass noch was passiert
   unit13, // Preview des Caches
   unit14, // Location Editor
   unit31, // Edit Custom Location
   unit39, // Select via Listbox
-  unit40, // Online Modus im Map Preview
   ulanguage,
   Clipbrd,
   LCLType,
@@ -157,18 +248,396 @@ Begin
     showmessage(R_Error_could_not_init_dglOpenGL_pas);
     Halt;
   End;
+  GroupBox1.Align := alRight;
   OpenGLControl1.Align := alClient;
+  Constraints.MinHeight := Height;
+  Constraints.MinWidth := Width;
+
+  fRoute := Nil;
+  fOnlineViewer := TOnlineViewer.create(OpenGLControl1);
+  fOnlineViewer.WaitEvent := @OnWaitEvent;
+  edit1.text := '14';
+  // Todo: Hier könnten noch viel Krassere Filter (ala d/t) rein, siehe hierzu die Auswertung, was mapsearch noch alles kann
 End;
 
 Procedure TForm15.FormCloseQuery(Sender: TObject; Var CanClose: boolean);
 Begin
-  If form40.visible Then form40.hide;
+  Button10Click(Nil);
+End;
+
+Procedure TForm15.Button1Click(Sender: TObject);
+Begin
+  GroupBox1.Visible := Not GroupBox1.Visible;
+End;
+
+Procedure TForm15.Button10Click(Sender: TObject);
+Begin
+  // Stop any loading
+  fOnlineViewer.EnableDownloading := false;
+  fOnlineViewer.EnableLABDownloading := false;
+  CheckBox3.Checked := false;
+  CheckBox10.Checked := false;
+  ClearCaches();
+  form15.OpenGLControl1Paint(Nil);
+End;
+
+Procedure TForm15.Button2Click(Sender: TObject);
+Begin
+  close;
+End;
+
+Procedure TForm15.Button3Click(Sender: TObject);
+Var
+  c: TLiteCacheArray;
+Begin
+  // Merge All Cached Caches to DB
+  c := fOnlineViewer.GetAllCachedCaches();
+  MergeLiteCachesToDB(c);
+  setlength(c, 0);
+End;
+
+Procedure TForm15.Button4Click(Sender: TObject);
+Var
+  c: TLiteCacheArray;
+  vp: TViewport;
+  pt: TVector2;
+Begin
+  // Merge All visual Caches To DB
+  pt := form15.mv.GetMouseMapLongLat(0, 0);
+  vp.Lon_min := pt.x;
+  vp.Lat_min := pt.Y;
+  pt := form15.mv.GetMouseMapLongLat(form15.OpenGLControl1.ClientWidth, form15.OpenGLControl1.ClientHeight);
+  vp.Lon_max := pt.x;
+  vp.Lat_max := pt.Y;
+  c := fOnlineViewer.GetAllVisibleCaches(vp);
+  MergeLiteCachesToDB(c);
+  setlength(c, 0);
+End;
+
+Procedure TForm15.Button5Click(Sender: TObject);
+Var
+  i: integer;
+  step, lat, lon: DOuble;
+  p, dn, d, ap, np: TVector2;
+  zoom, startZoom: integer;
+  StartPos: TVector2;
+  t: int64;
+  s: String;
+Begin
+  // Start Recording
+  If high(fRoute) < 1 Then Begin
+    showmessage(r_to_les_waypoints);
+    exit;
+  End;
+  zoom := strtointdef(edit1.text, 14);
+  If zoom < 13 Then Begin
+    If id_no = Application.MessageBox(pchar(format(RF_Activating_Download_in_Zoom_lt_could_cause_havy_download_times, [13])), pchar(R_Warning), MB_ICONQUESTION Or MB_YESNO) Then Begin
+      exit;
+    End;
+  End;
+  t := GetTickCount64;
+  startZoom := mv.Zoom;
+  StartPos := mv.GetMouseMapLongLat(OpenGLControl1.ClientWidth Div 2, OpenGLControl1.ClientHeight Div 2);
+  CheckBox3.Checked := false;
+  i := 0;
+  s := format('%.7d', [GridStep * 500]); // halbe Gridstep * 1000
+  EncodeKoordinate(step, copy(s, 1, 2), copy(s, 3, 2), copy(s, 5, 3)); // Halbe Schrittweite, mit derer uonlineviewer die Vieports Puffert.
+  While i < high(fRoute) Do Begin
+    ap := v2(fRoute[i].X, fRoute[i].y);
+    np := v2(fRoute[i + 1].X, fRoute[i + 1].y);
+    d := np - ap;
+    dn := NormV2(d) * step;
+    p := ap;
+    While LenV2(ap - p) < lenv2(d) Do Begin
+      form15.mv.Zoom := zoom;
+      lat := p.x;
+      lon := p.y;
+      form15.mv.CenterLongLat(lat, lon);
+      CheckBox3.Checked := true;
+      form15.OpenGLControl1MouseMove(Nil, [ssLeft], Form15.OpenGLControl1.Width Div 2, form15.OpenGLControl1.Height Div 2);
+      p := p + dn;
+    End;
+    inc(i);
+  End;
+  // Ganz zum Schluß den Letzten Punkt noch mal anfahren
+  lat := fRoute[high(froute)].X;
+  lon := fRoute[high(froute)].y;
+  form15.mv.CenterLongLat(lat, lon);
+  form15.OpenGLControl1Paint(Nil);
+  // Wir Sind Fertig, springen nun wieder die Ursprungsansicht an
+  CheckBox3.Checked := false;
+  form15.mv.Zoom := startZoom;
+  form15.mv.CenterLongLat(StartPos.X, StartPos.y);
+  form15.OpenGLControl1Paint(Nil);
+  t := GetTickCount64 - t;
+  Showmessage(format(RF_Script_finished_in, [PrettyTime(t)], DefFormat));
+
+End;
+
+Procedure TForm15.Button6Click(Sender: TObject);
+Var
+  f: TFileStream;
+  i: integer;
+  p: TVector2;
+  d: Double;
+  b: Boolean;
+Begin
+  // Export Route
+  If high(fRoute) = -1 Then Begin
+    ShowMessage(R_Noting_Selected);
+    exit;
+  End;
+  If SaveDialog1.Execute Then Begin
+    f := TFileStream.Create(SaveDialog1.FileName, fmCreate Or fmOpenWrite);
+    f.write(RouteFileVersion, sizeof(RouteFileVersion));
+    // Viewport Einstellungen
+    i := form15.mv.Zoom;
+    f.Write(i, SizeOf(i));
+    p := form15.mv.GetMouseMapLongLat(form15.OpenGLControl1.ClientWidth Div 2, form15.OpenGLControl1.ClientHeight Div 2);
+    d := p.x;
+    f.Write(d, SizeOf(d));
+    d := p.y;
+    f.Write(d, SizeOf(d));
+    // Die Fenster Dimension
+    i := form15.Width;
+    f.Write(i, SizeOf(i));
+    i := form15.Height;
+    f.Write(i, SizeOf(i));
+    // Die Suchparameter
+    b := CheckBox1.Checked; // Hide Own
+    f.Write(b, SizeOf(b));
+    b := CheckBox2.Checked; // Hide founds
+    f.Write(b, SizeOf(b));
+    b := CheckBox4.Checked; // All
+    f.Write(b, SizeOf(b));
+    b := CheckBox8.Checked; // exclude
+    f.Write(b, SizeOf(b));
+    b := CheckBox5.Checked; // Tradi
+    f.Write(b, SizeOf(b));
+    b := CheckBox6.Checked; // Multi
+    f.Write(b, SizeOf(b));
+    b := CheckBox7.Checked; // Mystery
+    f.Write(b, SizeOf(b));
+    b := CheckBox9.Checked; // Events
+    f.Write(b, SizeOf(b));
+    i := strtointdef(edit1.text, 14);
+    f.Write(i, SizeOf(i));
+    // Alle Punkte
+    i := length(fRoute);
+    f.Write(i, SizeOf(i));
+    For i := 0 To high(fRoute) Do Begin
+      d := fRoute[i].X;
+      f.Write(d, SizeOf(d));
+      d := fRoute[i].Y;
+      f.Write(d, SizeOf(d));
+    End;
+    f.free;
+  End;
+End;
+
+Procedure TForm15.Button7Click(Sender: TObject);
+Var
+  f: TFileStream;
+  i: integer;
+  dx, dy: Double;
+  b: Boolean;
+  ver: uint32;
+Begin
+  // Import Route
+  If OpenDialog1.Execute Then Begin
+    CheckBox3.Checked := false;
+    CheckBox10.Checked := true;
+    f := TFileStream.Create(OpenDialog1.FileName, fmOpenRead);
+    ver := 0; // Die Dateiversion
+    f.read(ver, sizeof(RouteFileVersion));
+    // Viewport Einstellungen
+    i := 14;
+    f.read(i, SizeOf(i));
+    form15.mv.Zoom := i;
+    dx := -1;
+    f.Read(dx, SizeOf(dx));
+    dy := -1;
+    f.Read(dy, SizeOf(dy));
+    If ver > 1 Then Begin // Ab Version 2 werden die Fenster Dimensionen mit gespeichert
+      i := 0;
+      f.read(i, SizeOf(i));
+      If i <> 0 Then Begin
+        form15.Width := i;
+      End;
+      i := 0;
+      f.read(i, SizeOf(i));
+      If i <> 0 Then Begin
+        form15.Height := i;
+      End;
+    End;
+    form15.mv.CenterLongLat(dx, dy);
+    // Die Suchparameter
+    b := false;
+    f.Read(b, SizeOf(b));
+    CheckBox1.Checked := b; // Hide Own
+    f.Read(b, SizeOf(b));
+    CheckBox2.Checked := b; // Hide founds
+    f.Read(b, SizeOf(b));
+    CheckBox4.Checked := b; // All
+    f.Read(b, SizeOf(b));
+    CheckBox8.Checked := b; // exclude
+    f.Read(b, SizeOf(b));
+    CheckBox5.Checked := b; // Tradi
+    f.Read(b, SizeOf(b));
+    CheckBox6.Checked := b; // Multi
+    f.Read(b, SizeOf(b));
+    CheckBox7.Checked := b; // Mystery
+    f.Read(b, SizeOf(b));
+    CheckBox9.Checked := b; // Events
+    i := 14;
+    f.read(i, SizeOf(i));
+    edit1.text := inttostr(i);
+    // Alle Punkte
+    i := 0;
+    f.read(i, SizeOf(i));
+    setlength(fRoute, i);
+    For i := 0 To high(fRoute) Do Begin
+      f.Read(dx, SizeOf(dx));
+      f.Read(dy, SizeOf(dy));
+      fRoute[i].X := dx;
+      fRoute[i].Y := dy;
+    End;
+    f.free;
+    form15.OpenGLControl1Paint(Nil);
+  End;
+End;
+
+Procedure TForm15.Button8Click(Sender: TObject);
+Var
+  c: TLABCacheInfoArray;
+Begin
+  // Merge All Cached Labs to DB
+  c := fOnlineViewer.GetAllLABsCaches();
+  MergeLabsCachesToDB(c);
+  setlength(c, 0);
+End;
+
+Procedure TForm15.Button9Click(Sender: TObject);
+Var
+  c: TLABCacheInfoArray;
+  vp: TViewport;
+  pt: TVector2;
+Begin
+  // Merge All visual Caches To DB
+  pt := form15.mv.GetMouseMapLongLat(0, 0);
+  vp.Lon_min := pt.x;
+  vp.Lat_min := pt.Y;
+  pt := form15.mv.GetMouseMapLongLat(form15.OpenGLControl1.ClientWidth, form15.OpenGLControl1.ClientHeight);
+  vp.Lon_max := pt.x;
+  vp.Lat_max := pt.Y;
+  c := fOnlineViewer.GetAllVisibleLabs(vp);
+  MergeLabsCachesToDB(c);
+  setlength(c, 0);
+End;
+
+Procedure TForm15.CheckBox10Click(Sender: TObject);
+Begin
+  // Enable Disable Route
+  If Not CheckBox10.Checked Then Begin
+    setlength(fRoute, 0);
+    form15.OpenGLControl1Paint(Nil);
+  End;
+End;
+
+Procedure TForm15.CheckBox11Click(Sender: TObject);
+Begin
+  If (form15.mv.Zoom <= 11) And CheckBox11.Checked Then Begin
+    If id_no = Application.MessageBox(pchar(format(RF_Activating_Download_in_Zoom_lt_could_cause_havy_download_times, [11])), pchar(R_Warning), MB_ICONQUESTION Or MB_YESNO) Then Begin
+      CheckBox11.Checked := false;
+    End;
+  End;
+  fOnlineViewer.EnableLABDownloading := CheckBox11.Checked;
+  //  If CheckBox11.Checked Then Begin
+  //    CheckBox3.Checked := true;
+  //    fOnlineViewer.EnableDownloading := true;
+  //  End;
+  form15.OpenGLControl1Paint(Nil);
+End;
+
+Procedure TForm15.CheckBox1Click(Sender: TObject);
+Begin
+  fOnlineViewer.HideOwn := CheckBox1.Checked;
+  form15.OpenGLControl1Paint(Nil);
+End;
+
+Procedure TForm15.CheckBox2Click(Sender: TObject);
+Begin
+  fOnlineViewer.HideFounds := CheckBox2.Checked;
+  form15.OpenGLControl1Paint(Nil);
+End;
+
+Procedure TForm15.CheckBox3Click(Sender: TObject);
+Begin
+  If (mv.Zoom <= 11) And CheckBox3.Checked Then Begin
+    If id_no = Application.MessageBox(pchar(format(RF_Activating_Download_in_Zoom_lt_could_cause_havy_download_times, [11])), pchar(R_Warning), MB_ICONQUESTION Or MB_YESNO) Then Begin
+      CheckBox3.Checked := false;
+    End;
+  End;
+  fOnlineViewer.EnableDownloading := CheckBox3.Checked;
+  OpenGLControl1Paint(Nil);
+End;
+
+Procedure TForm15.CheckBox4Click(Sender: TObject);
+Begin
+  fOnlineViewer.Caches_All := CheckBox4.Checked;
+  If CheckBox4.Checked Then Begin
+    CheckBox5.Checked := false;
+    CheckBox6.Checked := false;
+    CheckBox7.Checked := false;
+    CheckBox8.Checked := false;
+    CheckBox9.Checked := false;
+  End;
+  form15.OpenGLControl1Paint(Nil);
+End;
+
+Procedure TForm15.CheckBox5Click(Sender: TObject);
+Begin
+  fOnlineViewer.Caches_Tradi := CheckBox5.Checked;
+  If CheckBox5.Checked Then CheckBox4.Checked := false;
+  form15.OpenGLControl1Paint(Nil);
+End;
+
+Procedure TForm15.CheckBox6Click(Sender: TObject);
+Begin
+  fOnlineViewer.Caches_Multi := CheckBox6.Checked;
+  If CheckBox6.Checked Then CheckBox4.Checked := false;
+  form15.OpenGLControl1Paint(Nil);
+End;
+
+Procedure TForm15.CheckBox7Click(Sender: TObject);
+Begin
+  fOnlineViewer.Caches_Mystery := CheckBox7.Checked;
+  If CheckBox7.Checked Then CheckBox4.Checked := false;
+  form15.OpenGLControl1Paint(Nil);
+End;
+
+Procedure TForm15.CheckBox8Click(Sender: TObject);
+Begin
+  fOnlineViewer.Caches_Exclude := CheckBox8.Checked;
+  If CheckBox8.Checked Then Begin
+    CheckBox4.Checked := false;
+  End;
+  form15.OpenGLControl1Paint(Nil);
+End;
+
+Procedure TForm15.CheckBox9Click(Sender: TObject);
+Begin
+  fOnlineViewer.Caches_Event := CheckBox9.Checked;
+  If CheckBox9.Checked Then CheckBox4.Checked := false;
+  form15.OpenGLControl1Paint(Nil);
 End;
 
 Procedure TForm15.FormDestroy(Sender: TObject);
 Begin
   mv.Free;
   mv := Nil;
+  fOnlineViewer.Free;
+  fOnlineViewer := Nil;
 End;
 
 Procedure TForm15.FormKeyDown(Sender: TObject; Var Key: Word; Shift: TShiftState
@@ -203,6 +672,20 @@ Begin
   End;
 End;
 
+Procedure TForm15.Label1Click(Sender: TObject);
+Begin
+  // Check / UnCheck Enable Downloading
+  CheckBox3.Checked := Not CheckBox3.Checked;
+  CheckBox3Click(Nil);
+End;
+
+Procedure TForm15.Label3Click(Sender: TObject);
+Begin
+  // Check / UnCheck Enable Lab Downloading
+  CheckBox11.Checked := Not CheckBox11.Checked;
+  CheckBox11Click(Nil);
+End;
+
 Procedure TForm15.OpenGLControl1MouseMove(Sender: TObject; Shift: TShiftState;
   X, Y: Integer);
 Var
@@ -216,11 +699,11 @@ Begin
   MoveY := y;
   r := mv.GetMouseMapLongLat(X, y);
   caption := CoordToString(r.y, r.x) + format('= [ %1.6f , %1.6f ]', [r.y, r.x], DefFormat) + format(' ,Zoom : %d', [mv.Zoom]);
-  If form40.Visible Then Begin
-    p := form40.GetCachedCacheCount;
-    caption := caption + ', Rendered: ' + inttostr(p.x) + ', Cached: ' + inttostr(p.y);
-    Application.ProcessMessages; // Wenn wir im Routen Modus sind sehen wir sonst nichts ...
-  End;
+  //  If CheckBox3.Checked Then Begin
+  p := GetCachedCacheCount;
+  caption := caption + ', Rendered: ' + inttostr(p.x) + ', Cached: ' + inttostr(p.y);
+  Application.ProcessMessages; // Wenn wir im Routen Modus sind sehen wir sonst nichts ...
+  //  End;
   If mv.GetImageAtXY(MoveX, MoveY, img) Then Begin
     If Splashhint <> img.Label_ Then Begin
       Splashhint := img.Label_;
@@ -233,7 +716,7 @@ Begin
       OpenGLControl1Paint(Nil);
     End;
   End;
-  s := form40.GetSplashHint(x, y);
+  s := GetSplashHint(x, y);
   If s <> Splashhint2 Then Begin
     Splashhint2 := s;
     OpenGLControl1Paint(Nil);
@@ -247,8 +730,8 @@ Var
 Begin
   z := mv.Zoom;
   // Automatisches Abschalten des Ladens bei Zoom <= 11
-  If form40.Visible And (z <= 11) Then Begin
-    form40.CheckBox3.Checked := false;
+  If CheckBox3.Checked And (z <= 11) Then Begin
+    CheckBox3.Checked := false;
   End;
   OpenGLControl1MouseMove(Nil, [ssleft], MousePos.x, MousePos.y);
 End;
@@ -297,7 +780,7 @@ Begin
     End;
   End;
   // Via Online suche
-  s := form40.GetSplashHint(MoveX, MoveY);
+  s := GetSplashHint(MoveX, MoveY);
   If s <> '' Then Begin
     If pos(':', s) <> 0 Then Begin
       OpenCacheInBrowser(copy(s, 1, pos(':', s) - 1));
@@ -475,7 +958,7 @@ Begin
     img.ImageIndex := OpenGL_GraphikEngine.Find('Form1.ImageList1.items[' + inttostr(ic) + ']');
     mv.Image[i] := img;
   End;
-  form40.ResetAllIcons();
+  ResetAllIcons();
   OpenGLControl1Paint(Nil);
 End;
 
@@ -554,21 +1037,21 @@ Begin
       End;
     End;
     // Gibt es Lite Caches die Auf unsere Anfrage hin Reagieren ?
-    If form40.Visible Then Begin
-      t := form40.GetAllCachedCaches;
-      For i := 0 To high(t) Do Begin
-        If (pos(lowercase(trim(value)), lowercase(t[i].G_Name)) <> 0) Or
-          (pos(lowercase(trim(value)), lowercase(t[i].GC_Code)) <> 0) Then Begin
-          setlength(res, high(res) + 2);
-          res[high(res)].lat := t[i].Lat;
-          res[high(res)].lon := t[i].Lon;
-          res[high(res)].clat := t[i].Cor_Lat;
-          res[high(res)].clon := t[i].Cor_Lon;
-          res[high(res)].n := t[i].G_Name;
-          res[high(res)].gc := t[i].GC_Code;
-        End;
+//    If CheckBox3.Checked Or CheckBox11.Checked Then Begin
+    t := GetAllCachedCaches;
+    For i := 0 To high(t) Do Begin
+      If (pos(lowercase(trim(value)), lowercase(t[i].G_Name)) <> 0) Or
+        (pos(lowercase(trim(value)), lowercase(t[i].GC_Code)) <> 0) Then Begin
+        setlength(res, high(res) + 2);
+        res[high(res)].lat := t[i].Lat;
+        res[high(res)].lon := t[i].Lon;
+        res[high(res)].clat := t[i].Cor_Lat;
+        res[high(res)].clon := t[i].Cor_Lon;
+        res[high(res)].n := t[i].G_Name;
+        res[high(res)].gc := t[i].GC_Code;
       End;
     End;
+    //    End;
     If length(res) > 1 Then Begin
       form39.caption := R_Select;
       form39.ListBox1.Clear;
@@ -621,17 +1104,6 @@ Begin
     End;
     OpenGLControl1Paint(Nil);
   End;
-End;
-
-Procedure TForm15.MenuItem22Click(Sender: TObject);
-Begin
-  // Online Map
-  If Not form40.InitFormular() Then Begin
-    exit;
-  End;
-  form40.left := Form15.Left + Form15.Width;
-  form40.Top := form15.Top;
-  form40.Show;
 End;
 
 Procedure TForm15.MenuItem24Click(Sender: TObject);
@@ -748,7 +1220,7 @@ Begin
     mv.UpdateImage(img, img_new);
   End
   Else Begin
-    c := form40.GetSplashHint(MoveX, MoveY);
+    c := GetSplashHint(MoveX, MoveY);
     If pos(':', c) <> 0 Then Begin
       s := c;
       c := copy(c, 1, pos(':', c) - 1);
@@ -760,7 +1232,7 @@ Begin
       Else Begin
         CommitSQLTransactionQuery('Update caches set Customer_Flag=1 where name = "' + c + '"');
         SQLTransaction.Commit;
-        form40.ChangeIconTo(s, MainImageIndexCustomerFlag);
+        ChangeIconTo(s, MainImageIndexCustomerFlag);
       End;
     End;
   End;
@@ -791,7 +1263,7 @@ Begin
     mv.UpdateImage(img, img_new);
   End
   Else Begin
-    c := form40.GetSplashHint(MoveX, MoveY);
+    c := GetSplashHint(MoveX, MoveY);
     If pos(':', c) <> 0 Then Begin
       s := c;
       c := copy(c, 1, pos(':', c) - 1);
@@ -802,7 +1274,7 @@ Begin
       Else Begin
         CommitSQLTransactionQuery('Update caches set Customer_Flag=0 where name = "' + c + '"');
         SQLTransaction.Commit;
-        form40.ResetIcon(s);
+        ResetIcon(s);
       End;
     End;
   End;
@@ -815,6 +1287,196 @@ Begin
   mv.AddImageOnCoord(lat, lon,
     OpenGL_GraphikEngine.Find('here.bmp'), // Das Bild
     32, 32, -16, -32, '  Userpoint ' + inttostr(UserPointCount), '');
+End;
+
+Function TForm15.GetSplashHint(x, y: integer): String;
+Begin
+  result := fOnlineViewer.Hint(x, y)
+End;
+
+Function TForm15.GetLabAt(x, y: integer): TLABCacheInfo;
+Begin
+  result := fOnlineViewer.GetLabAt(x, y);
+End;
+
+Procedure TForm15.ChangeIconTo(CacheHint: String; OpenGLIndex: integer);
+Begin
+  fOnlineViewer.ChangeIconTo(CacheHint, OpenGLIndex);
+End;
+
+Procedure TForm15.ResetIcon(CacheHint: String);
+Begin
+  fOnlineViewer.ResetIcon(CacheHint);
+End;
+
+Procedure TForm15.ResetAllIcons();
+Begin
+  fOnlineViewer.ResetAllIcons();
+End;
+
+Function TForm15.InitFormular(): boolean;
+Var
+  p: TServerParameters;
+Begin
+  result := false;
+  CheckBox3.Checked := false; // Downloading erst mal deaktivieren
+  CheckBox11.Checked := false; // Downloading erst mal deaktivieren
+  // 1. Rauskriegen ob wir Premium sind oder nicht
+  p := GCTGetServerParams();
+  If p.UserInfo.Username = '' Then exit; // konnte die Infos nicht hohlen.
+  If trim(lowercase(p.UserInfo.Usertype)) = 'premium' Then Begin
+    CheckBox1.Enabled := true;
+    CheckBox2.Enabled := true;
+    CheckBox1.Checked := true;
+    CheckBox2.Checked := true;
+  End
+  Else Begin
+    // Ohne Premium geht das nicht..
+    CheckBox1.Enabled := false;
+    CheckBox2.Enabled := false;
+    CheckBox1.Checked := false;
+    CheckBox2.Checked := false;
+  End;
+  CheckBox3.Enabled := true;
+  CheckBox4.Checked := true;
+  CheckBox4.OnClick(Nil);
+  result := true;
+End;
+
+Function TForm15.GetCachedCacheCount(): TPoint;
+Begin
+  result := point(renderedCached, fOnlineViewer.CacheCount + fOnlineViewer.CacheLabCount);
+End;
+
+Procedure TForm15.RenderViewPort(vp: TViewport);
+Begin
+  renderedCached := fOnlineViewer.RenderViewPort(vp);
+End;
+
+Procedure TForm15.AddRoutePoint(x, y: integer);
+Begin
+  SetLength(fRoute, high(fRoute) + 2);
+  froute[high(fRoute)] := form15.mv.GetMouseMapLongLat(x, y)
+End;
+
+Procedure TForm15.DelRoutePoint(x, y: integer);
+Var
+  p: TPoint;
+  i, j: Integer;
+Begin
+  For i := 0 To high(fRoute) Do Begin
+    p := form15.mv.GetMouseMapLongLatRev(fRoute[i]);
+    If (abs(p.x - x) <= 16) And
+      (abs(p.y - y) <= 16) Then Begin
+      For j := i To high(fRoute) - 1 Do Begin
+        fRoute[j] := fRoute[j + 1];
+      End;
+      setlength(fRoute, high(fRoute));
+    End;
+  End;
+End;
+
+Procedure TForm15.IncPointOrder(x, y: integer);
+Var
+  pr: TVector2;
+  p: TPoint;
+  i: Integer;
+Begin
+  For i := 0 To high(fRoute) - 1 Do Begin
+    p := form15.mv.GetMouseMapLongLatRev(fRoute[i]);
+    If (abs(p.x - x) <= 16) And
+      (abs(p.y - y) <= 16) Then Begin
+      pr := fRoute[i];
+      fRoute[i] := fRoute[i + 1];
+      fRoute[i + 1] := pr;
+      form15.OpenGLControl1Paint(Nil);
+      exit;
+    End;
+  End;
+End;
+
+Procedure TForm15.DecPointOrder(x, y: integer);
+Var
+  pr: TVector2;
+  p: TPoint;
+  i: Integer;
+Begin
+  For i := 1 To high(fRoute) Do Begin
+    p := form15.mv.GetMouseMapLongLatRev(fRoute[i]);
+    If (abs(p.x - x) <= 16) And
+      (abs(p.y - y) <= 16) Then Begin
+      pr := fRoute[i];
+      fRoute[i] := fRoute[i - 1];
+      fRoute[i - 1] := pr;
+      form15.OpenGLControl1Paint(Nil);
+      exit;
+    End;
+  End;
+End;
+
+Procedure TForm15.RenderRoutePoints(vp: TViewport);
+Var
+  i, yc, xc: integer;
+  b: {$IFDEF USE_GL}Byte{$ELSE}Boolean{$ENDIF};
+Begin
+  Go2d(form15.OpenGLControl1.ClientWidth, form15.OpenGLControl1.ClientHeight);
+  For i := 0 To high(fRoute) Do Begin
+    yc := convert_dimension(vp.Lat_min, vp.Lat_max, fRoute[i].Y, 0, form15.OpenGLControl1.ClientHeight) - 16; // Das Offset Zentriert die Dose an der Listing Coordinate und schon sieht man nicht das bei Aktiver DB da 2 Symbole Gleichzeitig sind :-)
+    xc := convert_dimension(vp.Lon_min, vp.Lon_max, fRoute[i].X, 0, form15.OpenGLControl1.Clientwidth) - 8; // Das Offset Zentriert die Dose an der Listing Coordinate und schon sieht man nicht das bei Aktiver DB da 2 Symbole Gleichzeitig sind :-)
+    B := glIsEnabled(gl_Blend);
+    If Not (b{$IFDEF USE_GL} = 1{$ENDIF}) Then
+      glenable(gl_Blend);
+    glBlendFunc(GL_ONE_MINUS_SRC_ALPHA, GL_SRC_ALPHA);
+    glColor3d(1, 1, 1);
+    glBindTexture(GL_TEXTURE_2D, OpenGL_GraphikEngine.Find('Form1.ImageList1.items[' + inttostr(MainImageIndexPointHere) + ']', true));
+    glbegin(GL_QUADS);
+    glTexCoord2f(0, 1);
+    glVertex2f(Xc, Yc + 16);
+    glTexCoord2f(1, 1);
+    glVertex2f(Xc + 16, Yc + 16);
+    glTexCoord2f(1, 0);
+    glVertex2f(Xc + 16, Yc);
+    glTexCoord2f(0, 0);
+    glVertex2f(Xc, Yc);
+    glend;
+    If Not (b{$IFDEF USE_GL} = 1{$ENDIF}) Then
+      gldisable(gl_blend);
+    glColor3d(1, 1, 1);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    OpenGL_ASCII_Font.Textout(xc + 16, yc, inttostr(i + 1));
+  End;
+  Exit2d();
+
+End;
+
+Function TForm15.GetAllCachedCaches(): TLiteCacheArray;
+Begin
+  result := fOnlineViewer.GetAllCachedCaches();
+End;
+
+Function TForm15.GetAllCachesAround(vp: TViewport): TLiteCacheArray;
+Begin
+  fOnlineViewer.EnableDownloading := true;
+  (*
+   * -- Das Problem, Archivierte Caches sind nicht in den Lite Caches enthalten,
+   * hat man eine Aktualisierung wo viele Lite Caches mit drin sind, würde
+   * ettliche male das bereits geladene neu geladen werden.
+   * Das Kostet in Summe deutlich mehr Zeit, als es Kostet die ganzen Dosen für
+   * die Dauer der Aktualisierung immer wieder "unnötig" mit zu prüfen.
+   *)
+  // fOnlineViewer.ResetCache;
+  fOnlineViewer.Caches_All := true;
+  fOnlineViewer.HideFounds := false;
+  fOnlineViewer.HideOwn := False;
+  fOnlineViewer.EnableDownloading := false;
+  fOnlineViewer.DownloadViewPort(vp);
+  result := fOnlineViewer.GetAllCachedCaches();
+
+End;
+
+Procedure TForm15.ClearCaches();
+Begin
+  fOnlineViewer.ResetCache;
 End;
 
 Procedure TForm15.MenuItem6Click(Sender: TObject);
@@ -895,11 +1557,11 @@ Begin
   End
   Else Begin
     // Via Online suche
-    s := form40.GetSplashHint(MoveX, MoveY);
+    s := GetSplashHint(MoveX, MoveY);
     If s <> '' Then Begin
       If pos(':', s) <> 0 Then Begin
         If pos('LAB', s) = 1 Then Begin
-          li := form40.GetLabAt(MoveX, MoveY);
+          li := GetLabAt(MoveX, MoveY);
           If li.Link <> '' Then Begin
             OpenURL(li.Link);
           End;
@@ -920,7 +1582,8 @@ Begin
   OpenGLControl1Paint(Nil);
 End;
 
-Procedure TForm15.OpenGLControl1MakeCurrent(Sender: TObject; Var Allow: boolean);
+Procedure TForm15.OpenGLControl1MakeCurrent(Sender: TObject; Var Allow: boolean
+  );
 Var
   s: String;
 Begin
@@ -942,7 +1605,7 @@ Begin
     mv.ProxyPort := getvalue('General', 'ProxyPort', '');
     mv.ProxyUser := getvalue('General', 'ProxyUser', '');
     mv.ClearImagesOnCoords;
-    form40.ClearCaches();
+    ClearCaches();
     (*
     Man bedenke, jedesmal wenn der Renderingcontext neu erstellt wird, müssen sämtliche Graphiken neu Geladen werden.
     Bei Nutzung der TOpenGLGraphikengine, bedeutet dies, das hier ein clear durchgeführt werden mus !!
@@ -972,20 +1635,19 @@ End;
 Procedure TForm15.OpenGLControl1MouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 Begin
-  If form40.CheckBox10.Checked Then Begin
-    If form40.RadioButton1.Checked Then Begin // Add Route Point
-      form40.AddRoutePoint(x, y);
+  If CheckBox10.Checked Then Begin
+    If RadioButton1.Checked Then Begin // Add Route Point
+      AddRoutePoint(x, y);
     End;
-    If form40.RadioButton2.Checked Then Begin // Del Route Point
-      form40.delRoutePoint(x, y);
+    If RadioButton2.Checked Then Begin // Del Route Point
+      delRoutePoint(x, y);
     End;
-    If form40.RadioButton3.Checked Then Begin // Inc Point Order
-      form40.IncPointOrder(x, y);
+    If RadioButton3.Checked Then Begin // Inc Point Order
+      IncPointOrder(x, y);
     End;
-    If form40.RadioButton4.Checked Then Begin // Dec Point Order
-      form40.DecPointOrder(x, y);
+    If RadioButton4.Checked Then Begin // Dec Point Order
+      DecPointOrder(x, y);
     End;
-
     OpenGLControl1Paint(Nil);
   End;
 End;
@@ -1007,16 +1669,16 @@ Begin
   glClear(GL_COLOR_BUFFER_BIT Or GL_DEPTH_BUFFER_BIT);
   glLoadIdentity();
   mv.Render();
-  If form40.Visible Then Begin
-    pt := mv.GetMouseMapLongLat(0, 0);
-    vp.Lon_min := pt.x;
-    vp.Lat_min := pt.Y;
-    pt := mv.GetMouseMapLongLat(OpenGLControl1.ClientWidth, OpenGLControl1.ClientHeight);
-    vp.Lon_max := pt.x;
-    vp.Lat_max := pt.Y;
-    form40.RenderViewPort(vp);
-    form40.RenderRoutePoints(vp);
-  End;
+  //  If CheckBox3.Checked Or CheckBox11.Checked Then Begin
+  pt := mv.GetMouseMapLongLat(0, 0);
+  vp.Lon_min := pt.x;
+  vp.Lat_min := pt.Y;
+  pt := mv.GetMouseMapLongLat(OpenGLControl1.ClientWidth, OpenGLControl1.ClientHeight);
+  vp.Lon_max := pt.x;
+  vp.Lat_max := pt.Y;
+  RenderViewPort(vp);
+  RenderRoutePoints(vp);
+  //  End;
   If (Splashhint <> '') Or (Splashhint2 <> '') Then Begin
     txt := Splashhint;
     If Splashhint2 <> '' Then txt := Splashhint2;
@@ -1066,6 +1728,73 @@ Begin
     gluPerspective(45.0, OpenGLControl1.Width / OpenGLControl1.Height, 0.1, 100.0);
     glMatrixMode(GL_MODELVIEW);
     OpenGLControl1Paint(Nil);
+  End;
+  button1.Left := OpenGLControl1.Left + OpenGLControl1.Width - Button1.Width - Scale96ToForm(8);
+End;
+
+Procedure TForm15.MergeLiteCachesToDB(Const Caches: TLiteCacheArray);
+Var
+  cnt, i: integer;
+  c: TCache;
+  t: int64;
+Begin
+  t := GetTickCount64;
+  cnt := 0;
+  form4.RefresStatsMethod('', cnt, 0, true);
+  For i := 0 To high(caches) Do Begin
+    c := LiteCacheToCache(Caches[i]);
+    If CacheToDB(c, false, false) Then Begin
+      inc(cnt);
+      If cnt Mod 5 = 0 Then Begin
+        form4.RefresStatsMethod('', cnt, 0, false);
+      End;
+    End;
+    If form4.Abbrechen Then break;
+  End;
+  SQLTransaction.Commit;
+  form4.hide;
+  t := GetTickCount64 - t;
+  form1.RefreshDataBaseCacheCountinfo;
+  Showmessage(format(RF_Script_finished_in, [PrettyTime(t)], DefFormat));
+End;
+
+Procedure TForm15.MergeLabsCachesToDB(Const Labs: TLABCacheInfoArray);
+Var
+  cnt, i, j: integer;
+  c: TCacheArray;
+  t: int64;
+Begin
+  t := GetTickCount64;
+  cnt := 0;
+  form4.RefresStatsMethod('', cnt, 0, true);
+  For i := 0 To high(Labs) Do Begin
+    c := GCTDownloadLAB(labs[i], CheckBox12.Checked);
+    For j := 0 To high(c) Do Begin
+      If CacheToDB(c[j], false, false) Then Begin
+        inc(cnt);
+        If cnt Mod 5 = 0 Then Begin
+          form4.RefresStatsMethod('', cnt, 0, false);
+        End;
+      End;
+      If form4.Abbrechen Then break;
+    End;
+  End;
+  SQLTransaction.Commit;
+  form4.hide;
+  t := GetTickCount64 - t;
+  form1.RefreshDataBaseCacheCountinfo;
+  Showmessage(format(RF_Script_finished_in, [PrettyTime(t)], DefFormat));
+End;
+
+Procedure TForm15.OnWaitEvent(Sender: TObject; Delay: Int64);
+Var
+  t: QWord;
+Begin
+  t := GetTickCount64;
+  While t + Delay >= GetTickCount64 Do Begin
+    sleep(1);
+    Application.ProcessMessages;
+    If Not fOnlineViewer.EnableDownloading Then exit;
   End;
 End;
 

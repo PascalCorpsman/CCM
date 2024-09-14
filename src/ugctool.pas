@@ -209,34 +209,6 @@ Type
     enablePersonalization: Boolean;
   End;
 
-  TLiteCache = Record
-    (* -- Alle Parameter die Identisch zu TCache sind -- *)
-    Lat: Double;
-    Lon: Double;
-    Cor_Lat: Double; // -1 = nicht Definiert -> Was machen wir wenn es einen Cache bei -1 -1 gibt ??
-    Cor_Lon: Double; // -1 = nicht Definiert
-    Time: String; // Das Datum an dem die Dose Gelegt wurde
-    GC_Code: String; // Der GC Code
-    Fav: integer; // Anzahl der Favs
-    G_Name: String; // Der Name, wie er angezeigt wird.
-    G_ID: integer; // Geocache ID, kann auch aus GC_Code Berechnet werden
-    G_Available: Boolean; // Wenn 1 dann ist die Dose gerade Deaktiviert, sonst 0
-    G_Archived: Boolean;
-    G_Found: integer; // 0 = not Found, 1 = Found
-    G_Type: String; // Tradi, Multi, Mystery ..
-    G_Container: String; // Container Größe  [Micro]
-    G_Difficulty: Single; // [3]
-    G_Terrain: Single; // [1.5]
-    G_Owner: String; // Klarname des Owners
-    LastFound: String; // Der Zeitstempel an dem der Letzte Fund gemacht wurde.
-    (* -- Alle Parameter die eigentlich nicht hier rein gehören, aber uns eben das Leben erleichtern --*)
-    RenderIconIndex: integer; // -- Wird im uonlineviewer beim Übernehmen initialisiert
-    OldRenderIconIndex: integer; // -- Wird im uonlineviewer beim Übernehmen initialisiert
-    x, y: integer; // Die zuletzt berechnete Position auf dem RenderingContext
-  End;
-
-  TLiteCacheArray = Array Of TLiteCache;
-
   TSearchParams = Record
     Ho: Boolean; // Hide Own
     Hf: Boolean; // Hide Found

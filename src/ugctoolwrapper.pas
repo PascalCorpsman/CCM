@@ -26,8 +26,6 @@ Type
   TTBLogState = ugctool.TTBLogState;
   TPocketQueries = ugctool.TPocketQueries;
   TServerParameters = ugctool.TServerParameters;
-  TLiteCache = ugctool.TLiteCache;
-  TLiteCacheArray = ugctool.TLiteCacheArray;
   TLABCacheInfo = ugctool.TLABCacheInfo;
   TLABCacheInfoArray = ugctool.TLABCacheInfoArray;
   TSearchParams = ugctool.TSearchParams;

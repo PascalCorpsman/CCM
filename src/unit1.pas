@@ -489,7 +489,6 @@ Uses
   unit37, // LAB-Caches
   unit38, // TB-Database Editor
   // unit39, // Select via Listbox Dialog
-  unit40, // Online Modus im Map Preview
   unit41, // About
   unit42, // TB-Detail dialog
   unit43, // Online User Note Diff Dialog
@@ -1245,7 +1244,7 @@ Begin
       vp.Lat_max := SQLQuery1.Fields[0].AsFloat;
       vp.Lon_max := SQLQuery1.Fields[1].AsFloat;
       // 2. das Fenster Hohlen
-      lc := Form40.GetAllCachesAround(vp);
+      lc := form15.GetAllCachesAround(vp);
       // 3. Alles Updaten
       For j := 0 To high(lc) Do Begin
         For k := i - 1 To high(c) Do Begin
@@ -4971,6 +4970,7 @@ Begin
   End;
   allowcnt := 0;
   Form15Initialized := false;
+  form15.InitFormular();
   FormShowModal(form15, self);
 End;
 

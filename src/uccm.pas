@@ -578,7 +578,7 @@ Const
    *                   Fix lite cache downloading was broken
    * HP release 2.61 = Center at coodinate (in Map view)
    *                   Fix discover TB again was broken due to changes from groundspeak
-   *            2.62 =
+   *            2.62 = ADD: Merge "online" Dialog into Map dialog -> Increase Usability
    *)
 
   Version = updater_Version;
@@ -815,7 +815,7 @@ Type
   (*
    * !! ACHTUNG !!
    *
-   * Wenn an diesem Record etwas geändert wird muss die Routine "LiteCacheToCache" in Unit40 auch angepasst werden.
+   * Wenn an diesem Record etwas geändert wird muss die Routine "LiteCacheToCache" auch angepasst werden.
    *)
   TCache = Record
     // Tag wpt
@@ -861,6 +861,34 @@ Type
     Waypoints: TWaypointList; // -- Ist Defaultmäßig = NIL
     //    travelbugs: Array Of TTravelbug; -- Wo kriegen wir die her ?
   End;
+
+  TLiteCache = Record
+    (* -- Alle Parameter die Identisch zu TCache sind -- *)
+    Lat: Double;
+    Lon: Double;
+    Cor_Lat: Double; // -1 = nicht Definiert -> Was machen wir wenn es einen Cache bei -1 -1 gibt ??
+    Cor_Lon: Double; // -1 = nicht Definiert
+    Time: String; // Das Datum an dem die Dose Gelegt wurde
+    GC_Code: String; // Der GC Code
+    Fav: integer; // Anzahl der Favs
+    G_Name: String; // Der Name, wie er angezeigt wird.
+    G_ID: integer; // Geocache ID, kann auch aus GC_Code Berechnet werden
+    G_Available: Boolean; // Wenn 1 dann ist die Dose gerade Deaktiviert, sonst 0
+    G_Archived: Boolean;
+    G_Found: integer; // 0 = not Found, 1 = Found
+    G_Type: String; // Tradi, Multi, Mystery ..
+    G_Container: String; // Container Größe  [Micro]
+    G_Difficulty: Single; // [3]
+    G_Terrain: Single; // [1.5]
+    G_Owner: String; // Klarname des Owners
+    LastFound: String; // Der Zeitstempel an dem der Letzte Fund gemacht wurde.
+    (* -- Alle Parameter die eigentlich nicht hier rein gehören, aber uns eben das Leben erleichtern --*)
+    RenderIconIndex: integer; // -- Wird im uonlineviewer beim Übernehmen initialisiert
+    OldRenderIconIndex: integer; // -- Wird im uonlineviewer beim Übernehmen initialisiert
+    x, y: integer; // Die zuletzt berechnete Position auf dem RenderingContext
+  End;
+
+  TLiteCacheArray = Array Of TLiteCache;
 
   TCacheArray = Array Of TCache;
 
@@ -1264,6 +1292,11 @@ Function IndexToCacheSize(Index: integer): String;
  * Gibt den Default filter für Filtername, '' wenn es keinen gibt.
  *)
 Function GetDefaultFilterFor(FilterName: String): String;
+
+(*
+ * Konvertiert einen LitheCache in einen "richtigen" Cache
+ *)
+Function LiteCacheToCache(Const LiteCache: TLiteCache): TCache;
 
 Implementation
 
@@ -4530,6 +4563,61 @@ Begin
     result := false;
   End;
   m.free;
+End;
+
+Function LiteCacheToCache(Const LiteCache: TLiteCache): TCache;
+Begin
+  result.Lat := LiteCache.Lat;
+  result.Lon := LiteCache.Lon;
+  result.Cor_Lat := LiteCache.Cor_Lat;
+  result.Cor_Lon := LiteCache.Cor_Lon;
+  result.Time := LiteCache.Time;
+  result.GC_Code := LiteCache.GC_Code;
+  result.Desc := LiteCache.g_name + ' by ' + LiteCache.g_owner + ', ' + LiteCache.G_Type + ' (' + floattostr(LiteCache.G_Difficulty, DefFormat) + '/' + floattostr(LiteCache.G_Terrain, DefFormat) + ')';
+  result.URL := 'https://coord.info/' + uppercase(LiteCache.GC_Code);
+  result.URL_Name := LiteCache.G_Name;
+  result.Sym := 'Geocache'; // Das Symbol welches auf der onlinekarte zum Anzeigen genutzt wird
+  result.Type_ := LiteCache.G_Type;
+  result.Note := '';
+  result.Customer_Flag := 0;
+  result.Lite := true;
+  result.Fav := LiteCache.Fav;
+
+  result.G_ID := LiteCache.G_ID;
+  result.G_Available := LiteCache.G_Available;
+  result.G_Archived := LiteCache.G_Archived;
+
+  result.G_Found := LiteCache.G_Found;
+  result.G_XMLNs := '';
+  result.G_Name := LiteCache.G_Name;
+  result.G_Placed_By := '';
+  result.G_Owner_ID := 0;
+  result.G_Owner := LiteCache.G_Owner;
+  result.G_Type := LiteCache.G_Type;
+  result.G_Container := LiteCache.G_Container;
+  result.G_Attributes := Nil;
+  result.G_Difficulty := LiteCache.G_Difficulty;
+  result.G_Terrain := LiteCache.G_Terrain;
+  result.G_Country := '';
+  result.G_State := '';
+  result.G_Short_Description := 'This is a lite cache, it has no listing.';
+  result.G_Short_Description_HTML := false;
+  result.G_Long_Description := 'This is a lite cache, it has no listing.';
+  result.G_Long_Description_HTML := false;
+  result.G_Encoded_Hints := '';
+  If StrToTime(LiteCache.LastFound) <> -1 Then Begin
+    setlength(result.Logs, 1);
+    result.Logs[0].id := 0;
+    result.Logs[0].date := LiteCache.LastFound;
+    result.Logs[0].Type_ := 'Found it';
+    result.Logs[0].Finder_ID := 0;
+    result.Logs[0].Finder := 'Unknown';
+    result.Logs[0].Text_Encoded := false;
+    result.Logs[0].Log_Text := 'Last found date imported from a lite cache.';
+  End
+  Else Begin
+    result.Logs := Nil;
+  End;
 End;
 
 Finalization

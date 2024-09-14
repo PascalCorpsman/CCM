@@ -7,12 +7,12 @@ object Form1: TForm1
   ClientHeight = 505
   ClientWidth = 408
   Menu = MainMenu1
+  LCLVersion = '3.99.0.0'
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnKeyDown = ComboBox2KeyDown
   OnResize = FormResize
   OnShow = FormShow
-  LCLVersion = '2.3.0.0'
   object Label1: TLabel
     Left = 8
     Height = 16
@@ -34,12 +34,12 @@ object Form1: TForm1
     Top = 38
     Width = 205
     Anchors = [akTop, akLeft, akRight]
-    OnKeyDown = ComboBox2KeyDown
-    OnKeyPress = Edit1KeyPress
     ParentShowHint = False
     ShowHint = True
     TabOrder = 1
     Text = 'Edit2'
+    OnKeyDown = ComboBox2KeyDown
+    OnKeyPress = Edit1KeyPress
   end
   object Button1: TButton
     Left = 341
@@ -48,9 +48,9 @@ object Form1: TForm1
     Width = 59
     Anchors = [akTop, akRight]
     Caption = 'Go'
+    TabOrder = 3
     OnClick = Button1Click
     OnKeyDown = ComboBox2KeyDown
-    TabOrder = 3
   end
   object Label3: TLabel
     Left = 8
@@ -66,10 +66,10 @@ object Form1: TForm1
     Width = 205
     Anchors = [akTop, akLeft, akRight]
     ItemHeight = 0
-    OnChange = ComboBox1Change
-    OnKeyDown = ComboBox2KeyDown
     Style = csDropDownList
     TabOrder = 2
+    OnChange = ComboBox1Change
+    OnKeyDown = ComboBox2KeyDown
   end
   object StringGrid1: TStringGrid
     Left = 8
@@ -129,13 +129,13 @@ object Form1: TForm1
     Width = 205
     Anchors = [akTop, akLeft, akRight]
     ItemHeight = 0
-    OnKeyDown = ComboBox2KeyDown
-    OnKeyPress = Edit1KeyPress
     ParentShowHint = False
     PopupMenu = PopupMenu2
     ShowHint = True
     TabOrder = 0
     Text = 'ComboBox2'
+    OnKeyDown = ComboBox2KeyDown
+    OnKeyPress = Edit1KeyPress
   end
   object MainMenu1: TMainMenu
     Left = 56
