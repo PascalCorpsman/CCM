@@ -42,6 +42,7 @@ object Form15: TForm15
       Height = 25
       Top = 560
       Width = 289
+      Anchors = [akLeft, akRight, akBottom]
       Caption = 'Close'
       TabOrder = 0
       OnClick = Button2Click
