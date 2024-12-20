@@ -6,7 +6,7 @@ It is possible to compile the CCM-Project out of the given code, but the lab cac
 
 If you find a bug / missing feature, you need to go the "normal" process with a ticket and i will give my best to fix / recompile the code and then republis the binaries on [www.Corpsman.de ](https://www.Corpsman.de)
 
-![Preview](Preview.png)
+![Preview](use/Preview.png)
 
 ## Features
  - Windows / Linux 64
@@ -43,6 +43,19 @@ Youtube [Step by step installation guide](https://www.youtube.com/watch?v=XDlOMk
 1:05: Windows installation<br>
 2:00: setup CCM with the Wizard<br>
 
+## Instructions to get code compilable
+
+To be able to Compile the Source with Lazarus you need additionally install the following packages:
+
+External Libs:
+Synapse: https://www.ararat.cz/synapse/doku.php/download
+MP: https://web.archive.org/web/20190628091417/http://www.wolfgang-ehrhardt.de/index.html
+
+Lazarus Packages:
+ - UniqueInstance
+ - TurboPowerPro
+ - LazOpenGLContext
+ - SQLDBLaz
 
 
 ## More video tutorials:
