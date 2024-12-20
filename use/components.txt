@@ -1,0 +1,3 @@
+UniqueInstance
+Synapse40.1
+TurboPowerIPro

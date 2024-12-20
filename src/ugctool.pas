@@ -630,11 +630,11 @@ Begin // https://api.groundspeak.com/documentation#type
     8: result := Unknown_Cache;
     9: result := Project_APE_Cache;
     11: result := Webcam_Cache;
-    //12 	Locationless (Reverse) Cache
+    //12    Locationless (Reverse) Cache
     13: result := Cache_In_Trash_Out_Event;
     137: result := Earthcache;
     453: result := Mega_Event_Cache;
-    //1304 	GPS Adventures Exhibit
+    //1304  GPS Adventures Exhibit
     1858: result := Wherigo_Cache;
     3653: result := Event_Cache; // 3653 = Community Celebration Event
     3773: result := Unknown_Cache; //3773 = Geocaching HQ
