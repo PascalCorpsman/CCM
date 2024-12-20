@@ -23,9 +23,9 @@ function priv_lazbuild
     fi
     declare -r COMPONENTS='use/components.txt'
     if [[ -d "${COMPONENTS%%/*}" ]]; then
-        # if [[ -f '.gitmodules' ]]; then
-        #    git submodule update --init --recursive --force --remote
-        #fi
+        if [[ -f '.gitmodules' ]]; then
+            git submodule update --init --recursive --force --remote
+        fi
         if [[ -f "${COMPONENTS}" ]]; then
             printf '\x1b[32mDownload packages:\x1b[0m\n' 1>&2
             while read -r; do
@@ -57,9 +57,9 @@ function priv_lazbuild
             [out]=$(mktemp)
         )
         if (lazbuild --no-write-project --recursive --no-write-project --widgetset=qt5 --build-mode=release "${REPLY}" > "${VAR[out]}"); then
-            printf '\x1b[32m\t[%d]\tbuild project\t%s\x1b[0m\n' "$?" "${REPLY}"
+            printf '\x1b[32m\t[SUCCESS]\tbuild project\t%s\x1b[0m\n' "${REPLY}"
         else
-            cat "${VAR[out]}"
+            cat --squeeze-blank "${VAR[out]}"
             ((errors+=1))
         fi 1>&2
     done < <(find 'src' -type 'f' -name '*.lpi' | grep -v 'backup' | sort)
