@@ -29,7 +29,7 @@ Uses
   Unit11, Unit12, Unit13, Unit14, Unit15, Unit16, Unit17, Unit18, Unit19, Unit20, 
   Unit21, unit22, unit27, Unit23, Unit24, Unit25, Unit26, Unit28, unit29, unit30, 
   Unit31, Unit32, Unit33, Unit34, Unit35, Unit36, Unit37, Unit38, Unit39, Unit41,
-  unit42, Unit43, Unit44, uopengl_font_common;
+  unit42, Unit43, Unit44, uopengl_font_common, mp_types, dglOpenGL;
 
 {$IFDEF Windows}
 {$IFDEF CPU32}
