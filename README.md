@@ -11,9 +11,9 @@ If you find a bug / missing feature, you need to go the "normal" process with a 
 ## Features
  - Windows / Linux 64
  - Bilingual (de / en)
- - Online support
- - Travelbug database
- - Scriptable
+ - Inbuild google map with cache overlays
+ - Separate travelbug database
+ - Fully scriptable
  - Custom Filters
  - diverse statistic evaluations (Jasmer / 81 / Attributes ..)
  - automatic updates
