@@ -4,7 +4,7 @@ This is the public source mirror of the CCM Project.
 !! Attention !!<br>
 It is possible to compile the CCM-Project out of the given code, but the lab cache features will be disabled, as i am not allowed to publish the needed keys for the lab-API.
 
-If you find a bug / missing feature, you need to go the "normal" process with a ticket and i will give my best to fix / recompile the code and then republis the binaries on [www.Corpsman.de ](https://www.Corpsman.de)
+If you find a bug / missing feature, you need to go the "normal" process with a ticket in this repository and i will give my best to fix the code and then publish the binaries on [www.Corpsman.de ](https://www.Corpsman.de)
 
 ![Preview](Preview.png)
 
@@ -20,12 +20,11 @@ If you find a bug / missing feature, you need to go the "normal" process with a 
  - Export / Import features for GSAK / c:geo
  - as many databases as you want
  - compare / merge databases
- - pocket queries
- - export chaches to garmin GPS
- - import fieldnotes from garmin GPS
+ - download pocket queries
+ - Export caches to garmin GPS
+ - Import fieldnotes from garmin GPS
  - Online logging
- - customizable
- - rudimentary support for LAB-Caches
+ - rudimentary support for LAB-Caches (download / convert to caches)
  - recordings for light caches (good to download thousands of geocaches arround a route)
 
 ## Download
