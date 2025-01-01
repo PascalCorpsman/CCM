@@ -578,7 +578,8 @@ Const
    *                   Fix lite cache downloading was broken
    * HP release 2.61 = Center at coodinate (in Map view)
    *                   Fix discover TB again was broken due to changes from groundspeak
-   *            2.62 = ADD: Merge "online" Dialog into Map dialog -> Increase Usability
+   * HP release 2.62 = ADD: Merge "online" Dialog into Map dialog -> Increase Usability
+   *            2.63 = 
    *)
 
   Version = updater_Version;
