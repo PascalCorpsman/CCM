@@ -1138,6 +1138,7 @@ Begin
   // Center at coordinate
   value := '';
   If InputQuery(R_Question, r_enter_search_text, false, value) Then Begin
+    value := trim(value);
     value := uppercase(value);
     If (pos('N', value) <> 0) Or (pos('S', value) <> 0) Then Begin
       // Annahme einer DEG Koordinate

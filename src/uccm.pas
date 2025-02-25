@@ -579,7 +579,7 @@ Const
    * HP release 2.61 = Center at coodinate (in Map view)
    *                   Fix discover TB again was broken due to changes from groundspeak
    * HP release 2.62 = ADD: Merge "online" Dialog into Map dialog -> Increase Usability
-   *            2.63 = 
+   *            2.63 = ADD: make "center at coord" more robust
    *)
 
   Version = updater_Version;
