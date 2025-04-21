@@ -581,6 +581,7 @@ Const
    * HP release 2.62 = ADD: Merge "online" Dialog into Map dialog -> Increase Usability
    *            2.63 = ADD: make "center at coord" more robust
    *                   Fix JSON parser crash on \u tags
+   *                   Fix LABLogin was broken -> is now "merged" with normal Login
    *)
 
   Version = updater_Version;

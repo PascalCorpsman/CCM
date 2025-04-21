@@ -1750,14 +1750,14 @@ Begin
 End;
 
 Function TGCTool.LabLogin: Boolean;
-Var
-  Request: TStringList;
-  auth: String;
+//Var
+//  Request: TStringList;
+//  auth: String;
 Begin
-  (*
-   * Wenn was nicht geht im FF mittels "STRG" + "SHIFT" + "K" den Netzwerk analysator starten
-   * dann rechts "Persistent logs" oder "Logs nicht leeren" und ab gehts zum Debuggen.
-   *)
+  //  (*
+  //   * Wenn was nicht geht im FF mittels "STRG" + "SHIFT" + "K" den Netzwerk analysator starten
+  //   * dann rechts "Persistent logs" oder "Logs nicht leeren" und ab gehts zum Debuggen.
+  //   *)
   result := false;
   fLabLoggedIn := false;
   fLastError := '';
@@ -1765,58 +1765,62 @@ Begin
     fLastError := 'Invalid username or password.';
     exit;
   End;
-  RemoveFormAuthToken;
-  fClient.Clear;
-  fClient.HTTPMethod('GET', LAB_Login_URL);
-  Follow_Links(LAB_Login_URL);
-  auth := ExtractFormAuthToken();
-  If (trim(auth) = '') Or (fClient.ResultCode <> 200) Then Begin
-    fLastError := 'HTTP.ResultCode: ' + inttostr(fClient.ResultCode) + ' ; ' + fClient.ResultString + LineEnding +
-      'HTTP.Sock.LastError: ' + inttostr(fClient.Sock.LastError) + ' ; ' + fClient.Sock.LastErrorDesc + LineEnding +
-      'HTTP.Sock.SSL.LastError: ' + inttostr(fClient.Sock.SSL.LastError) + ' ; ' + fClient.Sock.SSL.LastErrorDesc;
-    (*
-     * Wenns nicht klappt, eine Abhilfe schafft evtl:
-     *
-     *   sudo aptitude install libssl-dev
-     *)
-    result := false;
-    exit;
+  //  RemoveFormAuthToken;
+  result := fLoggedIn;
+  If Not result Then Begin
+    result := Login;
   End;
-  Try
-    (* Zuerst basteln wir uns den Login_Request zusammen. Das Format ist der Standard für codierte Formulare. EncodeURLElelement ist wichtig,
-       damit Sonderzeichen vernünftig übertragen werden. *)
-    Request := TStringList.Create;
-    Request.Add('__RequestVerificationToken=' + auth + '&'
-      + 'Username=' + EncodeURLElement(Username) + '&'
-      + 'Password=' + EncodeURLElement(Password) + '&');
-    (* Den ertsellten Request kopieren wir in das Document des Client. Dieses wird dann beim Ausführen von HTTPMethod als Content gesendet. *)
-    CopyStringsToStream(Request, fClient.Document);
-    (* Wichtig: Korrekten MimeType für den Request senden. Sonst nimmt der Server das nicht an. *)
-    fClient.MimeType := 'application/x-www-form-urlencoded';
-    (* Alter Header vom vorherigen Request/Response löschen. *)
-    fClient.Headers.Clear;
-    fClient.HTTPMethod('POST', LAB_Login_URL);
-    (* Nach erfolgreichen Login will der Server uns an die Übersichtsseite weiterleiten. Interessiert uns in diesem Fall nicht,
-       wir wollen nur wissen ob der Login geklappt hat. Kommt als 302 als Status für Weiterleitung zurück, ist alles in Ordnung. *)
-    Result := (fClient.ResultCode = 302);
-    //    CopyStreamToStrings(fClient.Document, form1.SynEdit1.Lines);
-    If Not result Then Begin
-      If (fClient.ResultCode = 200) Then Begin
-        fLastError := 'Geocaching password was not accepted, please double check the writing of your username and password.';
-        Request.Clear;
-        //        CopyStreamToStrings(fclient.Document, Request); -- Debugg
-        //        Request.SaveToFile('/sda5/sda5/Temp/result.html'); -- Debugg
-      End
-      Else Begin
-        fLastError := 'Unable to log in : ' + LineEnding +
-          'HTTP.ResultCode: ' + inttostr(fClient.ResultCode) + ' ; ' + fClient.ResultString + LineEnding +
-          'HTTP.Sock.LastError: ' + inttostr(fClient.Sock.LastError) + ' ; ' + fClient.Sock.LastErrorDesc + LineEnding +
-          'HTTP.Sock.SSL.LastError: ' + inttostr(fClient.Sock.SSL.LastError) + ' ; ' + fClient.Sock.SSL.LastErrorDesc;
-      End;
-    End;
-  Finally
-    FreeAndNil(Request);
-  End;
+  //  fClient.Clear;
+  //  fClient.HTTPMethod('GET', LAB_Login_URL);
+  //  Follow_Links(LAB_Login_URL);
+  //  auth := ExtractFormAuthToken();
+  //  If (trim(auth) = '') Or (fClient.ResultCode <> 200) Then Begin
+  //    fLastError := 'HTTP.ResultCode: ' + inttostr(fClient.ResultCode) + ' ; ' + fClient.ResultString + LineEnding +
+  //      'HTTP.Sock.LastError: ' + inttostr(fClient.Sock.LastError) + ' ; ' + fClient.Sock.LastErrorDesc + LineEnding +
+  //      'HTTP.Sock.SSL.LastError: ' + inttostr(fClient.Sock.SSL.LastError) + ' ; ' + fClient.Sock.SSL.LastErrorDesc;
+  //    (*
+  //     * Wenns nicht klappt, eine Abhilfe schafft evtl:
+  //     *
+  //     *   sudo aptitude install libssl-dev
+  //     *)
+  //    result := false;
+  //    exit;
+  //  End;
+  //  Try
+  //    (* Zuerst basteln wir uns den Login_Request zusammen. Das Format ist der Standard für codierte Formulare. EncodeURLElelement ist wichtig,
+  //       damit Sonderzeichen vernünftig übertragen werden. *)
+  //    Request := TStringList.Create;
+  //    Request.Add('__RequestVerificationToken=' + auth + '&'
+  //      + 'Username=' + EncodeURLElement(Username) + '&'
+  //      + 'Password=' + EncodeURLElement(Password) + '&');
+  //    (* Den ertsellten Request kopieren wir in das Document des Client. Dieses wird dann beim Ausführen von HTTPMethod als Content gesendet. *)
+  //    CopyStringsToStream(Request, fClient.Document);
+  //    (* Wichtig: Korrekten MimeType für den Request senden. Sonst nimmt der Server das nicht an. *)
+  //    fClient.MimeType := 'application/x-www-form-urlencoded';
+  //    (* Alter Header vom vorherigen Request/Response löschen. *)
+  //    fClient.Headers.Clear;
+  //    fClient.HTTPMethod('POST', LAB_Login_URL);
+  //    (* Nach erfolgreichen Login will der Server uns an die Übersichtsseite weiterleiten. Interessiert uns in diesem Fall nicht,
+  //       wir wollen nur wissen ob der Login geklappt hat. Kommt als 302 als Status für Weiterleitung zurück, ist alles in Ordnung. *)
+  //    Result := (fClient.ResultCode = 302);
+  //    //    CopyStreamToStrings(fClient.Document, form1.SynEdit1.Lines);
+  //    If Not result Then Begin
+  //      If (fClient.ResultCode = 200) Then Begin
+  //        fLastError := 'Geocaching password was not accepted, please double check the writing of your username and password.';
+  //        Request.Clear;
+  //        //        CopyStreamToStrings(fclient.Document, Request); -- Debugg
+  //        //        Request.SaveToFile('/sda5/sda5/Temp/result.html'); -- Debugg
+  //      End
+  //      Else Begin
+  //        fLastError := 'Unable to log in : ' + LineEnding +
+  //          'HTTP.ResultCode: ' + inttostr(fClient.ResultCode) + ' ; ' + fClient.ResultString + LineEnding +
+  //          'HTTP.Sock.LastError: ' + inttostr(fClient.Sock.LastError) + ' ; ' + fClient.Sock.LastErrorDesc + LineEnding +
+  //          'HTTP.Sock.SSL.LastError: ' + inttostr(fClient.Sock.SSL.LastError) + ' ; ' + fClient.Sock.SSL.LastErrorDesc;
+  //      End;
+  //    End;
+  //  Finally
+  //    FreeAndNil(Request);
+  //  End;
   fLabLoggedIn := result;
 End;
 
