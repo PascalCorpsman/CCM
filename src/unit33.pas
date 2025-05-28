@@ -766,8 +766,10 @@ Var
   sl: TStringList;
   s: String;
   i: Integer;
+  notall: Boolean;
 Begin
   If SaveDialog1.Execute Then Begin
+    notall := false;
     s := '';
     For i := 1 To StringGrid1.RowCount - 1 Do Begin
       If StringGrid1.Cells[ColTBSelected, i] = '1' Then Begin
@@ -777,12 +779,19 @@ Begin
         Else Begin
           s := s + ',' + StringGrid1.Cells[ColTBCode, i];
         End;
+      End
+      Else Begin
+        If StringGrid1.Cells[ColTBState, i] <> R_Not_Existing Then
+          notall := true;
       End;
     End;
     sl := TStringList.Create;
     sl.Text := s;
     sl.SaveToFile(SaveDialog1.FileName);
     sl.free;
+    If notall Then Begin
+      Showmessage(RS_Warning_Not_All_TB_Codes_have_been_Exported_Select_All_To_Export_All);
+    End;
   End;
   edit1.SetFocus;
 End;

@@ -130,6 +130,7 @@ Resourcestring
   R_Did_you_upload_the_geocache_visits_txt_to_www_geocaching_com_and_marked_as_logged_in_DB = 'Did you upload the geocache_visits.txt to www.geocaching.com and marked as logged in DB?';
   R_Warning = 'Warning';
   R_Warning_some_caches_where_not_in_database_Could_not_mark_all_caches_in_db = 'Warning, some caches where not in database. Could not mark all caches in database.';
+  RS_Warning_Not_All_TB_Codes_have_been_Exported_Select_All_To_Export_All ='Warning, not all TB Codes have been exported. Select all to export all.';
   R_Question = 'Question';
   R_Enter_new_filter_name = 'Enter new filter name:';
   R_Select = 'Select';

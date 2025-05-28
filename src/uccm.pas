@@ -582,6 +582,7 @@ Const
    *            2.63 = ADD: make "center at coord" more robust
    *                   Fix JSON parser crash on \u tags
    *                   Fix LABLogin was broken -> is now "merged" with normal Login
+   *                   ADD: warning on TB-Export
    *)
 
   Version = updater_Version;
