@@ -583,6 +583,8 @@ Const
    *                   Fix JSON parser crash on \u tags
    *                   Fix LABLogin was broken -> is now "merged" with normal Login
    *                   ADD: warning on TB-Export
+   *                   Fix "Add userpoint here" did not work
+   *                   ADD: Export / import userpoint list
    *)
 
   Version = updater_Version;

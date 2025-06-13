@@ -790,7 +790,7 @@ Begin
     sl.SaveToFile(SaveDialog1.FileName);
     sl.free;
     If notall Then Begin
-      Showmessage(RS_Warning_Not_All_TB_Codes_have_been_Exported_Select_All_To_Export_All);
+      Showmessage(R_Warning_Not_All_TB_Codes_have_been_Exported_Select_All_To_Export_All);
     End;
   End;
   edit1.SetFocus;

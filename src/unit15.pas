@@ -32,7 +32,16 @@ Uses
   ;
 
 Const
+  (*
+   * Historie: 1 = initialversion
+   *           2 = ?
+   *)
   RouteFileVersion: uint32 = 2;
+
+  (*
+   * Historie: 1 = initialversion
+   *)
+  UserPointFileVersion: uint32 = 1;
 
 Type
 
@@ -88,9 +97,11 @@ Type
     MenuItem2: TMenuItem;
     MenuItem20: TMenuItem;
     MenuItem21: TMenuItem;
+    MenuItem22: TMenuItem;
     MenuItem23: TMenuItem;
     MenuItem24: TMenuItem;
     MenuItem25: TMenuItem;
+    MenuItem26: TMenuItem;
     MenuItem3: TMenuItem;
     MenuItem4: TMenuItem;
     MenuItem5: TMenuItem;
@@ -102,6 +113,7 @@ Type
     MenuItem62: TMenuItem;
     MenuItem63: TMenuItem;
     OpenDialog1: TOpenDialog;
+    OpenDialog2: TOpenDialog;
     OpenGLControl1: TOpenGLControl;
     PopupMenu1: TPopupMenu;
     RadioButton1: TRadioButton;
@@ -109,6 +121,8 @@ Type
     RadioButton3: TRadioButton;
     RadioButton4: TRadioButton;
     SaveDialog1: TSaveDialog;
+    SaveDialog2: TSaveDialog;
+    Separator1: TMenuItem;
     Procedure Button10Click(Sender: TObject);
     Procedure Button1Click(Sender: TObject);
     Procedure Button2Click(Sender: TObject);
@@ -145,8 +159,10 @@ Type
     Procedure MenuItem1Click(Sender: TObject);
     Procedure MenuItem20Click(Sender: TObject);
     Procedure MenuItem21Click(Sender: TObject);
+    Procedure MenuItem22Click(Sender: TObject);
     Procedure MenuItem24Click(Sender: TObject);
     Procedure MenuItem25Click(Sender: TObject);
+    Procedure MenuItem26Click(Sender: TObject);
     Procedure MenuItem2Click(Sender: TObject);
     Procedure MenuItem3Click(Sender: TObject);
     Procedure MenuItem4Click(Sender: TObject);
@@ -806,7 +822,12 @@ Begin
   Form14.ComboBox5.Text := Form14.ComboBox3.Text;
   Form14.Edit5.text := Form14.Edit1.Text;
   Form14.Edit6.text := Form14.Edit2.Text;
+  form14.GroupBox1.Enabled := false;
   FormShowModal(form14, self);
+  form14.GroupBox1.Enabled := true;
+  If (form14.Edit3.Text <> '') And (form14.Edit4.Text <> '') Then Begin
+    AddUserPointAt(StrToFloat(form14.edit4.text), StrToFloat(form14.edit3.text));
+  End;
   OpenGLControl1Paint(Nil);
 End;
 
@@ -1106,6 +1127,33 @@ Begin
   End;
 End;
 
+Procedure TForm15.MenuItem22Click(Sender: TObject);
+Var
+  m: TMemoryStream;
+  i: integer;
+  info: TImageInfoRecord;
+Begin
+  // Export UserPointList
+  If mv.ImageCount = 0 Then Begin
+    showmessage(R_Error_No_Userpoints);
+    exit;
+  End;
+  If SaveDialog2.Execute Then Begin
+    m := TMemoryStream.Create;
+    m.Write(UserPointFileVersion, sizeof(UserPointFileVersion));
+    i := mv.ImageCount;
+    m.Write(i, sizeof(i));
+    For i := 0 To mv.ImageCount - 1 Do Begin
+      info := mv.Image[i];
+      m.Write(info.x, sizeof(info.x));
+      m.Write(info.y, sizeof(info.y));
+      m.WriteAnsiString(info.Label_); // wer weiß ob wir das mal brauchen...
+    End;
+    m.SaveToFile(SaveDialog2.FileName);
+    m.free;
+  End;
+End;
+
 Procedure TForm15.MenuItem24Click(Sender: TObject);
 Var
   f: String;
@@ -1168,6 +1216,49 @@ Begin
     mv.Zoom := 14;
     mv.CenterLongLat(lon, lat);
     OpenGLControl1Paint(Nil);
+  End;
+End;
+
+Procedure TForm15.MenuItem26Click(Sender: TObject);
+Var
+  m: TMemoryStream;
+  fw: UInt32;
+  cnt, i: integer;
+  x, y, sx, sy: Extended;
+  s: String;
+Begin
+  // Import UserPointList
+  If OpenDialog2.Execute Then Begin
+    m := TMemoryStream.Create;
+    m.LoadFromFile(OpenDialog2.FileName);
+    fw := high(UInt32);
+    m.Read(fw, sizeof(fw));
+    If fw > UserPointFileVersion Then Begin
+      showmessage(R_Error_invalid_Fileversion);
+      m.free;
+      exit;
+    End;
+    mv.ClearImagesOnCoords;
+    cnt := 0;
+    m.Read(cnt, sizeof(cnt));
+    sx := 0;
+    sy := 0;
+    x := 0;
+    y := 0;
+    For i := 0 To cnt - 1 Do Begin
+      m.Read(x, sizeof(x));
+      m.Read(y, sizeof(y));
+      s := m.ReadAnsiString(); // wer weiß ob wir das mal brauchen...
+      sx := sx + x;
+      sy := sy + y;
+      AddUserPointAt(x, y);
+    End;
+    sx := sx / cnt;
+    sy := sy / cnt;
+    mv.Zoom := 14;
+    mv.CenterLongLat(sx, sy);
+    OpenGLControl1Paint(Nil);
+    m.free;
   End;
 End;
 
