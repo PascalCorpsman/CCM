@@ -1132,6 +1132,7 @@ Var
   m: TMemoryStream;
   i: integer;
   info: TImageInfoRecord;
+  d: Double;
 Begin
   // Export UserPointList
   If mv.ImageCount = 0 Then Begin
@@ -1145,8 +1146,10 @@ Begin
     m.Write(i, sizeof(i));
     For i := 0 To mv.ImageCount - 1 Do Begin
       info := mv.Image[i];
-      m.Write(info.x, sizeof(info.x));
-      m.Write(info.y, sizeof(info.y));
+      d := info.x;
+      m.Write(d, sizeof(d));
+      d := info.y;
+      m.Write(d, sizeof(d));
       m.WriteAnsiString(info.Label_); // wer weiß ob wir das mal brauchen...
     End;
     m.SaveToFile(SaveDialog2.FileName);
@@ -1224,7 +1227,8 @@ Var
   m: TMemoryStream;
   fw: UInt32;
   cnt, i: integer;
-  x, y, sx, sy: Extended;
+  x, y: Double;
+  sx, sy: Extended;
   s: String;
 Begin
   // Import UserPointList

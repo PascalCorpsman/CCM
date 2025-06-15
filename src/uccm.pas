@@ -585,6 +585,7 @@ Const
    *                   ADD: warning on TB-Export
    *                   Fix "Add userpoint here" did not work
    *                   ADD: Export / import userpoint list
+   *                   Fix "Datatype" not portable
    *)
 
   Version = updater_Version;
