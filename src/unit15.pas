@@ -825,7 +825,7 @@ Begin
   form14.GroupBox1.Enabled := false;
   FormShowModal(form14, self);
   form14.GroupBox1.Enabled := true;
-  If (form14.Edit3.Text <> '') And (form14.Edit4.Text <> '') Then Begin
+  If (form14.Edit3.Text <> '') And (form14.Edit4.Text <> '') And (form14.ModalResult = mrOK) Then Begin
     AddUserPointAt(StrToFloat(form14.edit4.text), StrToFloat(form14.edit3.text));
   End;
   OpenGLControl1Paint(Nil);
@@ -1588,7 +1588,7 @@ Begin
   form14.GroupBox1.Enabled := false;
   FormShowModal(form14, self);
   form14.GroupBox1.Enabled := true;
-  If (form14.Edit3.Text <> '') And (form14.Edit4.Text <> '') Then Begin
+  If (form14.Edit3.Text <> '') And (form14.Edit4.Text <> '') And (form14.ModalResult = mrOK) Then Begin
     AddUserPointAt(StrToFloat(form14.edit4.text), StrToFloat(form14.edit3.text));
   End;
   OpenGLControl1Paint(Nil);

@@ -91,7 +91,7 @@ End;
 
 Procedure TForm14.Button2Click(Sender: TObject);
 Begin
-  close;
+  Modalresult := mrOK;
 End;
 
 Procedure TForm14.Button3Click(Sender: TObject);
