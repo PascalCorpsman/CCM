@@ -586,6 +586,8 @@ Const
    *                   Fix "Add userpoint here" did not work
    *                   ADD: Export / import userpoint list
    *                   Fix "Datatype" not portable
+   *                   ADD: location editor
+   *                   DEL: redundant code
    *)
 
   Version = updater_Version;

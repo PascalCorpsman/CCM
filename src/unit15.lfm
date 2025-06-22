@@ -375,12 +375,8 @@ object Form15: TForm15
     end
     object MenuItem5: TMenuItem
       Caption = 'Location'
-      object MenuItem6: TMenuItem
-        Caption = 'Add userpoint'
-        OnClick = MenuItem6Click
-      end
       object MenuItem14: TMenuItem
-        Caption = 'Add location here'
+        Caption = 'Add userpoint here'
         OnClick = MenuItem14Click
       end
       object MenuItem22: TMenuItem
@@ -390,6 +386,13 @@ object Form15: TForm15
       object MenuItem26: TMenuItem
         Caption = 'Import Userpoints'
         OnClick = MenuItem26Click
+      end
+      object Separator2: TMenuItem
+        Caption = '-'
+      end
+      object MenuItem27: TMenuItem
+        Caption = 'Open Location Editor here'
+        OnClick = MenuItem27Click
       end
       object Separator1: TMenuItem
         Caption = '-'

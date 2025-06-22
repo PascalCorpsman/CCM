@@ -102,10 +102,10 @@ Type
     MenuItem24: TMenuItem;
     MenuItem25: TMenuItem;
     MenuItem26: TMenuItem;
+    MenuItem27: TMenuItem;
     MenuItem3: TMenuItem;
     MenuItem4: TMenuItem;
     MenuItem5: TMenuItem;
-    MenuItem6: TMenuItem;
     MenuItem7: TMenuItem;
     MenuItem8: TMenuItem;
     MenuItem9: TMenuItem;
@@ -123,6 +123,7 @@ Type
     SaveDialog1: TSaveDialog;
     SaveDialog2: TSaveDialog;
     Separator1: TMenuItem;
+    Separator2: TMenuItem;
     Procedure Button10Click(Sender: TObject);
     Procedure Button1Click(Sender: TObject);
     Procedure Button2Click(Sender: TObject);
@@ -163,12 +164,12 @@ Type
     Procedure MenuItem24Click(Sender: TObject);
     Procedure MenuItem25Click(Sender: TObject);
     Procedure MenuItem26Click(Sender: TObject);
+    Procedure MenuItem27Click(Sender: TObject);
     Procedure MenuItem2Click(Sender: TObject);
     Procedure MenuItem3Click(Sender: TObject);
     Procedure MenuItem4Click(Sender: TObject);
     Procedure MenuItem62Click(Sender: TObject);
     Procedure MenuItem63Click(Sender: TObject);
-    Procedure MenuItem6Click(Sender: TObject);
     Procedure MenuItem7Click(Sender: TObject);
     Procedure MenuItem8Click(Sender: TObject);
     Procedure MenuItem9Click(Sender: TObject);
@@ -1266,6 +1267,23 @@ Begin
   End;
 End;
 
+Procedure TForm15.MenuItem27Click(Sender: TObject);
+Var
+  r: TVector2;
+Begin
+  // Open Location Editor
+  r := mv.GetMouseMapLongLat(moveX, movey);
+  form14.edit4.text := format('%2.6f', [r.X]);
+  form14.edit3.text := format('%2.6f', [r.y]);
+  form14.Button3.Click;
+  form14.ReloadLocations;
+  Form14.ComboBox4.Text := Form14.ComboBox2.Text;
+  Form14.ComboBox5.Text := Form14.ComboBox3.Text;
+  Form14.Edit5.text := Form14.Edit1.Text;
+  Form14.Edit6.text := Form14.Edit2.Text;
+  FormShowModal(form14, self);
+End;
+
 Procedure TForm15.MenuItem2Click(Sender: TObject);
 Begin
   MenuItem1.Checked := false; // Normal
@@ -1573,25 +1591,6 @@ End;
 Procedure TForm15.ClearCaches();
 Begin
   fOnlineViewer.ResetCache;
-End;
-
-Procedure TForm15.MenuItem6Click(Sender: TObject);
-Var
-  r: TVector2;
-Begin
-  // Add UserPoint
-  r := mv.GetMouseMapLongLat(moveX, movey);
-  form14.edit4.text := format('%2.6f', [r.X]);
-  form14.edit3.text := format('%2.6f', [r.y]);
-  form14.Button3.Click;
-  form14.ReloadLocations;
-  form14.GroupBox1.Enabled := false;
-  FormShowModal(form14, self);
-  form14.GroupBox1.Enabled := true;
-  If (form14.Edit3.Text <> '') And (form14.Edit4.Text <> '') And (form14.ModalResult = mrOK) Then Begin
-    AddUserPointAt(StrToFloat(form14.edit4.text), StrToFloat(form14.edit3.text));
-  End;
-  OpenGLControl1Paint(Nil);
 End;
 
 Procedure TForm15.MenuItem7Click(Sender: TObject);
