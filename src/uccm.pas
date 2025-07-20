@@ -579,7 +579,7 @@ Const
    * HP release 2.61 = Center at coodinate (in Map view)
    *                   Fix discover TB again was broken due to changes from groundspeak
    * HP release 2.62 = ADD: Merge "online" Dialog into Map dialog -> Increase Usability
-   *            2.63 = ADD: make "center at coord" more robust
+   * HP release 2.63 = ADD: make "center at coord" more robust
    *                   Fix JSON parser crash on \u tags
    *                   Fix LABLogin was broken -> is now "merged" with normal Login
    *                   ADD: warning on TB-Export
@@ -588,6 +588,7 @@ Const
    *                   Fix "Datatype" not portable
    *                   ADD: location editor
    *                   DEL: redundant code
+   *            2.64 =
    *)
 
   Version = updater_Version;
