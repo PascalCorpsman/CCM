@@ -115,14 +115,14 @@ Begin
       delete(s, 1, 1);
       If pos('E', s) = 0 Then Begin
         // * W *
-        ComboBox2.ItemIndex := 1;
+        ComboBox3.ItemIndex := 1;
         edit1.text := trim(copy(s, 1, pos('W', s) - 1));
         delete(s, 1, pos('W', s));
         edit2.text := Trim(s);
       End
       Else Begin
         // * E *
-        ComboBox2.ItemIndex := 0;
+        ComboBox3.ItemIndex := 0;
         edit1.text := trim(copy(s, 1, pos('E', s) - 1));
         delete(s, 1, pos('E', s));
         edit2.text := Trim(s);

@@ -588,7 +588,7 @@ Const
    *                   Fix "Datatype" not portable
    *                   ADD: location editor
    *                   DEL: redundant code
-   *            2.64 =
+   *            2.64 = FIX: Wegpunkt Projection war "falsch" bei nicht N / E Koordinaten
    *)
 
   Version = updater_Version;
