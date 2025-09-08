@@ -589,6 +589,7 @@ Const
    *                   ADD: location editor
    *                   DEL: redundant code
    *            2.64 = FIX: Wegpunkt Projection war "falsch" bei nicht N / E Koordinaten
+   *                   ADD: "Clear selection"
    *)
 
   Version = updater_Version;

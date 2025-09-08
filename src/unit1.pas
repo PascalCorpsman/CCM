@@ -1,5 +1,5 @@
 (******************************************************************************)
-(* <Komponent_Name>                                                ??.??.???? *)
+(* CorpsmanCacheManager                                            ??.??.???? *)
 (*                                                                            *)
 (* Version     : see uccm.pas                                                 *)
 (*                                                                            *)
@@ -7,7 +7,7 @@
 (*                                                                            *)
 (* Support     : www.Corpsman.de                                              *)
 (*                                                                            *)
-(* Description : <Module_description>                                         *)
+(* Description : GSAK like tool to handle local geocache Databases            *)
 (*                                                                            *)
 (* License     : See the file license.md, located under:                      *)
 (*  https://github.com/PascalCorpsman/Software_Licenses/blob/main/license.md  *)
@@ -137,6 +137,7 @@ Type
     MenuItem10: TMenuItem;
     MenuItem100: TMenuItem;
     MenuItem101: TMenuItem;
+    MenuItem102: TMenuItem;
     MenuItem11: TMenuItem;
     MenuItem12: TMenuItem;
     MenuItem13: TMenuItem;
@@ -245,6 +246,7 @@ Type
     SelectDirectoryDialog1: TSelectDirectoryDialog;
     Separator1: TMenuItem;
     Separator2: TMenuItem;
+    Separator3: TMenuItem;
     SQLite3Connection1: TSQLite3Connection;
     SQLite3Connection2: TSQLite3Connection;
     SQLQuery1: TSQLQuery;
@@ -265,6 +267,7 @@ Type
     Procedure FormShow(Sender: TObject);
     Procedure MenuItem100Click(Sender: TObject);
     Procedure MenuItem101Click(Sender: TObject);
+    Procedure MenuItem102Click(Sender: TObject);
     Procedure MenuItem10Click(Sender: TObject);
     Procedure MenuItem13Click(Sender: TObject);
     Procedure MenuItem14Click(Sender: TObject);
@@ -4381,6 +4384,12 @@ Begin
   Form4.Hide;
   self.Enabled := true;
   ShowMessage(R_Finished);
+End;
+
+Procedure TForm1.MenuItem102Click(Sender: TObject);
+Begin
+  // Clear Selection
+  StringGrid1.RowCount := 1;
 End;
 
 Procedure TForm1.Button1Click(Sender: TObject);

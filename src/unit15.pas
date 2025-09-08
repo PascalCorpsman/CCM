@@ -295,7 +295,7 @@ Begin
   CheckBox3.Checked := false;
   CheckBox10.Checked := false;
   ClearCaches();
-  form15.OpenGLControl1Paint(Nil);
+  OpenGLControl1Paint(Nil);
 End;
 
 Procedure TForm15.Button2Click(Sender: TObject);
@@ -320,10 +320,10 @@ Var
   pt: TVector2;
 Begin
   // Merge All visual Caches To DB
-  pt := form15.mv.GetMouseMapLongLat(0, 0);
+  pt := mv.GetMouseMapLongLat(0, 0);
   vp.Lon_min := pt.x;
   vp.Lat_min := pt.Y;
-  pt := form15.mv.GetMouseMapLongLat(form15.OpenGLControl1.ClientWidth, form15.OpenGLControl1.ClientHeight);
+  pt := mv.GetMouseMapLongLat(OpenGLControl1.ClientWidth, OpenGLControl1.ClientHeight);
   vp.Lon_max := pt.x;
   vp.Lat_max := pt.Y;
   c := fOnlineViewer.GetAllVisibleCaches(vp);
@@ -366,12 +366,12 @@ Begin
     dn := NormV2(d) * step;
     p := ap;
     While LenV2(ap - p) < lenv2(d) Do Begin
-      form15.mv.Zoom := zoom;
+      mv.Zoom := zoom;
       lat := p.x;
       lon := p.y;
-      form15.mv.CenterLongLat(lat, lon);
+      mv.CenterLongLat(lat, lon);
       CheckBox3.Checked := true;
-      form15.OpenGLControl1MouseMove(Nil, [ssLeft], Form15.OpenGLControl1.Width Div 2, form15.OpenGLControl1.Height Div 2);
+      OpenGLControl1MouseMove(Nil, [ssLeft], OpenGLControl1.Width Div 2, OpenGLControl1.Height Div 2);
       p := p + dn;
     End;
     inc(i);
@@ -379,13 +379,13 @@ Begin
   // Ganz zum Schluß den Letzten Punkt noch mal anfahren
   lat := fRoute[high(froute)].X;
   lon := fRoute[high(froute)].y;
-  form15.mv.CenterLongLat(lat, lon);
-  form15.OpenGLControl1Paint(Nil);
+  mv.CenterLongLat(lat, lon);
+  OpenGLControl1Paint(Nil);
   // Wir Sind Fertig, springen nun wieder die Ursprungsansicht an
   CheckBox3.Checked := false;
-  form15.mv.Zoom := startZoom;
-  form15.mv.CenterLongLat(StartPos.X, StartPos.y);
-  form15.OpenGLControl1Paint(Nil);
+  mv.Zoom := startZoom;
+  mv.CenterLongLat(StartPos.X, StartPos.y);
+  OpenGLControl1Paint(Nil);
   t := GetTickCount64 - t;
   Showmessage(format(RF_Script_finished_in, [PrettyTime(t)], DefFormat));
 
@@ -408,17 +408,17 @@ Begin
     f := TFileStream.Create(SaveDialog1.FileName, fmCreate Or fmOpenWrite);
     f.write(RouteFileVersion, sizeof(RouteFileVersion));
     // Viewport Einstellungen
-    i := form15.mv.Zoom;
+    i := mv.Zoom;
     f.Write(i, SizeOf(i));
-    p := form15.mv.GetMouseMapLongLat(form15.OpenGLControl1.ClientWidth Div 2, form15.OpenGLControl1.ClientHeight Div 2);
+    p := mv.GetMouseMapLongLat(OpenGLControl1.ClientWidth Div 2, OpenGLControl1.ClientHeight Div 2);
     d := p.x;
     f.Write(d, SizeOf(d));
     d := p.y;
     f.Write(d, SizeOf(d));
     // Die Fenster Dimension
-    i := form15.Width;
+    i := Width;
     f.Write(i, SizeOf(i));
-    i := form15.Height;
+    i := Height;
     f.Write(i, SizeOf(i));
     // Die Suchparameter
     b := CheckBox1.Checked; // Hide Own
@@ -470,7 +470,7 @@ Begin
     // Viewport Einstellungen
     i := 14;
     f.read(i, SizeOf(i));
-    form15.mv.Zoom := i;
+    mv.Zoom := i;
     dx := -1;
     f.Read(dx, SizeOf(dx));
     dy := -1;
@@ -479,15 +479,15 @@ Begin
       i := 0;
       f.read(i, SizeOf(i));
       If i <> 0 Then Begin
-        form15.Width := i;
+        Width := i;
       End;
       i := 0;
       f.read(i, SizeOf(i));
       If i <> 0 Then Begin
-        form15.Height := i;
+        Height := i;
       End;
     End;
-    form15.mv.CenterLongLat(dx, dy);
+    mv.CenterLongLat(dx, dy);
     // Die Suchparameter
     b := false;
     f.Read(b, SizeOf(b));
@@ -520,7 +520,7 @@ Begin
       fRoute[i].Y := dy;
     End;
     f.free;
-    form15.OpenGLControl1Paint(Nil);
+    OpenGLControl1Paint(Nil);
   End;
 End;
 
@@ -541,10 +541,10 @@ Var
   pt: TVector2;
 Begin
   // Merge All visual Caches To DB
-  pt := form15.mv.GetMouseMapLongLat(0, 0);
+  pt := mv.GetMouseMapLongLat(0, 0);
   vp.Lon_min := pt.x;
   vp.Lat_min := pt.Y;
-  pt := form15.mv.GetMouseMapLongLat(form15.OpenGLControl1.ClientWidth, form15.OpenGLControl1.ClientHeight);
+  pt := mv.GetMouseMapLongLat(OpenGLControl1.ClientWidth, OpenGLControl1.ClientHeight);
   vp.Lon_max := pt.x;
   vp.Lat_max := pt.Y;
   c := fOnlineViewer.GetAllVisibleLabs(vp);
@@ -557,13 +557,13 @@ Begin
   // Enable Disable Route
   If Not CheckBox10.Checked Then Begin
     setlength(fRoute, 0);
-    form15.OpenGLControl1Paint(Nil);
+    OpenGLControl1Paint(Nil);
   End;
 End;
 
 Procedure TForm15.CheckBox11Click(Sender: TObject);
 Begin
-  If (form15.mv.Zoom <= 11) And CheckBox11.Checked Then Begin
+  If (mv.Zoom <= 11) And CheckBox11.Checked Then Begin
     If id_no = Application.MessageBox(pchar(format(RF_Activating_Download_in_Zoom_lt_could_cause_havy_download_times, [11])), pchar(R_Warning), MB_ICONQUESTION Or MB_YESNO) Then Begin
       CheckBox11.Checked := false;
     End;
@@ -573,19 +573,19 @@ Begin
   //    CheckBox3.Checked := true;
   //    fOnlineViewer.EnableDownloading := true;
   //  End;
-  form15.OpenGLControl1Paint(Nil);
+  OpenGLControl1Paint(Nil);
 End;
 
 Procedure TForm15.CheckBox1Click(Sender: TObject);
 Begin
   fOnlineViewer.HideOwn := CheckBox1.Checked;
-  form15.OpenGLControl1Paint(Nil);
+  OpenGLControl1Paint(Nil);
 End;
 
 Procedure TForm15.CheckBox2Click(Sender: TObject);
 Begin
   fOnlineViewer.HideFounds := CheckBox2.Checked;
-  form15.OpenGLControl1Paint(Nil);
+  OpenGLControl1Paint(Nil);
 End;
 
 Procedure TForm15.CheckBox3Click(Sender: TObject);
@@ -609,28 +609,28 @@ Begin
     CheckBox8.Checked := false;
     CheckBox9.Checked := false;
   End;
-  form15.OpenGLControl1Paint(Nil);
+  OpenGLControl1Paint(Nil);
 End;
 
 Procedure TForm15.CheckBox5Click(Sender: TObject);
 Begin
   fOnlineViewer.Caches_Tradi := CheckBox5.Checked;
   If CheckBox5.Checked Then CheckBox4.Checked := false;
-  form15.OpenGLControl1Paint(Nil);
+  OpenGLControl1Paint(Nil);
 End;
 
 Procedure TForm15.CheckBox6Click(Sender: TObject);
 Begin
   fOnlineViewer.Caches_Multi := CheckBox6.Checked;
   If CheckBox6.Checked Then CheckBox4.Checked := false;
-  form15.OpenGLControl1Paint(Nil);
+  OpenGLControl1Paint(Nil);
 End;
 
 Procedure TForm15.CheckBox7Click(Sender: TObject);
 Begin
   fOnlineViewer.Caches_Mystery := CheckBox7.Checked;
   If CheckBox7.Checked Then CheckBox4.Checked := false;
-  form15.OpenGLControl1Paint(Nil);
+  OpenGLControl1Paint(Nil);
 End;
 
 Procedure TForm15.CheckBox8Click(Sender: TObject);
@@ -639,14 +639,14 @@ Begin
   If CheckBox8.Checked Then Begin
     CheckBox4.Checked := false;
   End;
-  form15.OpenGLControl1Paint(Nil);
+  OpenGLControl1Paint(Nil);
 End;
 
 Procedure TForm15.CheckBox9Click(Sender: TObject);
 Begin
   fOnlineViewer.Caches_Event := CheckBox9.Checked;
   If CheckBox9.Checked Then CheckBox4.Checked := false;
-  form15.OpenGLControl1Paint(Nil);
+  OpenGLControl1Paint(Nil);
 End;
 
 Procedure TForm15.FormDestroy(Sender: TObject);
@@ -896,7 +896,7 @@ Begin
       form31.InitWithPoint(img.y, img.x);
       FormShowModal(form31, self);
       If form31.ModalResult = mrOK Then Begin
-        form15.AddUserPointAt(form31.ResultLon, form31.ResultLat);
+        AddUserPointAt(form31.ResultLon, form31.ResultLat);
       End;
     End
     Else Begin
@@ -917,7 +917,7 @@ Begin
           form31.InitWithPoint(rp.y, rp.x);
           FormShowModal(form31, self);
           If form31.ModalResult = mrOK Then Begin
-            form15.AddUserPointAt(form31.ResultLon, form31.ResultLat);
+            AddUserPointAt(form31.ResultLon, form31.ResultLat);
           End;
         End
         Else Begin
@@ -935,7 +935,7 @@ Begin
           form31.InitWithPoint(rp.y, rp.x);
           FormShowModal(form31, self);
           If form31.ModalResult = mrOK Then Begin
-            form15.AddUserPointAt(form31.ResultLon, form31.ResultLat);
+            AddUserPointAt(form31.ResultLon, form31.ResultLat);
           End;
         End;
       End
@@ -944,7 +944,7 @@ Begin
         form31.InitWithPoint(rp.y, rp.x);
         FormShowModal(form31, self);
         If form31.ModalResult = mrOK Then Begin
-          form15.AddUserPointAt(form31.ResultLon, form31.ResultLat);
+          AddUserPointAt(form31.ResultLon, form31.ResultLat);
         End;
       End;
     End;
@@ -954,7 +954,7 @@ Begin
     form31.InitWithPoint(rp.y, rp.x);
     FormShowModal(form31, self);
     If form31.ModalResult = mrOK Then Begin
-      form15.AddUserPointAt(form31.ResultLon, form31.ResultLat);
+      AddUserPointAt(form31.ResultLon, form31.ResultLat);
     End;
   End;
 End;
@@ -1470,7 +1470,7 @@ End;
 Procedure TForm15.AddRoutePoint(x, y: integer);
 Begin
   SetLength(fRoute, high(fRoute) + 2);
-  froute[high(fRoute)] := form15.mv.GetMouseMapLongLat(x, y)
+  froute[high(fRoute)] := mv.GetMouseMapLongLat(x, y)
 End;
 
 Procedure TForm15.DelRoutePoint(x, y: integer);
@@ -1479,7 +1479,7 @@ Var
   i, j: Integer;
 Begin
   For i := 0 To high(fRoute) Do Begin
-    p := form15.mv.GetMouseMapLongLatRev(fRoute[i]);
+    p := mv.GetMouseMapLongLatRev(fRoute[i]);
     If (abs(p.x - x) <= 16) And
       (abs(p.y - y) <= 16) Then Begin
       For j := i To high(fRoute) - 1 Do Begin
@@ -1497,13 +1497,13 @@ Var
   i: Integer;
 Begin
   For i := 0 To high(fRoute) - 1 Do Begin
-    p := form15.mv.GetMouseMapLongLatRev(fRoute[i]);
+    p := mv.GetMouseMapLongLatRev(fRoute[i]);
     If (abs(p.x - x) <= 16) And
       (abs(p.y - y) <= 16) Then Begin
       pr := fRoute[i];
       fRoute[i] := fRoute[i + 1];
       fRoute[i + 1] := pr;
-      form15.OpenGLControl1Paint(Nil);
+      OpenGLControl1Paint(Nil);
       exit;
     End;
   End;
@@ -1516,13 +1516,13 @@ Var
   i: Integer;
 Begin
   For i := 1 To high(fRoute) Do Begin
-    p := form15.mv.GetMouseMapLongLatRev(fRoute[i]);
+    p := mv.GetMouseMapLongLatRev(fRoute[i]);
     If (abs(p.x - x) <= 16) And
       (abs(p.y - y) <= 16) Then Begin
       pr := fRoute[i];
       fRoute[i] := fRoute[i - 1];
       fRoute[i - 1] := pr;
-      form15.OpenGLControl1Paint(Nil);
+      OpenGLControl1Paint(Nil);
       exit;
     End;
   End;
@@ -1533,10 +1533,10 @@ Var
   i, yc, xc: integer;
   b: {$IFDEF USE_GL}Byte{$ELSE}Boolean{$ENDIF};
 Begin
-  Go2d(form15.OpenGLControl1.ClientWidth, form15.OpenGLControl1.ClientHeight);
+  Go2d(OpenGLControl1.ClientWidth, OpenGLControl1.ClientHeight);
   For i := 0 To high(fRoute) Do Begin
-    yc := convert_dimension(vp.Lat_min, vp.Lat_max, fRoute[i].Y, 0, form15.OpenGLControl1.ClientHeight) - 16; // Das Offset Zentriert die Dose an der Listing Coordinate und schon sieht man nicht das bei Aktiver DB da 2 Symbole Gleichzeitig sind :-)
-    xc := convert_dimension(vp.Lon_min, vp.Lon_max, fRoute[i].X, 0, form15.OpenGLControl1.Clientwidth) - 8; // Das Offset Zentriert die Dose an der Listing Coordinate und schon sieht man nicht das bei Aktiver DB da 2 Symbole Gleichzeitig sind :-)
+    yc := convert_dimension(vp.Lat_min, vp.Lat_max, fRoute[i].Y, 0, OpenGLControl1.ClientHeight) - 16; // Das Offset Zentriert die Dose an der Listing Coordinate und schon sieht man nicht das bei Aktiver DB da 2 Symbole Gleichzeitig sind :-)
+    xc := convert_dimension(vp.Lon_min, vp.Lon_max, fRoute[i].X, 0, OpenGLControl1.Clientwidth) - 8; // Das Offset Zentriert die Dose an der Listing Coordinate und schon sieht man nicht das bei Aktiver DB da 2 Symbole Gleichzeitig sind :-)
     B := glIsEnabled(gl_Blend);
     If Not (b{$IFDEF USE_GL} = 1{$ENDIF}) Then
       glenable(gl_Blend);
@@ -1722,7 +1722,7 @@ Begin
   End;
   If allowcnt < 4 Then Begin
 {$IFNDEF DoNotInvalidateOpenGLWindow}
-    Form15.Invalidate;
+    Invalidate;
 {$ENDIF}
   End;
 End;

@@ -7,7 +7,7 @@ object Form1: TForm1
   ClientHeight = 505
   ClientWidth = 408
   Menu = MainMenu1
-  LCLVersion = '3.99.0.0'
+  LCLVersion = '4.99.0.0'
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnKeyDown = ComboBox2KeyDown
@@ -24,7 +24,7 @@ object Form1: TForm1
     Left = 8
     Height = 16
     Top = 46
-    Width = 81
+    Width = 80
     Caption = 'Distance [km]'
   end
   object Edit2: TEdit
@@ -56,7 +56,7 @@ object Form1: TForm1
     Left = 8
     Height = 16
     Top = 80
-    Width = 31
+    Width = 30
     Caption = 'Filter'
   end
   object ComboBox1: TComboBox
@@ -732,6 +732,13 @@ object Form1: TForm1
       Caption = 'Delete caches'
       ShortCut = 46
       OnClick = MenuItem37Click
+    end
+    object Separator3: TMenuItem
+      Caption = '-'
+    end
+    object MenuItem102: TMenuItem
+      Caption = 'Clear selection'
+      OnClick = MenuItem102Click
     end
   end
   object SaveDialog1: TSaveDialog
