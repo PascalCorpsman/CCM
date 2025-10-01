@@ -581,12 +581,13 @@ Var
   End;
 
 Var
-  c, d, t, x, y, i, j, k: Integer;
+  loops, c, d, t, x, y, i, j, k: Integer;
   b: TBitmap;
   img: TImage;
   lpos, lneg, l: TLabel;
   p: TScrollBox;
 Begin
+  loops := high(integer);
   //  Löschen aller alten Attribute und dazugehörigen Labels..
   For i := ScrollBox1.ComponentCount - 1 Downto 0 Do Begin
     If (ScrollBox1.Components[i] Is TImage) Or (ScrollBox1.Components[i] Is TLabel) Then ScrollBox1.Components[i].Free;
@@ -614,6 +615,8 @@ Begin
     For j := 0 To 9 Do Begin
       If Selector = PreviewIndexAll Then Begin
         form12.StringGrid1.Cells[i + 1, j + 1] := inttostr(length(fcaches[i, j]));
+        If (i < 9) And (j < 9) Then
+          loops := min(loops, length(fcaches[i, j]));
         t := t + (i + 2) * length(fcaches[i, j]); // Aufsummieren der 2 Fachen T-Summe
         d := d + (j + 2) * length(fcaches[i, j]); // Aufsummieren der 2 Fachen D-Summe
         For k := 0 To high(fcaches[i, j]) Do Begin
@@ -630,6 +633,8 @@ Begin
       Else Begin
         c := CountOf(fcaches[i, j], Selector); // Der Aufruf CountOf hat den Nebeneffect CountAttribs
         form12.StringGrid1.Cells[i + 1, j + 1] := inttostr(c);
+        If (i < 9) And (j < 9) Then
+          loops := min(loops, c);
         t := t + (i + 2) * c; // Aufsummieren der 2 Fachen T-Summe
         d := d + (j + 2) * c; // Aufsummieren der 2 Fachen D-Summe
       End;
@@ -658,7 +663,7 @@ Begin
     label4.caption := format('%s %s: %0.2f' + LineEnding + '%s %s: %0.2f', [R_average, R_Difficulty, 0.0, R_average, R_terrain, 0.0]);
   End
   Else Begin
-    label4.caption := format('%s %s: %0.2f' + LineEnding + '%s %s: %0.2f', [R_average, R_Difficulty, d / (2 * x), R_average, R_terrain, t / (2 * x)]);
+    label4.caption := format('%s %s: %0.2f, %s: %d' + LineEnding + '%s %s: %0.2f', [R_average, R_Difficulty, d / (2 * x), R_Loops, loops, R_average, R_terrain, t / (2 * x)]);
   End;
   // Visualisieren der oben gesammelten Attribut informationen
   lpos := Nil;

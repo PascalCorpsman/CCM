@@ -590,6 +590,8 @@ Const
    *                   DEL: redundant code
    *            2.64 = FIX: Wegpunkt Projection war "falsch" bei nicht N / E Koordinaten
    *                   ADD: "Clear selection"
+   *                   ADD: c:geo field note loader
+   *                   ADD: anzeige "Loops" in 81-iger preview
    *)
 
   Version = updater_Version;
@@ -1611,6 +1613,7 @@ Begin
   value := trim(lowercase(value));
   Case value Of
     '': result := ltFoundit; // Das kann bei einem Webcam Cache vorkommen der mittels L4C geloggt wurde
+    'will attend': result := ltWillAttend; // Gibts nur bei c:geo
     'attended': result := ltAttended;
     'found it': result := ltFoundit;
     'needs maintenance': result := ltNeedsMaintenance;
@@ -1629,6 +1632,7 @@ Begin
   result := 'Write note';
   Case value Of
     ltAttended: result := 'Attended';
+    ltWillAttend: result := 'Will Attend'; // Gibts nur bei c:geo
     ltFoundit: result := 'Found it';
     ltNeedsMaintenance: result := 'Needs Maintenance';
     ltWebcamPhotoTaken: result := 'Webcam photo taken';

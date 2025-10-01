@@ -138,6 +138,7 @@ Type
     MenuItem100: TMenuItem;
     MenuItem101: TMenuItem;
     MenuItem102: TMenuItem;
+    MenuItem103: TMenuItem;
     MenuItem11: TMenuItem;
     MenuItem12: TMenuItem;
     MenuItem13: TMenuItem;
@@ -238,6 +239,7 @@ Type
     OpenDialog1: TOpenDialog;
     OpenDialog2: TOpenDialog;
     OpenDialog3: TOpenDialog;
+    OpenDialog4: TOpenDialog;
     OpenPictureDialog1: TOpenPictureDialog;
     PopupMenu1: TPopupMenu;
     PopupMenu2: TPopupMenu;
@@ -268,6 +270,7 @@ Type
     Procedure MenuItem100Click(Sender: TObject);
     Procedure MenuItem101Click(Sender: TObject);
     Procedure MenuItem102Click(Sender: TObject);
+    Procedure MenuItem103Click(Sender: TObject);
     Procedure MenuItem10Click(Sender: TObject);
     Procedure MenuItem13Click(Sender: TObject);
     Procedure MenuItem14Click(Sender: TObject);
@@ -4390,6 +4393,25 @@ Procedure TForm1.MenuItem102Click(Sender: TObject);
 Begin
   // Clear Selection
   StringGrid1.RowCount := 1;
+End;
+
+Procedure TForm1.MenuItem103Click(Sender: TObject);
+Var
+  s: String;
+  list: TFieldNoteList;
+Begin
+  // Log by c:geo field notes
+  (*
+   * Das ist eigentlich genau Gleich wie das geocache_visits, nur halt mit nem anderen OpenDialog ;)
+   *)
+  If OpenDialog4.Execute Then Begin
+    s := OpenDialog4.FileName;
+    If (s <> '') And FileExistsUTF8(s) Then Begin
+      Form10FieldNotesFilename := s;
+      list := LoadFieldNotesFromFile(s);
+      Form10.LoadFieldNoteList(self, list, false);
+    End;
+  End;
 End;
 
 Procedure TForm1.Button1Click(Sender: TObject);

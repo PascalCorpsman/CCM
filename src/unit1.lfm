@@ -7,7 +7,7 @@ object Form1: TForm1
   ClientHeight = 505
   ClientWidth = 408
   Menu = MainMenu1
-  LCLVersion = '4.99.0.0'
+  LCLVersion = '3.99.0.0'
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnKeyDown = ComboBox2KeyDown
@@ -15,21 +15,21 @@ object Form1: TForm1
   OnShow = FormShow
   object Label1: TLabel
     Left = 8
-    Height = 16
+    Height = 15
     Top = 16
-    Width = 40
+    Width = 35
     Caption = 'Search'
   end
   object Label2: TLabel
     Left = 8
-    Height = 16
+    Height = 15
     Top = 46
-    Width = 80
+    Width = 73
     Caption = 'Distance [km]'
   end
   object Edit2: TEdit
     Left = 125
-    Height = 26
+    Height = 23
     Hint = 'If value is negative, than the cache has to have at least the given distance'
     Top = 38
     Width = 205
@@ -54,18 +54,18 @@ object Form1: TForm1
   end
   object Label3: TLabel
     Left = 8
-    Height = 16
+    Height = 15
     Top = 80
-    Width = 30
+    Width = 26
     Caption = 'Filter'
   end
   object ComboBox1: TComboBox
     Left = 125
-    Height = 30
+    Height = 23
     Top = 72
     Width = 205
     Anchors = [akTop, akLeft, akRight]
-    ItemHeight = 0
+    ItemHeight = 15
     Style = csDropDownList
     TabOrder = 2
     OnChange = ComboBox1Change
@@ -106,8 +106,8 @@ object Form1: TForm1
   end
   object StatusBar1: TStatusBar
     Left = 0
-    Height = 24
-    Top = 481
+    Height = 23
+    Top = 482
     Width = 408
     Panels = <    
       item
@@ -123,12 +123,12 @@ object Form1: TForm1
   end
   object ComboBox2: TComboBox
     Left = 125
-    Height = 28
+    Height = 23
     Hint = 'Will compare against Cache Subject or GC-Code'
     Top = 8
     Width = 205
     Anchors = [akTop, akLeft, akRight]
-    ItemHeight = 0
+    ItemHeight = 15
     ParentShowHint = False
     PopupMenu = PopupMenu2
     ShowHint = True
@@ -210,6 +210,10 @@ object Form1: TForm1
       object MenuItem86: TMenuItem
         Caption = 'Log by geocache_visits.txt'
         OnClick = MenuItem86Click
+      end
+      object MenuItem103: TMenuItem
+        Caption = 'Log by c:geo field notes'
+        OnClick = MenuItem103Click
       end
       object MenuItem68: TMenuItem
         Caption = '-'
@@ -820,7 +824,7 @@ object Form1: TForm1
     DefaultExt = '.txt'
     FileName = 'geocache_visits.txt'
     Filter = 'geocache_visits.txt|*.txt|All|*.*'
-    Left = 72
+    Left = 56
     Top = 400
   end
   object PopupMenu2: TPopupMenu
@@ -834,5 +838,11 @@ object Form1: TForm1
       Caption = 'Copy text to clipboard'
       OnClick = MenuItem95Click
     end
+  end
+  object OpenDialog4: TOpenDialog
+    DefaultExt = '.txt'
+    Filter = 'c:geo field notes|*.txt|All|*.*'
+    Left = 144
+    Top = 400
   end
 end
