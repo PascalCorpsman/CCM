@@ -8,9 +8,9 @@ object Form29: TForm29
   Caption = 'Custom filter'
   ClientHeight = 607
   ClientWidth = 414
+  LCLVersion = '4.99.0.0'
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  LCLVersion = '2.3.0.0'
   object Bevel1: TBevel
     Left = 56
     Height = 5
@@ -748,7 +748,7 @@ object Form29: TForm29
     Left = 8
     Height = 160
     Top = 152
-    Width = 10
+    Width = 9
     Alignment = taCenter
     Caption = 'D'#13#10'i'#13#10'f'#13#10'f'#13#10'i'#13#10'c'#13#10'u'#13#10'l'#13#10't'#13#10'y'
   end
@@ -756,7 +756,7 @@ object Form29: TForm29
     Left = 8
     Height = 16
     Top = 8
-    Width = 29
+    Width = 28
     Caption = 'Icon:'
   end
   object SpeedButton101: TSpeedButton
@@ -982,11 +982,11 @@ object Form29: TForm29
       '2'
       '3'
     )
-    OnDrawItem = ComboBox1DrawItem
     ParentFont = False
     ParentShowHint = False
     Style = csOwnerDrawFixed
     TabOrder = 0
+    OnDrawItem = ComboBox1DrawItem
   end
   object Label22: TLabel
     Left = 8
@@ -1001,8 +1001,8 @@ object Form29: TForm29
     Top = 480
     Width = 160
     Caption = 'Add to attribute filter'
-    OnClick = Button1Click
     TabOrder = 1
+    OnClick = Button1Click
   end
   object ScrollBox1: TScrollBox
     Left = 8
@@ -1021,8 +1021,8 @@ object Form29: TForm29
     Width = 399
     Anchors = [akLeft, akBottom]
     Caption = 'Add filter to filterlist'
-    OnClick = Button2Click
     TabOrder = 3
+    OnClick = Button2Click
   end
   object SpeedButton112: TSpeedButton
     Left = 59

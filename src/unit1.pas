@@ -104,6 +104,8 @@ Const
   MainImageIndexCustomerFlag = 18;
   MainImageIndexProjectAPE = 19;
   MainImageIndexLocationLess = 20;
+  MainImageIndexBlockParty = 21;
+
   // Während des Startens werden noch length(POI_Types) viele Bilder angehängt !
 
   // Die Spalten im MainStringgrid
@@ -2487,6 +2489,7 @@ Begin
   If lowercase(Geocache_Lab_Cache) = ct Then result := MainImageIndexLabCache;
   If lowercase(Project_APE_Cache) = ct Then result := MainImageIndexProjectAPE;
   If lowercase(LocationLess_Cache) = ct Then result := MainImageIndexLocationLess;
+  If lowercase(BlockParty_Cache) = ct Then result := MainImageIndexBlockParty;
   (*
    * Hat der User das Customer Flag Gesetzt kommt das "U"
    * Wurde ein Cache gefunden kommt der Smily

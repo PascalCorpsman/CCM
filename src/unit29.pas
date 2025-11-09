@@ -235,7 +235,7 @@ Begin
   ApplyImage(SpeedButton105, MainImageIndexWhereIGo, Wherigo_Cache);
   ApplyImage(SpeedButton106, MainImageIndexEarthCache, Earthcache);
   ApplyImage(SpeedButton107, MainImageIndexVirtualCache, Virtual_Cache);
-  ApplyImage(SpeedButton108, MainImageIndexEventCache, Giga_Event_Cache + ',' + Mega_Event_Cache + ',' + Event_Cache);
+  ApplyImage(SpeedButton108, MainImageIndexEventCache, Giga_Event_Cache + ',' + Mega_Event_Cache + ',' + Event_Cache + ',' + BlockParty_Cache);
   ApplyImage(SpeedButton109, MainImageIndexCITO, Cache_In_Trash_Out_Event);
   ApplyImage(SpeedButton110, MainImageIndexWebcamCache, Webcam_Cache);
   CreateAttribList();
@@ -435,10 +435,10 @@ Begin
       s := PString(sb.Tag)^ + ',';
       While pos(',', s) <> 0 Do Begin
         If t = '' Then Begin
-          t := t + '(c.G_TYPE = "' + ToSQLString(copy(s, 1, pos(',', s) - 1)) + '")' + LineEnding;
+          t := t + '(c.G_TYPE COLLATE NOCASE = "' + ToSQLString(copy(s, 1, pos(',', s) - 1)) + '")' + LineEnding;
         End
         Else Begin
-          t := t + 'or (c.G_TYPE = "' + ToSQLString(copy(s, 1, pos(',', s) - 1)) + '")' + LineEnding;
+          t := t + 'or (c.G_TYPE COLLATE NOCASE = "' + ToSQLString(copy(s, 1, pos(',', s) - 1)) + '")' + LineEnding;
         End;
         delete(s, 1, pos(',', s));
       End;

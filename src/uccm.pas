@@ -54,6 +54,7 @@ Const
   Geocache_Lab_Cache = 'Geocache|Lab Cache';
   Lab_Cache = 'Lab Cache'; // Caches die von Lab2GPX als .zip Archiv kommen ;)
   LocationLess_Cache = 'Locationless (Reverse) Cache';
+  BlockParty_Cache = 'Geocaching HQ Block Party';
 
   //Cache Size
   csUnknown = 'Unknown'; // -- Das wird beim Export gemappt zu csNotChosen
@@ -592,6 +593,8 @@ Const
    *                   ADD: "Clear selection"
    *                   ADD: c:geo field note loader
    *                   ADD: anzeige "Loops" in 81-iger preview
+   *                   ADD: Icon für Blockparty
+   *                   FIX: Custom filter für Letterbox hat nicht funktioniert
    *)
 
   Version = updater_Version;
@@ -1310,6 +1313,8 @@ Function GetDefaultFilterFor(FilterName: String): String;
  * Konvertiert einen LitheCache in einen "richtigen" Cache
  *)
 Function LiteCacheToCache(Const LiteCache: TLiteCache): TCache;
+
+Function CacheTypeIsaEvent(Const CacheType: String): Boolean;
 
 Implementation
 
@@ -4633,6 +4638,23 @@ Begin
   Else Begin
     result.Logs := Nil;
   End;
+End;
+
+Function CacheTypeIsaEvent(Const CacheType: String): Boolean;
+Begin
+  result :=
+    (*
+* Giga_Event_Cache,
+* Mega_Event_Cache,
+* Community_Celebration_Event,
+* Event_Cache,
+* Cache_In_Trash_Out_Event,
+*
+*)
+  (pos('event', lowercase(CacheType)) <> 0) Or
+    (lowercase(trim(CacheType)) = lowercase(trim(BlockParty_Cache)))
+  ;
+
 End;
 
 Finalization

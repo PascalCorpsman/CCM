@@ -338,7 +338,7 @@ Begin
       End;
       // TODO: die Strings 'event'  und 'webcam cache' müssen durch globale Constaten ersetzt werden..
       // Einen Event können wir nicht finden, den müssen wir Attended setzen
-      If pos('event', lowercase(FromSQLString(SQLQuery.Fields[1].AsString))) <> 0 Then Begin
+      If CacheTypeIsaEvent(FromSQLString(SQLQuery.Fields[1].AsString)) Then Begin
         If trim(form10.StringGrid1.Cells[GPSImportColCacheFoundState, j + oCount]) = inttostr(LogtypeToLogtypeIndex(ltFoundIt)) Then Begin
           form10.StringGrid1.Cells[GPSImportColCacheFoundState, j + oCount] := inttostr(LogtypeToLogtypeIndex(ltAttended));
           m := m + FromSQLString(SQLQuery.Fields[0].AsString) + LineEnding;
