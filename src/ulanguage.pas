@@ -104,16 +104,14 @@ Function encode(value: String): String; // "Verschlüsselt" einen Ini-String
 
 Implementation
 
-Uses lazutf8;
+Uses lazutf8, Translations;
 
 Function Get_System_Default_Language(): String;
 Var
-  lang, def: String;
+  Lang: TLanguageID;
 Begin
-  lang := '';
-  def := '';
-  LazGetLanguageIDs(lang, def);
-  result := lang;
+  Lang := GetLanguageID();
+  result := Lang.LanguageCode;
 End;
 
 (*
