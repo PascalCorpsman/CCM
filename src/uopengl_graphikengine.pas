@@ -1,7 +1,7 @@
 (******************************************************************************)
 (* uOpenGLGraphikEngine.pas                                        ??.??.???? *)
 (*                                                                            *)
-(* Version     : 0.11                                                         *)
+(* Version     : 0.12                                                         *)
 (*                                                                            *)
 (* Author      : Uwe Schächterle (Corpsman)                                   *)
 (*                                                                            *)
@@ -40,6 +40,8 @@
 (*               0.10 - Fix speedup graphik loading                           *)
 (*               0.11 - Fix LoadAlphaGraphikItem did not respect png          *)
 (*                          transparency                                      *)
+(*               0.12 - Start removing glpushmatrix / glpopmatrix calls       *)
+(*                      Start speedup image loading / decoding                *)
 (*                                                                            *)
 (******************************************************************************)
 Unit uopengl_graphikengine;
@@ -104,8 +106,8 @@ Type
   End;
 
   TGraphikItem = Record
-    Image: Integer;
-    Name: String;
+    Image: Integer; // Unique identifier given by OpenGL glGenTextures
+    Name: String; // Unique Name of texture (filepath)
     IsAlphaImage: Boolean; // Wenn True, dann wurde Image mit AlphaKanal geladen und kann geblendet werden
     Stretched: TStretchMode;
     OrigWidth: integer;
@@ -138,6 +140,7 @@ Type
     Function LoadGraphik(Const Graphik: TBitmap; Name: String; Stretch: TStretchmode = smNone): Integer; overload; // Laden einer Graphik ohne Alphakanal
     Function LoadAlphaColorGraphik(Filename: String; Color: TRGB; Stretch: TStretchmode = smNone): Integer; overload; // Lädt eine Alphagraphik und setzt den Wert von Color = Transparent.
     Function LoadAlphaColorGraphik(Const Graphik: TBitmap; Name: String; Color: TRGB; Stretch: TStretchmode = smNone): Integer; overload; // Lädt eine Alphagraphik und setzt den Wert von Color = Transparent.
+    Function LoadAlphaColorGraphikItem(Filename: String; Color: TRGB; Stretch: TStretchmode = smNone): TGraphikItem; overload;
     Function LoadAlphaColorGraphikItem(Const Graphik: TBitmap; Name: String; Color: TRGB; Stretch: TStretchmode = smNone): TGraphikItem; overload;
     (*
     Funktionen die NICHT Machen was sie sollen
@@ -159,9 +162,9 @@ Type
   End;
 
 Const
-  Fuchsia: TRGB = (r: 255; g: 0; b: 255);
-  Black: TRGB = (r: 0; g: 0; b: 0);
-  White: TRGB = (r: 255; g: 255; b: 255);
+  Fuchsia: TRGB = (b: 255; g: 0; r: 255);
+  Black: TRGB = (b: 0; g: 0; r: 0);
+  White: TRGB = (b: 255; g: 255; r: 255);
 
 Var
   OpenGL_GraphikEngine: TOpenGL_GraphikEngine;
@@ -174,18 +177,15 @@ Var
   ACHTUNG Diese Routinen funktionieren nicht immer mit eingeschalteten CullFacing !!
   *)
 Procedure RenderAlphaQuad(Top, Left: Single; Image: TGraphikItem); overload; // Fertig Getestet // WTF: warum ist hier top und left vertauscht ?
-Procedure RenderAlphaQuad(Middle: Tpoint; Width, Height, Angle: Integer; Texture: integer = 0); overload; // Fertig Getestet
-Procedure RenderAlphaRQuad(TopLeft, BottomRight: TPoint; Angle: Integer; RotatebyOrigin: Boolean = False; Texture: Integer = 0); overload; // Fertig Getestet
+Procedure RenderAlphaQuad(Middle: TVector2; Width, Height, Angle: Integer; Texture: integer = 0); overload; // Fertig Getestet
 Procedure RenderAlphaRQuad(TopLeft, BottomRight: TVector2; Angle: Integer; RotatebyOrigin: Boolean = False; Texture: Integer = 0); overload; // Fertig Getestet
 Procedure RenderAlphaImage(Value: TSubImage);
 Procedure RenderAlphaTiledQuad(Left, Top: Single; Index, TilesPerRow, TilesPerCol: integer; Const Image: TGraphikItem);
 
 Procedure RenderQuad(Top, Left: Single; Image: TGraphikItem); overload; // WTF: warum ist hier top und left vertauscht ?
 Procedure RenderQuad(Middle: TVector2; Angle: Single; Image: TGraphikItem); overload;
-Procedure RenderQuad(Middle: Tpoint; Width, Height, Angle: Integer; Texture: integer = 0); overload; // Fertig Getestet
 Procedure RenderQuad(Middle: TVector2; Width, Height, Angle: Single; Texture: integer = 0); overload; // Fertig Getestet
 
-Procedure RenderQuad(TopLeft, BottomRight: TPoint; Angle: Integer; RotatebyOrigin: Boolean = False; Texture: Integer = 0); overload; // Fertig Getestet
 Procedure RenderQuad(TopLeft, BottomRight: TVector2; Angle: Integer; RotatebyOrigin: Boolean = False; Texture: Integer = 0); overload; // Fertig Getestet
 Procedure RenderTiledQuad(Left, Top: Single; Index, TilesPerRow, TilesPerCol: integer; Const Image: TGraphikItem);
 
@@ -216,42 +216,48 @@ Function FRect(Top, Left, Bottom, Right: Single): TFRect;
 
 Implementation
 
+Var
+  // LUT for sin / cos in 0.1° steps
+  Sin_discrete, Cos_discrete: Array[0..3599] Of Single;
+
 {$IFDEF DEBUGGOUTPUT}
 
-Function FileSizetoString(Value: Int64): String;
+Function FileSizeToString(Value: Int64): String;
 Var
-  s: Char;
+  s: char;
   r: Int64;
 Begin
   s := ' ';
   r := 0;
-  If value > 1024 Then Begin
+  If value >= 1000 Then Begin
     s := 'K';
-    r := value Mod 1024;
-    value := value Div 1024;
+    r := value Mod 1000;
+    value := value Div 1000;
   End;
-  If value > 1024 Then Begin
+  If value >= 1000 Then Begin
     s := 'M';
-    r := value Mod 1024;
-    value := value Div 1024;
+    r := value Mod 1000;
+    value := value Div 1000;
   End;
-  If value > 1024 Then Begin
+  If value >= 1000 Then Begin
     s := 'G';
-    r := value Mod 1024;
-    value := value Div 1024;
+    r := value Mod 1000;
+    value := value Div 1000;
   End;
-  If value > 1024 Then Begin
+  If value >= 1000 Then Begin
     s := 'T';
-    r := value Mod 1024;
-    value := value Div 1024;
+    r := value Mod 1000;
+    value := value Div 1000;
   End;
-  If value > 1024 Then Begin
+  If value >= 1000 Then Begin
     s := 'P';
-    r := value Mod 1024;
-    value := value Div 1024;
+    r := value Mod 1000;
+    value := value Div 1000;
   End;
-  If (r Div 100) <> 0 Then
-    result := inttostr(value) + ',' + inttostr(r Div 100) + s + 'B'
+  If (r Div 100) <> 0 Then Begin
+    value := value * 10 + round(r / 100);
+    result := format('%0.1f%sB', [value / 10, s]);
+  End
   Else
     result := inttostr(value) + s + 'B'
 End;
@@ -442,7 +448,7 @@ Begin
     gldisable(gl_blend);
 End;
 
-Procedure RenderAlphaQuad(Middle: Tpoint; Width, Height, Angle: Integer; Texture: integer = 0);
+Procedure RenderAlphaQuad(Middle: TVector2; Width, Height, Angle: Integer; Texture: integer = 0);
 Var
   b: {$IFDEF USE_GL}Byte{$ELSE}Boolean{$ENDIF};
 Begin
@@ -456,19 +462,6 @@ Begin
 End;
 
 Procedure RenderAlphaRQuad(TopLeft, BottomRight: TVector2; Angle: Integer; RotatebyOrigin: Boolean = False; Texture: Integer = 0); overload; // Fertig Getestet
-Var
-  b: {$IFDEF USE_GL}Byte{$ELSE}Boolean{$ENDIF};
-Begin
-  B := glIsEnabled(gl_Blend);
-  If Not (b{$IFDEF USE_GL} = 1{$ENDIF}) Then
-    glenable(gl_Blend);
-  glBlendFunc(GL_ONE_MINUS_SRC_ALPHA, GL_SRC_ALPHA);
-  RenderQuad(Topleft, Bottomright, angle, RotatebyOrigin, texture);
-  If Not (b{$IFDEF USE_GL} = 1{$ENDIF}) Then
-    gldisable(gl_blend);
-End;
-
-Procedure RenderAlphaRQuad(TopLeft, BottomRight: TPoint; Angle: Integer; RotatebyOrigin: Boolean = False; Texture: Integer = 0);
 Var
   b: {$IFDEF USE_GL}Byte{$ELSE}Boolean{$ENDIF};
 Begin
@@ -507,8 +500,6 @@ Begin
     glpopmatrix;
   End
   Else
-    //    RenderQuad(point((TopLeft.x + BottomRight.x) Shr 1, (TopLeft.y + BottomRight.y) Shr 1), BottomRight.x - TopLeft.x, TopLeft.y - BottomRight.y, angle, Texture);
-    //    RenderQuad(Fpoint((TopLeft.x + BottomRight.x) / 2, (TopLeft.y + BottomRight.y) / 2), abs(BottomRight.x - TopLeft.x), abs(TopLeft.y - BottomRight.y), angle, Texture);
     RenderQuad(v2((TopLeft.x + BottomRight.x) / 2, (TopLeft.y + BottomRight.y) / 2), abs(BottomRight.x - TopLeft.x), abs(TopLeft.y - BottomRight.y), angle, Texture);
 End;
 
@@ -540,19 +531,16 @@ Begin
       End;
   End;
   glBindTexture(gl_texture_2d, image.Image);
-  glpushmatrix;
-  gltranslatef(left, top, 0);
   glbegin(gl_quads);
   glTexCoord2f(tw * ix, th * (iy + 1));
-  glvertex3f(0, h, 0);
+  glvertex3f(left, top + h, 0);
   glTexCoord2f(tw * (ix + 1), th * (iy + 1));
-  glvertex3f(w, h, 0);
+  glvertex3f(left + w, top + h, 0);
   glTexCoord2f(tw * (ix + 1), th * iy);
-  glvertex3f(w, 0, 0);
+  glvertex3f(left + w, top, 0);
   glTexCoord2f(tw * ix, th * iy);
-  glvertex3f(0, 0, 0);
+  glvertex3f(left, top, 0);
   glend;
-  glpopmatrix;
 End;
 
 Procedure RenderQuad(TopLeft, BottomRight: TPoint; Angle: Integer; RotatebyOrigin: Boolean = False; Texture: Integer = 0);
@@ -581,46 +569,50 @@ Begin
     glpopmatrix;
   End
   Else
-    //    RenderQuad(point((TopLeft.x + BottomRight.x) Shr 1, (TopLeft.y + BottomRight.y) Shr 1), BottomRight.x - TopLeft.x, TopLeft.y - BottomRight.y, angle, Texture);
-    RenderQuad(point((TopLeft.x + BottomRight.x) Div 2, (TopLeft.y + BottomRight.y) Div 2), abs(BottomRight.x - TopLeft.x), abs(TopLeft.y - BottomRight.y), angle, Texture);
+    RenderQuad(v2((TopLeft.x + BottomRight.x) / 2, (TopLeft.y + BottomRight.y) / 2), abs(BottomRight.x - TopLeft.x), abs(TopLeft.y - BottomRight.y), angle, Texture);
 End;
 
 Procedure RenderQuad(Middle: TVector2; Width, Height, Angle: Single; Texture: integer = 0); overload; // Fertig Getestet
 Var
-  w2, h2: Single;
+  hw, hh: Single;
+  s, c: Single;
+  Right, Up: TVector2;
+  TL, TR, BR, BL: TVector2;
+  idx: Integer;
 Begin
-  If Texture <> 0 Then
-    glBindTexture(gl_texture_2d, Texture);
-  glpushmatrix;
-  gltranslatef(middle.x, middle.y, 0);
-  w2 := Width / 2;
-  h2 := height / 2;
-  If Angle <> 0 Then
-    glRotatef(angle, 0, 0, 1);
+  hw := Width * 0.5;
+  hh := Height * 0.5;
 
-  glbegin(gl_quads);
+  { Angle -> LUT Index (0.1° steps) }
+  idx := round(Angle * 10);
+  idx := idx Mod 3600;
+  If idx < 0 Then
+    idx := idx + 3600;
+  s := -Sin_discrete[idx];
+  c := -Cos_discrete[idx];
+
+  { Basisvektoren als TVector2 }
+  Right := V2(c * hw, -s * hw);
+  Up := V2(s * hh, c * hh);
+
+  { Ecken berechnen als Vektorarithmetik }
+  TL := Middle - Right + Up;
+  TR := Middle + Right + Up;
+  BR := Middle + Right - Up;
+  BL := Middle - Right - Up;
+
+  { OpenGL Zeichnen }
+  glBindTexture(GL_TEXTURE_2D, Texture);
+  glBegin(GL_QUADS);
   glTexCoord2f(0, 1);
-  glvertex3f(-w2, h2, 0);
+  glVertex2fv(@TL);
   glTexCoord2f(1, 1);
-  glvertex3f(w2, h2, 0);
+  glVertex2fv(@TR);
   glTexCoord2f(1, 0);
-  glvertex3f(w2, -h2, 0);
+  glVertex2fv(@BR);
   glTexCoord2f(0, 0);
-  glvertex3f(-w2, -h2, 0);
-  glend;
-
-  // Der Code macht Probleme mit glCullface
-  //  glbegin(gl_quads);
-  //  glTexCoord2f(0, 1);
-  //  glvertex3f(-w2, -h2, 0);
-  //  glTexCoord2f(1, 1);
-  //  glvertex3f(w2, -h2, 0);
-  //  glTexCoord2f(1, 0);
-  //  glvertex3f(w2, h2, 0);
-  //  glTexCoord2f(0, 0);
-  //  glvertex3f(-w2, h2, 0);
-  //  glend;
-  glpopmatrix;
+  glVertex2fv(@BL);
+  glEnd;
 End;
 
 Procedure RenderQuad(Top, Left: Single; Image: TGraphikItem);
@@ -638,55 +630,72 @@ Begin
       End;
   End;
   glBindTexture(gl_texture_2d, image.Image);
-  glpushmatrix;
-  gltranslatef(left, top, 0);
   glbegin(gl_quads);
   glTexCoord2f(0, th);
-  glvertex3f(0, image.OrigHeight, 0);
+  glvertex3f(left, top + image.OrigHeight, 0);
   glTexCoord2f(tw, th);
-  glvertex3f(image.OrigWidth, image.OrigHeight, 0);
+  glvertex3f(left + image.OrigWidth, top + image.OrigHeight, 0);
   glTexCoord2f(tw, 0);
-  glvertex3f(image.OrigWidth, 0, 0);
+  glvertex3f(left + image.OrigWidth, top, 0);
   glTexCoord2f(0, 0);
-  glvertex3f(0, 0, 0);
+  glvertex3f(left, top, 0);
   glend;
-  glpopmatrix;
 End;
 
 Procedure RenderQuad(Middle: TVector2; Angle: Single; Image: TGraphikItem);
-Begin
-  glPushMatrix;
-  gltranslatef(middle.x, middle.y, 0);
-  If Angle <> 0 Then
-    glRotatef(angle, 0, 0, 1);
-  glTranslatef(-Image.OrigWidth / 2, -image.OrigHeight / 2, 0);
-  RenderQuad(0, 0, Image);
-  glPopMatrix;
-End;
-
-Procedure RenderQuad(Middle: Tpoint; Width, Height, Angle: Integer; Texture: integer = 0);
 Var
-  w2, h2: Integer;
+  hw, hh: Single;
+  s, c: Single;
+  Right, Up: TVector2;
+  TL, TR, BR, BL: TVector2;
+  tw, th: Single;
+  idx: Integer;
 Begin
-  If Texture <> 0 Then
-    glBindTexture(gl_texture_2d, Texture);
-  glpushmatrix;
-  gltranslatef(middle.x, middle.y, 0);
-  w2 := Width Div 2;
-  h2 := height Div 2;
-  If Angle <> 0 Then
-    glRotatef(angle, 0, 0, 1);
-  glbegin(gl_quads);
-  glTexCoord2f(0, 1);
-  glvertex3f(-w2, -h2, 0);
-  glTexCoord2f(1, 1);
-  glvertex3f(w2, -h2, 0);
-  glTexCoord2f(1, 0);
-  glvertex3f(w2, h2, 0);
+  hw := Image.OrigWidth * 0.5;
+  hh := Image.OrigHeight * 0.5;
+
+  { Angle -> LUT Index (0.1° steps) }
+  idx := Round(Angle * 10);
+  idx := idx Mod 3600;
+  If idx < 0 Then
+    idx := idx + 3600;
+  s := -Sin_discrete[idx];
+  c := Cos_discrete[idx];
+
+  { Basisvektoren als TVector2 }
+  Right := V2(c * hw, -s * hw);
+  Up := V2(s * hh, c * hh);
+
+  { Ecken berechnen als Vektorarithmetik }
+  TL := Middle - Right + Up;
+  TR := Middle + Right + Up;
+  BR := Middle + Right - Up;
+  BL := Middle - Right - Up;
+
+  { Texturkoordinaten }
+  Case Image.Stretched Of
+    smClamp: Begin
+        tw := Image.OrigWidth / Image.StretchedWidth;
+        th := Image.OrigHeight / Image.StretchedHeight;
+      End;
+  Else Begin
+      tw := 1;
+      th := 1;
+    End;
+  End;
+
+  { OpenGL Zeichnen }
+  glBindTexture(GL_TEXTURE_2D, Image.Image);
+  glBegin(GL_QUADS);
+  glTexCoord2f(0, th);
+  glVertex2fv(@TL);
+  glTexCoord2f(tw, th);
+  glVertex2fv(@TR);
+  glTexCoord2f(tw, 0);
+  glVertex2fv(@BR);
   glTexCoord2f(0, 0);
-  glvertex3f(-w2, h2, 0);
-  glend;
-  glpopmatrix;
+  glVertex2fv(@BL);
+  glEnd;
 End;
 
 { TGraphikEngine }
@@ -1177,12 +1186,12 @@ End;
 Function TOpenGL_GraphikEngine.LoadAlphaColorGraphik(Const Graphik: TBitmap;
   Name: String; Color: TRGB; Stretch: TStretchmode): Integer; // Lädt eine Alphagraphik und setzt den Wert von Color = Transparent.
 Var
-  OpenGLData: Array Of Array[0..3] Of Byte;
   Data: String;
   b2, b: Tbitmap;
-  IntfImg1: TLazIntfImage;
-  CurColor: TFPColor;
-  ow, oh, nw, nh, c, j, i: Integer;
+  ow, oh, nw, nh, j, i: Integer;
+  pSrc: PRGBA;
+  pDst, pStart: PByte;
+  Line: Pointer;
   bool: {$IFDEF USE_GL}Byte{$ELSE}Boolean{$ENDIF};
 Begin
   Data := LowerCase(name);
@@ -1199,14 +1208,13 @@ Begin
     End;
   // Graphik mus geladen werden
   b := Tbitmap.create;
+  b.PixelFormat := pf32bit;
   b.assign(Graphik);
   // create the raw image
-  IntfImg1 := TLazIntfImage.Create(0, 0);
-  // b.PixelFormat := pf24bit;
   ow := b.width;
   oh := b.height;
-  nw := b.width;
-  nh := b.height;
+  nw := ow;
+  nh := oh;
 {$IFDEF DEBUGGOUTPUT}
   writeln('TGraphikEngine.LoadAlphaColorgraphik(' + name + ')');
   writeln('Orig size : ' + inttostr(b.width) + 'x' + inttostr(b.height));
@@ -1215,13 +1223,12 @@ Begin
     smNone: Begin
       End;
     smStretchHard, smStretch: Begin
-        nw := GetNextPowerOfTwo(b.width);
-        nh := GetNextPowerOfTwo(b.height);
-        If (nw <> b.width) Or (nh <> b.height) Then Begin
-          b2 := TBitmap.create;
-          b2.PixelFormat := pf24bit;
-          b2.width := nw;
-          b2.height := nh;
+        nw := GetNextPowerOfTwo(ow);
+        nh := GetNextPowerOfTwo(oh);
+        If (nw <> ow) Or (nh <> oh) Then Begin
+          b2 := TBitmap.Create;
+          b2.PixelFormat := pf32bit;
+          b2.SetSize(nw, nh);
           If Stretch = smStretch Then Begin
             Stretchdraw(b2.canvas, rect(0, 0, nw, nh), b, imBilinear);
           End
@@ -1233,13 +1240,12 @@ Begin
         End;
       End;
     smClamp: Begin
-        nw := GetNextPowerOfTwo(b.width);
-        nh := GetNextPowerOfTwo(b.height);
-        If (nw <> b.width) Or (nh <> b.height) Then Begin
+        nw := GetNextPowerOfTwo(ow);
+        nh := GetNextPowerOfTwo(oh);
+        If (nw <> ow) Or (nh <> oh) Then Begin
           b2 := TBitmap.create;
-          b2.PixelFormat := pf24bit;
-          b2.width := nw;
-          b2.height := nh;
+          b2.PixelFormat := pf32bit;
+          b2.SetSize(nw, nh);
           b2.canvas.Draw(0, 0, b);
           b.free;
           b := b2;
@@ -1247,7 +1253,6 @@ Begin
       End;
   End;
   // load the raw image from the bitmap handles
-  IntfImg1.LoadFromBitmap(B.Handle, B.MaskHandle);
 {$IFDEF DEBUGGOUTPUT}
   writeln('OpenGL size : ' + inttostr(b.width) + 'x' + inttostr(b.height));
   OpenGLBufCount := OpenGLBufCount + (b.width * b.height * 4);
@@ -1255,22 +1260,26 @@ Begin
 {$ENDIF}
   If IsPowerOfTwo(b.width) And IsPowerOfTwo(b.Height) Then Begin
     // Laden der Graphikdaten
-    opengldata := Nil;
-    setlength(opengldata, b.width * b.height);
-    c := 0;
-    For j := 0 To b.height - 1 Do Begin
-      For i := 0 To b.width - 1 Do Begin
-        CurColor := IntfImg1.Colors[i, j];
-        OpenGLData[c, 0] := CurColor.Red Div 256;
-        OpenGLData[c, 1] := CurColor.green Div 256;
-        OpenGLData[c, 2] := CurColor.blue Div 256;
-        If (OpenGLData[c, 0] = Color.r) And
-          (OpenGLData[c, 1] = Color.g) And
-          (OpenGLData[c, 2] = Color.b) Then
-          OpenGLData[c, 3] := 255
+    GetMem(pStart, b.Width * b.Height * 4);
+    pDst := pStart;
+    For j := 0 To b.Height - 1 Do Begin
+      Line := b.ScanLine[j];
+      pSrc := PRGBA(Line);
+      For i := 0 To b.Width - 1 Do Begin
+        pDst^ := pSrc^.R;
+        Inc(pDst);
+        pDst^ := pSrc^.G;
+        Inc(pDst);
+        pDst^ := pSrc^.B;
+        Inc(pDst);
+        If (pSrc^.R = Color.r) And
+          (pSrc^.G = Color.g) And
+          (pSrc^.B = Color.b) Then
+          pDst^ := 255
         Else
-          OpenGLData[c, 3] := 0;
-        inc(c);
+          pDst^ := 0;
+        Inc(pDst);
+        Inc(pSrc);
       End;
     End;
     // Übergeben an OpenGL
@@ -1281,10 +1290,10 @@ Begin
     glBindTexture(GL_TEXTURE_2D, result);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexImage2D(GL_TEXTURE_2D, 0, gl_RGBA, b.width, b.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, @OpenGLData[0]);
+    glTexImage2D(GL_TEXTURE_2D, 0, gl_RGBA, b.width, b.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pStart);
     If Not (Bool{$IFDEF USE_GL} = 1{$ENDIF}) Then
       gldisable(GL_TEXTURE_2D);
-    IntfImg1.free;
+    FreeMem(pStart);
     // Übernehmen in die Engine
     setlength(Fimages, high(Fimages) + 2);
     Fimages[high(Fimages)].Image := Result;
@@ -1304,6 +1313,22 @@ Begin
     Raise Exception.create('Error Image ' + extractfilename(name) + ' has invalid Width / Height, has to be 2^x.');
   End;
   b.free;
+End;
+
+Function TOpenGL_GraphikEngine.LoadAlphaColorGraphikItem(Filename: String;
+  Color: TRGB; Stretch: TStretchmode): TGraphikItem;
+Var
+  img, i: integer;
+Begin
+  // TODO: Das sollte so umgeschrieben werden, dass alle Funtionen LoadAlphaColorGraphikItem aufrufen und man sich hier das Suchen sparen kann
+  img := LoadAlphaColorGraphik(Filename, Color, Stretch);
+  For i := 0 To high(FImages) Do Begin
+    If FImages[i].Image = img Then Begin
+      result := FImages[i];
+      exit;
+    End;
+  End;
+  Raise exception.Create('TOpenGL_GraphikEngine.LoadAlphaColorGraphikItem: Unable to load');
 End;
 
 Function TOpenGL_GraphikEngine.LoadAlphaColorGraphikItem(
@@ -1378,7 +1403,6 @@ Var
   OpenGLData: Array Of Array[0..3] Of Byte;
   tmp, AlphaMask: Array Of Array Of Byte;
   Data: String;
-  //ba,
   b2, b: Tbitmap;
   jp: TJPEGImage;
   png: TPortableNetworkGraphic;
@@ -2099,9 +2123,15 @@ Begin
   End;
 End;
 
+Var
+  i: integer;
+
 Initialization
 
   OpenGL_GraphikEngine := TOpenGL_GraphikEngine.create;
+  For i := 0 To 3599 Do Begin
+    SinCos(DegToRad(i / 10), Sin_discrete[i], Cos_discrete[i]);
+  End;
 
 Finalization
 
