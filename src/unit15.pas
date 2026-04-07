@@ -764,6 +764,7 @@ Var
   wp: TWaypointList;
   i, j: LongInt;
   WPIcon: integer;
+  Cache: TCache;
 Begin
   // Show Waypoints
   For i := 1 To Form1.StringGrid1.RowCount - 1 Do Begin
@@ -776,6 +777,17 @@ Begin
         Form1.ImageList1.Width, Form1.ImageList1.Height, // Die Dimensionen
         -Form1.ImageList1.Width Div 2, -Form1.ImageList1.Height Div 2, // Die Verschiebung
         '  ' + wp[j].Name + ': ' + form1.StringGrid1.Cells[MainColTitle, i], form1.StringGrid1.Cells[MainColGCCode, i] + ': ' + form1.StringGrid1.Cells[MainColTitle, i]);
+    End;
+    Cache := CacheFromDB(form1.StringGrid1.Cells[MainColGCCode, i], true);
+    // Eine Dose mit Korrigierten Koordinaten, wir Zeigen die Orig Koors auch mit an.
+    If (cache.Cor_Lat <> -1) And (cache.Cor_Lon <> -1) Then Begin
+      WPIcon := max(0, form1.CacheTypeToIconIndex(cache.G_Type));
+      mv.AddImageOnCoord(
+        cache.Lon, cache.lat, // Die Position
+        OpenGL_GraphikEngine.Find('Form1.ImageList1.items[' + inttostr(WPIcon) + ']'), // Das Ungelöster Mysterie
+        Form1.ImageList1.Width, Form1.ImageList1.Height, // Die Dimensionen
+        -Form1.ImageList1.Width Div 2, -Form1.ImageList1.Height Div 2, // Die Verschiebung
+        'Listing: ' + form1.StringGrid1.Cells[MainColTitle, i], form1.StringGrid1.Cells[MainColGCCode, i] + ': ' + form1.StringGrid1.Cells[MainColTitle, i]);
     End;
   End;
   OpenGLControl1Paint(Nil);
@@ -1807,6 +1819,7 @@ Begin
 {$IFDEF DebuggMode}
   i := glGetError();
   If i <> 0 Then Begin
+    Form15Initialized := false;
     p := gluErrorString(i);
     showmessage(format(RF_OpenGLError, [i, p]));
     close;

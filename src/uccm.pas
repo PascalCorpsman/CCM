@@ -592,9 +592,10 @@ Const
    *            2.64 = FIX: Wegpunkt Projection war "falsch" bei nicht N / E Koordinaten
    *                   ADD: "Clear selection"
    *                   ADD: c:geo field note loader
-   *                   ADD: anzeige "Loops" in 81-iger preview
+   *                   ADD: Anzeige "Loops" in 81-iger preview
    *                   ADD: Icon für Blockparty
    *                   FIX: Custom filter für Letterbox hat nicht funktioniert
+   *                   ADD: Orig Koordinates, wenn "show" Waypoints gewählt wird
    *)
 
   Version = updater_Version;
