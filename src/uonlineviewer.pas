@@ -372,21 +372,12 @@ End;
 
 Procedure TOnlineViewer.Go2d();
 Begin
-  glMatrixMode(GL_PROJECTION);
-  glPushMatrix(); // Store The Projection Matrix
-  glLoadIdentity(); // Reset The Projection Matrix
-  glOrtho(0, fOpenGLControl.Width, fOpenGLControl.height, 0, -1, 1); // Set Up An Ortho Screen
-  glMatrixMode(GL_MODELVIEW);
-  glPushMatrix(); // Store old Modelview Matrix
-  glLoadIdentity(); // Reset The Modelview Matrix
+  uopengl_graphikengine.Go2d(fOpenGLControl.Width, fOpenGLControl.height); // Set Up An Ortho Screen
 End;
 
 Procedure TOnlineViewer.Exit2d();
 Begin
-  glMatrixMode(GL_PROJECTION);
-  glPopMatrix(); // Restore old Projection Matrix
-  glMatrixMode(GL_MODELVIEW);
-  glPopMatrix(); // Restore old Projection Matrix
+  uopengl_graphikengine.Exit2d();
 End;
 
 Procedure TOnlineViewer.SetCaches_All(AValue: Boolean);
@@ -544,6 +535,7 @@ Function TOnlineViewer.RenderViewPort(vp: TViewport): integer;
 Var
   xc, yc, i: integer;
   b: {$IFDEF USE_GL}Byte{$ELSE}Boolean{$ENDIF};
+  gi: TGraphikItem;
 Begin
   result := 0;
   If EnableDownloading Then Begin
@@ -569,6 +561,7 @@ Begin
       If Not (b{$IFDEF USE_GL} = 1{$ENDIF}) Then
         glenable(gl_Blend);
       glBlendFunc(GL_ONE_MINUS_SRC_ALPHA, GL_SRC_ALPHA);
+{$IFDEF LEGACYMODE}
       glColor3d(1, 1, 1);
       glBindTexture(GL_TEXTURE_2D, OpenGL_GraphikEngine.Find('Form1.ImageList1.items[' + inttostr(fLiteCaches[i].RenderIconIndex) + ']', true));
       glbegin(GL_QUADS);
@@ -581,6 +574,10 @@ Begin
       glTexCoord2f(0, 0);
       glVertex2f(Xc, Yc);
       glend;
+{$ELSE}
+      gi := OpenGL_GraphikEngine.FindItem('Form1.ImageList1.items[' + inttostr(fLiteCaches[i].RenderIconIndex) + ']', true);
+      RenderQuad(xc, yc, 0, 16, 16, gi);
+{$ENDIF}
       If Not (b{$IFDEF USE_GL} = 1{$ENDIF}) Then
         gldisable(gl_blend);
     End
@@ -604,6 +601,7 @@ Begin
       If Not (b{$IFDEF USE_GL} = 1{$ENDIF}) Then
         glenable(gl_Blend);
       glBlendFunc(GL_ONE_MINUS_SRC_ALPHA, GL_SRC_ALPHA);
+{$IFDEF LEGACYMODE}
       glColor3d(1, 1, 1);
       glBindTexture(GL_TEXTURE_2D, OpenGL_GraphikEngine.Find('Form1.ImageList1.items[' + inttostr(fLabs[i].RenderIconIndex) + ']', true));
       glbegin(GL_QUADS);
@@ -616,6 +614,10 @@ Begin
       glTexCoord2f(0, 0);
       glVertex2f(Xc, Yc);
       glend;
+{$ELSE}
+      gi := OpenGL_GraphikEngine.FindItem('Form1.ImageList1.items[' + inttostr(fLabs[i].RenderIconIndex) + ']', true);
+      RenderQuad(xc, yc, 0, 16, 16, gi);
+{$ENDIF}
       If Not (b{$IFDEF USE_GL} = 1{$ENDIF}) Then
         gldisable(gl_blend);
     End

@@ -247,10 +247,25 @@ Uses lazutf8, math, dglOpenGL, uopengl_graphikengine, ugraphics, uOpenGL_ASCII_F
   unit31, // Edit Custom Location
   unit39, // Select via Listbox
   ulanguage,
+  uopengl_legacychecker,
+  uopengl_shaderprimitives,
   Clipbrd,
   LCLType,
   LCLIntf
   ;
+
+
+{$IFNDEF LEGACYMODE}
+
+Procedure OnOpenGLLegacyCall(Severity: GLuint; aMessage: String);
+Begin
+  Form15Initialized := false;
+  showmessage(
+    format('Error, unallowed OpenGL legacy call: %d = %s', [Severity, aMessage])
+    );
+  halt;
+End;
+{$ENDIF}
 
 { TForm15 }
 
@@ -265,6 +280,10 @@ Begin
     showmessage(R_Error_could_not_init_dglOpenGL_pas);
     Halt;
   End;
+{$IFNDEF LEGACYMODE}
+  OpenGLControl1.AutoResizeViewport := True; // This is crucial for GTK3, don't know why, but without it the demo does not work
+  OpenGLControl1.DebugContext := True; // Required so the GL driver actually generates KHR_debug messages
+{$ENDIF}
   GroupBox1.Align := alRight;
   OpenGLControl1.Align := alClient;
   Constraints.MinHeight := Height;
@@ -655,6 +674,12 @@ Begin
   mv := Nil;
   fOnlineViewer.Free;
   fOnlineViewer := Nil;
+{$IFNDEF LEGACYMODE}
+  If OpenGLControl1.MakeCurrent Then Begin
+    OpenGL_GraphikEngine_FinalizeShaderSystem;
+    OpenGL_ShaderPrimitives_FinalizeShaderSystem;
+  End;
+{$ENDIF}
 End;
 
 Procedure TForm15.FormKeyDown(Sender: TObject; Var Key: Word; Shift: TShiftState
@@ -773,7 +798,7 @@ Begin
       WPIcon := max(0, form1.CacheTypeToIconIndex(wp[j].sym));
       mv.AddImageOnCoord(
         wp[j].Lon, wp[j].lat, // Die Position
-        OpenGL_GraphikEngine.Find('Form1.ImageList1.items[' + inttostr(WPIcon) + ']'), // Das Bild
+        OpenGL_GraphikEngine.FindItem('Form1.ImageList1.items[' + inttostr(WPIcon) + ']'), // Das Bild
         Form1.ImageList1.Width, Form1.ImageList1.Height, // Die Dimensionen
         -Form1.ImageList1.Width Div 2, -Form1.ImageList1.Height Div 2, // Die Verschiebung
         '  ' + wp[j].Name + ': ' + form1.StringGrid1.Cells[MainColTitle, i], form1.StringGrid1.Cells[MainColGCCode, i] + ': ' + form1.StringGrid1.Cells[MainColTitle, i]);
@@ -784,7 +809,7 @@ Begin
       WPIcon := max(0, form1.CacheTypeToIconIndex(cache.G_Type));
       mv.AddImageOnCoord(
         cache.Lon, cache.lat, // Die Position
-        OpenGL_GraphikEngine.Find('Form1.ImageList1.items[' + inttostr(WPIcon) + ']'), // Das Ungelöster Mysterie
+        OpenGL_GraphikEngine.FindItem('Form1.ImageList1.items[' + inttostr(WPIcon) + ']'), // Das Ungelöster Mysterie
         Form1.ImageList1.Width, Form1.ImageList1.Height, // Die Dimensionen
         -Form1.ImageList1.Width Div 2, -Form1.ImageList1.Height Div 2, // Die Verschiebung
         'Listing: ' + form1.StringGrid1.Cells[MainColTitle, i], form1.StringGrid1.Cells[MainColGCCode, i] + ': ' + form1.StringGrid1.Cells[MainColTitle, i]);
@@ -989,7 +1014,7 @@ Begin
       c := img.MetaInfo;
     End;
     ic := max(0, form1.CacheTypeToIconIndex(form1.CacheNameToCacheType(c)));
-    img.ImageIndex := OpenGL_GraphikEngine.Find('Form1.ImageList1.items[' + inttostr(ic) + ']');
+    img.ImageIndex := OpenGL_GraphikEngine.FindItem('Form1.ImageList1.items[' + inttostr(ic) + ']');
     mv.Image[i] := img;
   End;
   ResetAllIcons();
@@ -1032,7 +1057,7 @@ Procedure TForm15.MenuItem21Click(Sender: TObject);
       lon := lc.Cor_Lon;
     End;
     mv.AddImageOnCoord(lon, lat,
-      OpenGL_GraphikEngine.Find('Form1.ImageList1.items[' + inttostr(icon) + ']'), // Das Bild
+      OpenGL_GraphikEngine.FindItem('Form1.ImageList1.items[' + inttostr(icon) + ']'), // Das Bild
       Form1.ImageList1.Width, Form1.ImageList1.Height, // Die Dimensionen
       -Form1.ImageList1.Width Div 2, -Form1.ImageList1.Height Div 2, // Die Verschiebung
       '  ' + lc.GC_Code + ': ' + lc.G_Name,
@@ -1342,7 +1367,7 @@ Begin
     SQLTransaction.Commit;
     // Die Karte Aktualisieren wir auch Gleich
     img_new := img;
-    img_new.ImageIndex := OpenGL_GraphikEngine.Find('Form1.ImageList1.items[' + inttostr(MainImageIndexCustomerFlag) + ']');
+    img_new.ImageIndex := OpenGL_GraphikEngine.FindItem('Form1.ImageList1.items[' + inttostr(MainImageIndexCustomerFlag) + ']');
     mv.UpdateImage(img, img_new);
   End
   Else Begin
@@ -1385,7 +1410,7 @@ Begin
     // Die Karte Aktualisieren wir auch Gleich
     img_new := img;
     ic := max(0, form1.CacheTypeToIconIndex(form1.CacheNameToCacheType(c)));
-    img_new.ImageIndex := OpenGL_GraphikEngine.Find('Form1.ImageList1.items[' + inttostr(ic) + ']');
+    img_new.ImageIndex := OpenGL_GraphikEngine.FindItem('Form1.ImageList1.items[' + inttostr(ic) + ']');
     mv.UpdateImage(img, img_new);
   End
   Else Begin
@@ -1411,7 +1436,7 @@ Procedure TForm15.AddUserPointAt(lat, lon: Double);
 Begin
   inc(UserPointCount);
   mv.AddImageOnCoord(lat, lon,
-    OpenGL_GraphikEngine.Find('here.bmp'), // Das Bild
+    OpenGL_GraphikEngine.FindItem('here.bmp'), // Das Bild
     32, 32, -16, -32, '  Userpoint ' + inttostr(UserPointCount), '');
 End;
 
@@ -1544,6 +1569,7 @@ Procedure TForm15.RenderRoutePoints(vp: TViewport);
 Var
   i, yc, xc: integer;
   b: {$IFDEF USE_GL}Byte{$ELSE}Boolean{$ENDIF};
+  gi: TGraphikItem;
 Begin
   Go2d(OpenGLControl1.ClientWidth, OpenGLControl1.ClientHeight);
   For i := 0 To high(fRoute) Do Begin
@@ -1553,6 +1579,7 @@ Begin
     If Not (b{$IFDEF USE_GL} = 1{$ENDIF}) Then
       glenable(gl_Blend);
     glBlendFunc(GL_ONE_MINUS_SRC_ALPHA, GL_SRC_ALPHA);
+{$IFDEF LEGACYMODE}
     glColor3d(1, 1, 1);
     glBindTexture(GL_TEXTURE_2D, OpenGL_GraphikEngine.Find('Form1.ImageList1.items[' + inttostr(MainImageIndexPointHere) + ']', true));
     glbegin(GL_QUADS);
@@ -1565,6 +1592,10 @@ Begin
     glTexCoord2f(0, 0);
     glVertex2f(Xc, Yc);
     glend;
+{$ELSE}
+    gi := OpenGL_GraphikEngine.FindItem('Form1.ImageList1.items[' + inttostr(MainImageIndexPointHere) + ']', true);
+    RenderQuad(xc, yc, 0, 16, 16, gi);
+{$ENDIF}
     If Not (b{$IFDEF USE_GL} = 1{$ENDIF}) Then
       gldisable(gl_blend);
     glColor3d(1, 1, 1);
@@ -1572,7 +1603,6 @@ Begin
     OpenGL_ASCII_Font.Textout(xc + 16, yc, inttostr(i + 1));
   End;
   Exit2d();
-
 End;
 
 Function TForm15.GetAllCachedCaches(): TLiteCacheArray;
@@ -1597,7 +1627,6 @@ Begin
   fOnlineViewer.EnableDownloading := false;
   fOnlineViewer.DownloadViewPort(vp);
   result := fOnlineViewer.GetAllCachedCaches();
-
 End;
 
 Procedure TForm15.ClearCaches();
@@ -1618,7 +1647,7 @@ Begin
     y := StrToFloat(copy(p, 1, pos('x', p) - 1), DefFormat);
     x := StrToFloat(copy(p, pos('x', p) + 1, length(p)), DefFormat);
     mv.AddImageOnCoord(x, y,
-      OpenGL_GraphikEngine.Find('here.bmp'), // Das Bild
+      OpenGL_GraphikEngine.FindItem('here.bmp'), // Das Bild
       32, 32, -16, -32, '  ' + n, '');
   End;
   OpenGLControl1Paint(Nil);
@@ -1704,6 +1733,9 @@ Begin
     // Init dglOpenGL.pas , Teil 2
     ReadExtensions; // Anstatt der Extentions kann auch nur der Core geladen werden. ReadOpenGLCore;
     ReadImplementationProperties;
+{$IFNDEF LEGACYMODE}
+    RegisterLegacyCheckerCallback(@OnOpenGLLegacyCall);
+{$ENDIF}
   End;
   If allowcnt >= 2 Then Begin // Dieses If Sorgt mit dem obigen dafür, dass der Code nur 1 mal ausgeführt wird.
     mv.MapLocalization := GetValue('General', 'MapLanguage', form1.getLang());
@@ -1722,12 +1754,32 @@ Begin
     If OpenGL_GraphikEngine.LoadAlphaColorGraphik(s, ColorToRGB(clfuchsia)) = 0 Then Begin
       showmessage(format(RF_Error_could_not_load_userpoints_imageOpenGL_Errorcode, [s, glGetError(), gluErrorString(glGetError())]));
     End;
+{$IFDEF LEGACYMODE}
     glenable(GL_TEXTURE_2D); // Texturen
+{$ENDIF}
+{$IFNDEF LEGACYMODE}
+    If Not Assigned(glCreateShader) Then Begin
+      // On Windows it seems that you need to "reload" the core functions for proper function
+      ReadExtensions;
+      ReadImplementationProperties;
+      RegisterLegacyCheckerCallback(@OnOpenGLLegacyCall);
+      // if still not available, then halt
+      If Not Assigned(glCreateShader) Then Begin
+        showmessage('glCreateShader not available, use legacy mode..');
+        halt;
+      End;
+    End;
+    OpenGL_GraphikEngine_InitializeShaderSystem;
+    OpenGL_ShaderPrimitives_InitializeShaderSystem;
+{$ENDIF}
     Create_ASCII_Font;
     // Der Anwendung erlauben zu Rendern.
     Splashhint := '';
     Splashhint2 := '';
     Form15Initialized := True;
+{$IFNDEF LEGACYMODE}
+    ReActivateKHRDebug; // Reenable KHRDebug
+{$ENDIF}
     CenterCaches(Nil);
     OpenGLControl1Resize(Nil);
     allowcnt := min(allowcnt, 4);
@@ -1774,7 +1826,9 @@ Begin
   // Render Szene
   glClearColor(0.0, 0.0, 0.0, 0.0);
   glClear(GL_COLOR_BUFFER_BIT Or GL_DEPTH_BUFFER_BIT);
+{$IFDEF LEGACYMODE}
   glLoadIdentity();
+{$ENDIF}
   mv.Render();
   //  If CheckBox3.Checked Or CheckBox11.Checked Then Begin
   pt := mv.GetMouseMapLongLat(0, 0);
@@ -1790,26 +1844,51 @@ Begin
     txt := Splashhint;
     If Splashhint2 <> '' Then txt := Splashhint2;
     Go2d(OpenGLControl1.Width, OpenGLControl1.Height);
+{$IFDEF LEGACYMODE}
     glColor4f(0, 0, 0, 0);
     glBindTexture(GL_TEXTURE_2D, 0); // Entladen des Texturspeichers
+{$ENDIF}
     w := OpenGL_ASCII_Font.TextWidth(txt);
     h := OpenGL_ASCII_Font.TextHeight(txt);
+{$IFDEF LEGACYMODE}
     glbegin(GL_QUADS);
+{$ELSE}
+    UseColorShader;
+    glShaderBegin(GL_TRIANGLE_FAN);
+{$ENDIF}
     If MoveX + 15 + w > OpenGLControl1.Width Then Begin
+{$IFDEF LEGACYMODE}
       glVertex2f(MoveX - 10 - w, MoveY + 2.5);
       glVertex2f(MoveX - 10 - w, MoveY + 2.5 + h + 5);
       glVertex2f(MoveX, MoveY + 2.5 + h + 5);
       glVertex2f(MoveX, MoveY + 2.5);
       glend;
+{$ELSE}
+      glShaderVertex(MoveX - 10 - w, MoveY + 2.5, 0);
+      glShaderVertex(MoveX - 10 - w, MoveY + 2.5 + h + 5, 0);
+      glShaderVertex(MoveX, MoveY + 2.5 + h + 5, 0);
+      glShaderVertex(MoveX, MoveY + 2.5, 0);
+      glShaderEnd();
+      UseTextureShader();
+{$ENDIF}
       OpenGL_ASCII_Font.Color := clwhite;
       OpenGL_ASCII_Font.Textout(MoveX - 5 - round(w), MoveY + 5, txt);
     End
     Else Begin
+{$IFDEF LEGACYMODE}
       glVertex2f(MoveX + 5, MoveY + 2.5);
       glVertex2f(MoveX + 5, MoveY + 2.5 + h + 5);
       glVertex2f(MoveX + 5 + w + 10, MoveY + 2.5 + h + 5);
       glVertex2f(MoveX + 5 + w + 10, MoveY + 2.5);
       glend;
+{$ELSE}
+      glShaderVertex(MoveX + 5, MoveY + 2.5, 0);
+      glShaderVertex(MoveX + 5, MoveY + 2.5 + h + 5, 0);
+      glShaderVertex(MoveX + 5 + w + 10, MoveY + 2.5 + h + 5, 0);
+      glShaderVertex(MoveX + 5 + w + 10, MoveY + 2.5, 0);
+      glShaderEnd();
+      UseTextureShader();
+{$ENDIF}
       OpenGL_ASCII_Font.Color := clwhite;
       OpenGL_ASCII_Font.Textout(MoveX + 10, MoveY + 5, txt);
     End;
@@ -1830,11 +1909,17 @@ End;
 Procedure TForm15.OpenGLControl1Resize(Sender: TObject);
 Begin
   If Form15Initialized Then Begin
+{$IFDEF LEGACYMODE}
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     glViewport(0, 0, OpenGLControl1.Width, OpenGLControl1.Height);
     gluPerspective(45.0, OpenGLControl1.Width / OpenGLControl1.Height, 0.1, 100.0);
     glMatrixMode(GL_MODELVIEW);
+{$ELSE}
+    If OpenGLControl1.MakeCurrent Then
+      glViewport(0, 0, OpenGLControl1.Width, OpenGLControl1.Height);
+    OpenGLControl1.Invalidate;
+{$ENDIF}
     OpenGLControl1Paint(Nil);
   End;
   button1.Left := OpenGLControl1.Left + OpenGLControl1.Width - Button1.Width - Scale96ToForm(8);
@@ -1963,7 +2048,7 @@ Begin
     CacheInfos[i - 1].icon := max(0, form1.CacheTypeToIconIndex(form1.CacheNameToCacheType(Form1.StringGrid1.Cells[MainColGCCode, i]))); // Wenn der Bildtyp unbekannt ist zeigen wir nen Tradi an.
     mv.AddImageOnCoord(
       CacheInfos[i - 1].y, CacheInfos[i - 1].x, // Die Position
-      OpenGL_GraphikEngine.Find('Form1.ImageList1.items[' + inttostr(CacheInfos[i - 1].icon) + ']'), // Das Bild
+      OpenGL_GraphikEngine.FindItem('Form1.ImageList1.items[' + inttostr(CacheInfos[i - 1].icon) + ']'), // Das Bild
       Form1.ImageList1.Width, Form1.ImageList1.Height, // Die Dimensionen
       -Form1.ImageList1.Width Div 2, -Form1.ImageList1.Height Div 2, // Die Verschiebung
       CacheInfos[i - 1].name, Form1.StringGrid1.Cells[MainColGCCode, i] + ': ' + CacheInfos[i - 1].name);

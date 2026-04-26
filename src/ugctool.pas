@@ -477,7 +477,7 @@ Uses
   ulanguage,
   umultipartformdatastream,
   DateUtils,
-  ssl_Openssl;
+  ssl_openssl3;
 
 Function LogStateToOption(State: TLogtype): String;
 Begin // https://api.groundspeak.com/documentation#geocache-log-types

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectOptions>
-    <Version Value="12"/>
+    <Version Value="13"/>
     <General>
       <Flags>
         <CompatibilityMode Value="True"/>
@@ -60,7 +60,7 @@
         <PackageName Value="LCL"/>
       </Item8>
     </RequiredPackages>
-    <Units Count="75">
+    <Units Count="77">
       <Unit0>
         <Filename Value="ccm.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -533,6 +533,14 @@
         <Filename Value="../../Sample/OpenGL/uopengl_font_common.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit74>
+      <Unit75>
+        <Filename Value="../../Sample/OpenGL/uopengl_legacychecker.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit75>
+      <Unit76>
+        <Filename Value="../../Sample/OpenGL/uopengl_shaderprimitives.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit76>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

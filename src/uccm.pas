@@ -596,6 +596,7 @@ Const
    *                   ADD: Icon für Blockparty
    *                   FIX: Custom filter für Letterbox hat nicht funktioniert
    *                   ADD: Orig Koordinates, wenn "show" Waypoints gewählt wird
+   *            2.65 = ADD: switch to shader rendering
    *)
 
   Version = updater_Version;
