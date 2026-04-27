@@ -357,21 +357,24 @@ Const
   // Shader sources for color rendering (no textures)
   ColorVertexSrc: PChar =
   '#version 330 core'#10 +
-    'layout(location = 0) in vec3 aPos;'#10 +
+    'layout(location = 0) in vec4 aPos;'#10 +
     'uniform vec2 uResolution;'#10 +
     'uniform mat4 uTransform;'#10 +
+    'out float vAlpha;'#10 +
     'void main() {'#10 +
     '  vec4 transformed = uTransform * vec4(aPos.xy, 0.0, 1.0);'#10 +
     '  vec2 ndc = vec2((transformed.x / uResolution.x) * 2.0 - 1.0, 1.0 - (transformed.y / uResolution.y) * 2.0);'#10 +
     '  gl_Position = vec4(ndc, -aPos.z, 1.0);'#10 +
+    '  vAlpha = aPos.w;'#10 +
     '}';
 
   ColorFragmentSrc: PChar =
   '#version 330 core'#10 +
+    'in float vAlpha;'#10 +
     'out vec4 FragColor;'#10 +
     'uniform vec4 uColor;'#10 +
     'void main() {'#10 +
-    '  FragColor = uColor;'#10 +
+    '  FragColor = vec4(uColor.rgb, uColor.a * vAlpha);'#10 +
     '}';
 {$ENDIF}
 
@@ -1913,11 +1916,8 @@ End;
 
 Function TOpenGL_GraphikEngine.LoadGraphik(Const Graphik: TBitmap;
   Name: String; Stretch: TStretchmode): Integer;
-Var
-  gi: TGraphikItem;
 Begin
-  gi := LoadGraphikitem(Graphik, Name, Stretch);
-  result := gi.image;
+  result := LoadGraphikitem(Graphik, Name, Stretch).image;
 End;
 
 Function TOpenGL_GraphikEngine.GetInfo(Value: String): TGraphikItem;
@@ -2137,7 +2137,13 @@ Begin
   // Graphik mus geladen werden
   b := Tbitmap.create;
   b.PixelFormat := pf32bit;
+{$IFDEF Windows}
+  // Unter Windows scheint das mit dem Assigned nicht zu gehen, dafür gehts mittels draw ;)
+  b.SetSize(Graphik.Width, Graphik.Height);
+  b.canvas.Draw(0, 0, Graphik);
+{$ELSE}
   b.assign(Graphik);
+{$ENDIF}
   // create the raw image
   ow := b.width;
   oh := b.height;

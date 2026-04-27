@@ -670,16 +670,21 @@ End;
 
 Procedure TForm15.FormDestroy(Sender: TObject);
 Begin
-  mv.Free;
-  mv := Nil;
-  fOnlineViewer.Free;
-  fOnlineViewer := Nil;
+  If Form15Initialized Then Begin
+    Form15Initialized := false;
+    mv.Free;
+    mv := Nil;
+    fOnlineViewer.Free;
+    fOnlineViewer := Nil;
+{$IFDEF LINUX}
 {$IFNDEF LEGACYMODE}
-  If OpenGLControl1.MakeCurrent Then Begin
-    OpenGL_GraphikEngine_FinalizeShaderSystem;
-    OpenGL_ShaderPrimitives_FinalizeShaderSystem;
-  End;
+    If OpenGLControl1.MakeCurrent Then Begin
+      OpenGL_GraphikEngine_FinalizeShaderSystem;
+      OpenGL_ShaderPrimitives_FinalizeShaderSystem;
+    End;
 {$ENDIF}
+{$ENDIF}
+  End;
 End;
 
 Procedure TForm15.FormKeyDown(Sender: TObject; Var Key: Word; Shift: TShiftState
@@ -1751,7 +1756,7 @@ Begin
     *)
     OpenGL_GraphikEngine.clear;
     s := GetImagesDir() + 'here.bmp';
-    If OpenGL_GraphikEngine.LoadAlphaColorGraphik(s, ColorToRGB(clfuchsia)) = 0 Then Begin
+    If OpenGL_GraphikEngine.LoadAlphaColorGraphikItem(s, ColorToRGB(clfuchsia)).image = 0 Then Begin
       showmessage(format(RF_Error_could_not_load_userpoints_imageOpenGL_Errorcode, [s, glGetError(), gluErrorString(glGetError())]));
     End;
 {$IFDEF LEGACYMODE}
@@ -2013,7 +2018,7 @@ Begin
     b.canvas.brush.Color := clFuchsia;
     b.canvas.Rectangle(-1, -1, b.Width + 1, b.Height + 1);
     Form1.ImageList1.Draw(b.canvas, 0, 0, i);
-    OpenGL_GraphikEngine.LoadAlphaColorGraphik(b, 'Form1.ImageList1.items[' + inttostr(i) + ']', ColorToRGB(clFuchsia));
+    OpenGL_GraphikEngine.LoadAlphaColorGraphikitem(b, 'Form1.ImageList1.items[' + inttostr(i) + ']', ColorToRGB(clFuchsia));
   End;
   b.free;
   mip.X := 0;
