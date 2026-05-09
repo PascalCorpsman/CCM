@@ -42,9 +42,10 @@ Youtube [Step by step installation guide](https://www.youtube.com/watch?v=XDlOMk
 1:05: Windows installation<br>
 2:00: setup CCM with the Wizard<br>
 
-
-
 ## More video tutorials:
  - [Working with databases](https://www.youtube.com/watch?v=QlKnDJi_hL8)
  - [How to handle Trackables](https://www.youtube.com/watch?v=oYHXZXe7-7s)
  - [Creating Scripts](https://www.youtube.com/watch?v=3Inn9QPoyuw)
+
+## c:geo extension
+There is a c:geo extension available [project-gc to c:geo](https://github.com/PascalCorpsman/projectgc-county-map-to-cgeo) which might also be of interest to you
