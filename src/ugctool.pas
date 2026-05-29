@@ -230,7 +230,7 @@ Type
     fReferenceCode: String;
   public
     Constructor Create(Action: TTBLogType; Date: String; GC_Code: String; ReferenceCode: String); reintroduce;
-    Function ToString(FrontSpace: String = ''): String; override;
+    Function ToString(FrontSpace: String = ''; Compact: Boolean = false): String; override;
   End;
 
   { TGCLog }
@@ -245,7 +245,7 @@ Type
     LogType: String;
     LogText: String;
     Constructor Create(); reintroduce;
-    Function ToString(FrontSpace: String = ''): String; override;
+    Function ToString(FrontSpace: String = ''; Compact: Boolean = false): String; override;
   End;
 
   { THintElement }
@@ -255,7 +255,7 @@ Type
     fHint, fUserToken: String;
   public
     Constructor Create(Hint, UserToken: String); reintroduce;
-    Function ToString(FrontSpace: String = ''): String; override;
+    Function ToString(FrontSpace: String = ''; Compact: Boolean = false): String; override;
   End;
 
   { TCoordElement }
@@ -266,7 +266,7 @@ Type
     fUserToken: String;
   public
     Constructor Create(Lat, Lon: Double; UserToken: String); reintroduce;
-    Function ToString(FrontSpace: String = ''): String; override;
+    Function ToString(FrontSpace: String = ''; Compact: Boolean = false): String; override;
   End;
 
   { TGCTool }
@@ -901,14 +901,14 @@ End;
 
 { TCoordElement }
 
-Constructor TCoordElement.Create(Lat, Lon: Double; UserToken: String);
+constructor TCoordElement.Create(Lat, Lon: Double; UserToken: String);
 Begin
   fUserToken := UserToken;
   fLat := Lat;
   FLon := Lon;
 End;
 
-Function TCoordElement.ToString(FrontSpace: String): String;
+function TCoordElement.ToString(FrontSpace: String; Compact: Boolean): String;
 Begin
   If (fLat = -1) And (FLon = -1) Then Begin
     result := '{"dto":{"ut":"' + fUserToken + '"}}';
@@ -920,13 +920,13 @@ End;
 
 { THintElement }
 
-Constructor THintElement.Create(Hint, UserToken: String);
+constructor THintElement.Create(Hint, UserToken: String);
 Begin
   fHint := Hint;
   fUserToken := UserToken;
 End;
 
-Function THintElement.ToString(FrontSpace: String): String;
+function THintElement.ToString(FrontSpace: String; Compact: Boolean): String;
 Begin
   // TODO: Rauskriegen ob das mit den FAVS noch geht !
   Result := '{"dto":{"et":' + StringToJsonString(fHint) + ',"ut":"' + fUserToken + '"}}';
@@ -934,12 +934,12 @@ End;
 
 { TGCLog }
 
-Constructor TGCLog.Create();
+constructor TGCLog.Create;
 Begin
 
 End;
 
-Function TGCLog.ToString(FrontSpace: String): String;
+function TGCLog.ToString(FrontSpace: String; Compact: Boolean): String;
 Begin
   // TODO: Rauskriegen ob das mit den FAVS noch geht !
   Result :=
@@ -992,8 +992,8 @@ End;
 
 { TrackableLog }
 
-Constructor TrackableLog.Create(Action: TTBLogType; Date: String; GC_Code: String;
-  ReferenceCode: String);
+constructor TrackableLog.Create(Action: TTBLogType; Date: String;
+  GC_Code: String; ReferenceCode: String);
 Begin
   Inherited create();
   fAction := Action;
@@ -1002,7 +1002,7 @@ Begin
   fReferenceCode := ReferenceCode;
 End;
 
-Function TrackableLog.ToString(FrontSpace: String): String;
+function TrackableLog.ToString(FrontSpace: String; Compact: Boolean): String;
 Begin
   result := '{"logType":{"id":"' + TBLogStateToOption(fAction) + '"},"date":"' + fDate + '","geocache":{"gcCode":"' + fGC_Code + '"},"referenceCode":"' + fReferenceCode + '"}'
 End;

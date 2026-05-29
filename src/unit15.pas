@@ -259,11 +259,12 @@ Uses lazutf8, math, dglOpenGL, uopengl_graphikengine, ugraphics, uOpenGL_ASCII_F
 
 Procedure OnOpenGLLegacyCall(Severity: GLuint; aMessage: String);
 Begin
-  Form15Initialized := false;
-  showmessage(
-    format('Error, unallowed OpenGL legacy call: %d = %s', [Severity, aMessage])
-    );
-  halt;
+  // Das geht hier leider nicht, da der CCM den Renderingkontext anscheinend zu häufig initialisiert..
+  //Form15Initialized := false;
+  //showmessage(
+  //  format('Error, unallowed OpenGL legacy call: %d = %s', [Severity, aMessage])
+  //  );
+  //halt;
 End;
 {$ENDIF}
 
@@ -1767,7 +1768,7 @@ Begin
       // On Windows it seems that you need to "reload" the core functions for proper function
       ReadExtensions;
       ReadImplementationProperties;
-      RegisterLegacyCheckerCallback(@OnOpenGLLegacyCall);
+      //RegisterLegacyCheckerCallback(@OnOpenGLLegacyCall);
       // if still not available, then halt
       If Not Assigned(glCreateShader) Then Begin
         showmessage('glCreateShader not available, use legacy mode..');
@@ -1783,7 +1784,7 @@ Begin
     Splashhint2 := '';
     Form15Initialized := True;
 {$IFNDEF LEGACYMODE}
-    ReActivateKHRDebug; // Reenable KHRDebug
+    //ReActivateKHRDebug; // Reenable KHRDebug
 {$ENDIF}
     CenterCaches(Nil);
     OpenGLControl1Resize(Nil);

@@ -3702,6 +3702,7 @@ Begin
     End;
   End;
   l.free;
+  DBName := trim(DBName);
   CreateNewDatabase(DBName);
   p := GetDataBaseDir();
   p := p + DBName + '.db';

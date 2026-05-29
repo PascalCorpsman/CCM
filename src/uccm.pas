@@ -597,6 +597,7 @@ Const
    *                   FIX: Custom filter für Letterbox hat nicht funktioniert
    *                   ADD: Orig Koordinates, wenn "show" Waypoints gewählt wird
    *            2.65 = ADD: switch to shader rendering
+   *                   FIX: remove spaces in DBNames when creating from GSAK exports
    *)
 
   Version = updater_Version;
