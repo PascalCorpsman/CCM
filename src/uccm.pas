@@ -598,6 +598,7 @@ Const
    *                   ADD: Orig Koordinates, wenn "show" Waypoints gewählt wird
    *            2.65 = ADD: switch to shader rendering
    *                   FIX: remove spaces in DBNames when creating from GSAK exports
+   *                   FIX: Events Attended state does not get updated when downloaded
    *)
 
   Version = updater_Version;
@@ -3023,7 +3024,11 @@ Begin
       If FoundVal = 0 Then Begin
         // Evtl ist in den Logs der Fund, die müssen auch durchsucht werden
         For i := 0 To high(Cache.Logs) Do Begin
-          If (lowercase(Cache.Logs[i].Finder) = lowercase(s)) And (Cache.Logs[i].Type_ = 'Found it') Then Begin
+          If (lowercase(Cache.Logs[i].Finder) = lowercase(s)) And (
+            (Cache.Logs[i].Type_ = 'Found it') Or
+            (Cache.Logs[i].Type_ = 'Attended') Or
+            (Cache.Logs[i].Type_ = 'Webcam Photo Taken')
+            ) Then Begin
             FoundVal := 1;
             break;
           End;
@@ -4647,17 +4652,16 @@ Function CacheTypeIsaEvent(Const CacheType: String): Boolean;
 Begin
   result :=
     (*
-* Giga_Event_Cache,
-* Mega_Event_Cache,
-* Community_Celebration_Event,
-* Event_Cache,
-* Cache_In_Trash_Out_Event,
-*
-*)
+     * Giga_Event_Cache,
+     * Mega_Event_Cache,
+     * Community_Celebration_Event,
+     * Event_Cache,
+     * Cache_In_Trash_Out_Event,
+     *
+     *)
   (pos('event', lowercase(CacheType)) <> 0) Or
     (lowercase(trim(CacheType)) = lowercase(trim(BlockParty_Cache)))
-  ;
-
+    ;
 End;
 
 Finalization

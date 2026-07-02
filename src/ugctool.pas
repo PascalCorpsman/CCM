@@ -901,14 +901,14 @@ End;
 
 { TCoordElement }
 
-constructor TCoordElement.Create(Lat, Lon: Double; UserToken: String);
+Constructor TCoordElement.Create(Lat, Lon: Double; UserToken: String);
 Begin
   fUserToken := UserToken;
   fLat := Lat;
   FLon := Lon;
 End;
 
-function TCoordElement.ToString(FrontSpace: String; Compact: Boolean): String;
+Function TCoordElement.ToString(FrontSpace: String; Compact: Boolean): String;
 Begin
   If (fLat = -1) And (FLon = -1) Then Begin
     result := '{"dto":{"ut":"' + fUserToken + '"}}';
@@ -920,13 +920,13 @@ End;
 
 { THintElement }
 
-constructor THintElement.Create(Hint, UserToken: String);
+Constructor THintElement.Create(Hint, UserToken: String);
 Begin
   fHint := Hint;
   fUserToken := UserToken;
 End;
 
-function THintElement.ToString(FrontSpace: String; Compact: Boolean): String;
+Function THintElement.ToString(FrontSpace: String; Compact: Boolean): String;
 Begin
   // TODO: Rauskriegen ob das mit den FAVS noch geht !
   Result := '{"dto":{"et":' + StringToJsonString(fHint) + ',"ut":"' + fUserToken + '"}}';
@@ -934,12 +934,12 @@ End;
 
 { TGCLog }
 
-constructor TGCLog.Create;
+Constructor TGCLog.Create;
 Begin
 
 End;
 
-function TGCLog.ToString(FrontSpace: String; Compact: Boolean): String;
+Function TGCLog.ToString(FrontSpace: String; Compact: Boolean): String;
 Begin
   // TODO: Rauskriegen ob das mit den FAVS noch geht !
   Result :=
@@ -992,7 +992,7 @@ End;
 
 { TrackableLog }
 
-constructor TrackableLog.Create(Action: TTBLogType; Date: String;
+Constructor TrackableLog.Create(Action: TTBLogType; Date: String;
   GC_Code: String; ReferenceCode: String);
 Begin
   Inherited create();
@@ -1002,7 +1002,7 @@ Begin
   fReferenceCode := ReferenceCode;
 End;
 
-function TrackableLog.ToString(FrontSpace: String; Compact: Boolean): String;
+Function TrackableLog.ToString(FrontSpace: String; Compact: Boolean): String;
 Begin
   result := '{"logType":{"id":"' + TBLogStateToOption(fAction) + '"},"date":"' + fDate + '","geocache":{"gcCode":"' + fGC_Code + '"},"referenceCode":"' + fReferenceCode + '"}'
 End;
