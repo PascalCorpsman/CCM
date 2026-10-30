@@ -255,18 +255,15 @@ Uses lazutf8, math, dglOpenGL, uopengl_graphikengine, ugraphics, uOpenGL_ASCII_F
   ;
 
 
-{$IFNDEF LEGACYMODE}
-
 Procedure OnOpenGLLegacyCall(Severity: GLuint; aMessage: String);
 Begin
   // Das geht hier leider nicht, da der CCM den Renderingkontext anscheinend zu häufig initialisiert..
-  //Form15Initialized := false;
-  //showmessage(
-  //  format('Error, unallowed OpenGL legacy call: %d = %s', [Severity, aMessage])
-  //  );
-  //halt;
+  Form15Initialized := false;
+  showmessage(
+    format('Error, unallowed OpenGL legacy call: %d = %s', [Severity, aMessage])
+    );
+  halt;
 End;
-{$ENDIF}
 
 { TForm15 }
 
@@ -281,10 +278,8 @@ Begin
     showmessage(R_Error_could_not_init_dglOpenGL_pas);
     Halt;
   End;
-{$IFNDEF LEGACYMODE}
   OpenGLControl1.AutoResizeViewport := True; // This is crucial for GTK3, don't know why, but without it the demo does not work
   OpenGLControl1.DebugContext := True; // Required so the GL driver actually generates KHR_debug messages
-{$ENDIF}
   GroupBox1.Align := alRight;
   OpenGLControl1.Align := alClient;
   Constraints.MinHeight := Height;
@@ -315,7 +310,7 @@ Begin
   CheckBox3.Checked := false;
   CheckBox10.Checked := false;
   ClearCaches();
-  OpenGLControl1Paint(Nil);
+  OpenGLControl1.Invalidate;
 End;
 
 Procedure TForm15.Button2Click(Sender: TObject);
@@ -400,12 +395,12 @@ Begin
   lat := fRoute[high(froute)].X;
   lon := fRoute[high(froute)].y;
   mv.CenterLongLat(lat, lon);
-  OpenGLControl1Paint(Nil);
+  OpenGLControl1.Invalidate;
   // Wir Sind Fertig, springen nun wieder die Ursprungsansicht an
   CheckBox3.Checked := false;
   mv.Zoom := startZoom;
   mv.CenterLongLat(StartPos.X, StartPos.y);
-  OpenGLControl1Paint(Nil);
+  OpenGLControl1.Invalidate;
   t := GetTickCount64 - t;
   Showmessage(format(RF_Script_finished_in, [PrettyTime(t)], DefFormat));
 
@@ -540,7 +535,7 @@ Begin
       fRoute[i].Y := dy;
     End;
     f.free;
-    OpenGLControl1Paint(Nil);
+    OpenGLControl1.Invalidate;
   End;
 End;
 
@@ -577,7 +572,7 @@ Begin
   // Enable Disable Route
   If Not CheckBox10.Checked Then Begin
     setlength(fRoute, 0);
-    OpenGLControl1Paint(Nil);
+    OpenGLControl1.Invalidate;
   End;
 End;
 
@@ -593,19 +588,19 @@ Begin
   //    CheckBox3.Checked := true;
   //    fOnlineViewer.EnableDownloading := true;
   //  End;
-  OpenGLControl1Paint(Nil);
+  OpenGLControl1.Invalidate;
 End;
 
 Procedure TForm15.CheckBox1Click(Sender: TObject);
 Begin
   fOnlineViewer.HideOwn := CheckBox1.Checked;
-  OpenGLControl1Paint(Nil);
+  OpenGLControl1.Invalidate;
 End;
 
 Procedure TForm15.CheckBox2Click(Sender: TObject);
 Begin
   fOnlineViewer.HideFounds := CheckBox2.Checked;
-  OpenGLControl1Paint(Nil);
+  OpenGLControl1.Invalidate;
 End;
 
 Procedure TForm15.CheckBox3Click(Sender: TObject);
@@ -616,7 +611,7 @@ Begin
     End;
   End;
   fOnlineViewer.EnableDownloading := CheckBox3.Checked;
-  OpenGLControl1Paint(Nil);
+  OpenGLControl1.Invalidate;
 End;
 
 Procedure TForm15.CheckBox4Click(Sender: TObject);
@@ -629,28 +624,28 @@ Begin
     CheckBox8.Checked := false;
     CheckBox9.Checked := false;
   End;
-  OpenGLControl1Paint(Nil);
+  OpenGLControl1.Invalidate;
 End;
 
 Procedure TForm15.CheckBox5Click(Sender: TObject);
 Begin
   fOnlineViewer.Caches_Tradi := CheckBox5.Checked;
   If CheckBox5.Checked Then CheckBox4.Checked := false;
-  OpenGLControl1Paint(Nil);
+  OpenGLControl1.Invalidate;
 End;
 
 Procedure TForm15.CheckBox6Click(Sender: TObject);
 Begin
   fOnlineViewer.Caches_Multi := CheckBox6.Checked;
   If CheckBox6.Checked Then CheckBox4.Checked := false;
-  OpenGLControl1Paint(Nil);
+  OpenGLControl1.Invalidate;
 End;
 
 Procedure TForm15.CheckBox7Click(Sender: TObject);
 Begin
   fOnlineViewer.Caches_Mystery := CheckBox7.Checked;
   If CheckBox7.Checked Then CheckBox4.Checked := false;
-  OpenGLControl1Paint(Nil);
+  OpenGLControl1.Invalidate;
 End;
 
 Procedure TForm15.CheckBox8Click(Sender: TObject);
@@ -659,14 +654,14 @@ Begin
   If CheckBox8.Checked Then Begin
     CheckBox4.Checked := false;
   End;
-  OpenGLControl1Paint(Nil);
+  OpenGLControl1.Invalidate;
 End;
 
 Procedure TForm15.CheckBox9Click(Sender: TObject);
 Begin
   fOnlineViewer.Caches_Event := CheckBox9.Checked;
   If CheckBox9.Checked Then CheckBox4.Checked := false;
-  OpenGLControl1Paint(Nil);
+  OpenGLControl1.Invalidate;
 End;
 
 Procedure TForm15.FormDestroy(Sender: TObject);
@@ -677,14 +672,10 @@ Begin
     mv := Nil;
     fOnlineViewer.Free;
     fOnlineViewer := Nil;
-{$IFDEF LINUX}
-{$IFNDEF LEGACYMODE}
     If OpenGLControl1.MakeCurrent Then Begin
       OpenGL_GraphikEngine_FinalizeShaderSystem;
       OpenGL_ShaderPrimitives_FinalizeShaderSystem;
     End;
-{$ENDIF}
-{$ENDIF}
   End;
 End;
 
@@ -742,7 +733,7 @@ Var
   s: String;
   p: Tpoint;
 Begin
-  If ssleft In shift Then OpenGLControl1Paint(Nil);
+  If ssleft In shift Then OpenGLControl1.Invalidate;
   MoveX := x;
   MoveY := y;
   r := mv.GetMouseMapLongLat(X, y);
@@ -755,19 +746,19 @@ Begin
   If mv.GetImageAtXY(MoveX, MoveY, img) Then Begin
     If Splashhint <> img.Label_ Then Begin
       Splashhint := img.Label_;
-      OpenGLControl1Paint(Nil);
+      OpenGLControl1.Invalidate;
     End;
   End
   Else Begin
     If Splashhint <> '' Then Begin
       Splashhint := '';
-      OpenGLControl1Paint(Nil);
+      OpenGLControl1.Invalidate;
     End;
   End;
   s := GetSplashHint(x, y);
   If s <> Splashhint2 Then Begin
     Splashhint2 := s;
-    OpenGLControl1Paint(Nil);
+    OpenGLControl1.Invalidate;
   End;
 End;
 
@@ -821,7 +812,7 @@ Begin
         'Listing: ' + form1.StringGrid1.Cells[MainColTitle, i], form1.StringGrid1.Cells[MainColGCCode, i] + ': ' + form1.StringGrid1.Cells[MainColTitle, i]);
     End;
   End;
-  OpenGLControl1Paint(Nil);
+  OpenGLControl1.Invalidate;
 End;
 
 Procedure TForm15.MenuItem13Click(Sender: TObject);
@@ -849,7 +840,7 @@ Begin
       OpenCacheInBrowser(s);
     End;
   End;
-  OpenGLControl1Paint(Nil);
+  OpenGLControl1.Invalidate;
 End;
 
 Procedure TForm15.MenuItem14Click(Sender: TObject);
@@ -872,7 +863,7 @@ Begin
   If (form14.Edit3.Text <> '') And (form14.Edit4.Text <> '') And (form14.ModalResult = mrOK) Then Begin
     AddUserPointAt(StrToFloat(form14.edit4.text), StrToFloat(form14.edit3.text));
   End;
-  OpenGLControl1Paint(Nil);
+  OpenGLControl1.Invalidate;
 End;
 
 Procedure TForm15.MenuItem16Click(Sender: TObject);
@@ -1024,7 +1015,7 @@ Begin
     mv.Image[i] := img;
   End;
   ResetAllIcons();
-  OpenGLControl1Paint(Nil);
+  OpenGLControl1.Invalidate;
 End;
 
 Procedure TForm15.MenuItem1Click(Sender: TObject);
@@ -1034,7 +1025,7 @@ Begin
   MenuItem3.Checked := false; // Hybrid
   MenuItem20.Checked := false; // Terrain
   mv.Source := msGoogleNormal;
-  OpenGLControl1Paint(Nil);
+  OpenGLControl1.Invalidate;
 End;
 
 Procedure TForm15.MenuItem20Click(Sender: TObject);
@@ -1044,7 +1035,7 @@ Begin
   MenuItem3.Checked := false; // Hybrid
   MenuItem20.Checked := true; // Terrain
   mv.Source := msGoogleTerrain;
-  OpenGLControl1Paint(Nil);
+  OpenGLControl1.Invalidate;
 End;
 
 Procedure TForm15.MenuItem21Click(Sender: TObject);
@@ -1167,7 +1158,7 @@ Begin
     Else Begin
       mv.CenterLongLat(res[0].lon, res[0].lat);
     End;
-    OpenGLControl1Paint(Nil);
+    OpenGLControl1.Invalidate;
   End;
 End;
 
@@ -1220,7 +1211,7 @@ Begin
     End;
   End;
   mv.EmptyTileCache;
-  OpenGLControl1Paint(Nil);
+  OpenGLControl1.Invalidate;
   showmessage(format(RF_Finished_deleted_files, [c]));
 End;
 
@@ -1262,7 +1253,7 @@ Begin
     End;
     mv.Zoom := 14;
     mv.CenterLongLat(lon, lat);
-    OpenGLControl1Paint(Nil);
+    OpenGLControl1.Invalidate;
   End;
 End;
 
@@ -1305,7 +1296,7 @@ Begin
     sy := sy / cnt;
     mv.Zoom := 14;
     mv.CenterLongLat(sx, sy);
-    OpenGLControl1Paint(Nil);
+    OpenGLControl1.Invalidate;
     m.free;
   End;
 End;
@@ -1334,7 +1325,7 @@ Begin
   MenuItem3.Checked := false; // Hybrid
   MenuItem20.Checked := false; // Terrain
   mv.Source := msGoogleSatellite;
-  OpenGLControl1Paint(Nil);
+  OpenGLControl1.Invalidate;
 End;
 
 Procedure TForm15.MenuItem3Click(Sender: TObject);
@@ -1344,7 +1335,7 @@ Begin
   MenuItem3.Checked := true; // Hybrid
   MenuItem20.Checked := false; // Terrain
   mv.Source := msGoogleHybrid;
-  OpenGLControl1Paint(Nil);
+  OpenGLControl1.Invalidate;
 End;
 
 Procedure TForm15.MenuItem4Click(Sender: TObject);
@@ -1352,7 +1343,7 @@ Begin
   // Show Cachenames
   MenuItem4.Checked := Not MenuItem4.Checked;
   mv.ShowPointLabels := MenuItem4.Checked;
-  OpenGLControl1Paint(Nil);
+  OpenGLControl1.Invalidate;
 End;
 
 Procedure TForm15.MenuItem62Click(Sender: TObject);
@@ -1393,7 +1384,7 @@ Begin
       End;
     End;
   End;
-  OpenGLControl1Paint(Nil);
+  OpenGLControl1.Invalidate;
 End;
 
 Procedure TForm15.MenuItem63Click(Sender: TObject);
@@ -1435,7 +1426,7 @@ Begin
       End;
     End;
   End;
-  OpenGLControl1Paint(Nil);
+  OpenGLControl1.Invalidate;
 End;
 
 Procedure TForm15.AddUserPointAt(lat, lon: Double);
@@ -1546,7 +1537,7 @@ Begin
       pr := fRoute[i];
       fRoute[i] := fRoute[i + 1];
       fRoute[i + 1] := pr;
-      OpenGLControl1Paint(Nil);
+      OpenGLControl1.Invalidate;
       exit;
     End;
   End;
@@ -1565,7 +1556,7 @@ Begin
       pr := fRoute[i];
       fRoute[i] := fRoute[i - 1];
       fRoute[i - 1] := pr;
-      OpenGLControl1Paint(Nil);
+      OpenGLControl1.Invalidate;
       exit;
     End;
   End;
@@ -1585,23 +1576,8 @@ Begin
     If Not (b{$IFDEF USE_GL} = 1{$ENDIF}) Then
       glenable(gl_Blend);
     glBlendFunc(GL_ONE_MINUS_SRC_ALPHA, GL_SRC_ALPHA);
-{$IFDEF LEGACYMODE}
-    glColor3d(1, 1, 1);
-    glBindTexture(GL_TEXTURE_2D, OpenGL_GraphikEngine.Find('Form1.ImageList1.items[' + inttostr(MainImageIndexPointHere) + ']', true));
-    glbegin(GL_QUADS);
-    glTexCoord2f(0, 1);
-    glVertex2f(Xc, Yc + 16);
-    glTexCoord2f(1, 1);
-    glVertex2f(Xc + 16, Yc + 16);
-    glTexCoord2f(1, 0);
-    glVertex2f(Xc + 16, Yc);
-    glTexCoord2f(0, 0);
-    glVertex2f(Xc, Yc);
-    glend;
-{$ELSE}
     gi := OpenGL_GraphikEngine.FindItem('Form1.ImageList1.items[' + inttostr(MainImageIndexPointHere) + ']', true);
     RenderQuad(xc, yc, 0, 16, 16, gi);
-{$ENDIF}
     If Not (b{$IFDEF USE_GL} = 1{$ENDIF}) Then
       gldisable(gl_blend);
     glColor3d(1, 1, 1);
@@ -1656,13 +1632,13 @@ Begin
       OpenGL_GraphikEngine.FindItem('here.bmp'), // Das Bild
       32, 32, -16, -32, '  ' + n, '');
   End;
-  OpenGLControl1Paint(Nil);
+  OpenGLControl1.Invalidate;
 End;
 
 Procedure TForm15.MenuItem8Click(Sender: TObject);
 Begin
   mv.ReenableDownloading;
-  OpenGLControl1Paint(Nil);
+  OpenGLControl1.Invalidate;
 End;
 
 Procedure TForm15.MenuItem9Click(Sender: TObject);
@@ -1670,7 +1646,7 @@ Begin
   // Show 161m Ranges
   MenuItem9.Checked := Not MenuItem9.Checked;
   mv.show161Ranges := MenuItem9.Checked;
-  OpenGLControl1Paint(Nil);
+  OpenGLControl1.Invalidate;
 End;
 
 Procedure TForm15.OpenGLControl1DblClick(Sender: TObject);
@@ -1721,7 +1697,7 @@ Begin
       mv.ZoomInAtXY(MoveX, MoveY);
     End;
   End;
-  OpenGLControl1Paint(Nil);
+  OpenGLControl1.Invalidate;
 End;
 
 Procedure TForm15.OpenGLControl1MakeCurrent(Sender: TObject; Var Allow: boolean
@@ -1729,21 +1705,18 @@ Procedure TForm15.OpenGLControl1MakeCurrent(Sender: TObject; Var Allow: boolean
 Var
   s: String;
 Begin
-  inc(allowcnt);
-  If allowcnt > 4 Then Begin
-    allowcnt := 5;
+  If allowcnt > 2 Then Begin
     exit;
   End;
+  inc(allowcnt);
   // Sollen Dialoge beim Starten ausgeführt werden ist hier der Richtige Zeitpunkt
   If allowcnt = 1 Then Begin
     // Init dglOpenGL.pas , Teil 2
     ReadExtensions; // Anstatt der Extentions kann auch nur der Core geladen werden. ReadOpenGLCore;
     ReadImplementationProperties;
-{$IFNDEF LEGACYMODE}
     RegisterLegacyCheckerCallback(@OnOpenGLLegacyCall);
-{$ENDIF}
   End;
-  If allowcnt >= 2 Then Begin // Dieses If Sorgt mit dem obigen dafür, dass der Code nur 1 mal ausgeführt wird.
+  If allowcnt = 2 Then Begin // Dieses If Sorgt mit dem obigen dafür, dass der Code nur 1 mal ausgeführt wird.
     mv.MapLocalization := GetValue('General', 'MapLanguage', form1.getLang());
     mv.ProxyHost := getvalue('General', 'ProxyHost', '');
     mv.ProxyPass := getvalue('General', 'ProxyPass', '');
@@ -1760,10 +1733,6 @@ Begin
     If OpenGL_GraphikEngine.LoadAlphaColorGraphikItem(s, ColorToRGB(clfuchsia)).image = 0 Then Begin
       showmessage(format(RF_Error_could_not_load_userpoints_imageOpenGL_Errorcode, [s, glGetError(), gluErrorString(glGetError())]));
     End;
-{$IFDEF LEGACYMODE}
-    glenable(GL_TEXTURE_2D); // Texturen
-{$ENDIF}
-{$IFNDEF LEGACYMODE}
     If Not Assigned(glCreateShader) Then Begin
       // On Windows it seems that you need to "reload" the core functions for proper function
       ReadExtensions;
@@ -1777,24 +1746,17 @@ Begin
     End;
     OpenGL_GraphikEngine_InitializeShaderSystem;
     OpenGL_ShaderPrimitives_InitializeShaderSystem;
-{$ENDIF}
     Create_ASCII_Font;
     // Der Anwendung erlauben zu Rendern.
     Splashhint := '';
     Splashhint2 := '';
     Form15Initialized := True;
-{$IFNDEF LEGACYMODE}
-    //ReActivateKHRDebug; // Reenable KHRDebug
-{$ENDIF}
+    ReActivateKHRDebug; // Reenable KHRDebug
     CenterCaches(Nil);
     OpenGLControl1Resize(Nil);
     allowcnt := min(allowcnt, 4);
   End;
-  If allowcnt < 4 Then Begin
-{$IFNDEF DoNotInvalidateOpenGLWindow}
-    Invalidate;
-{$ENDIF}
-  End;
+  form15.Invalidate;
 End;
 
 Procedure TForm15.OpenGLControl1MouseDown(Sender: TObject;
@@ -1813,7 +1775,7 @@ Begin
     If RadioButton4.Checked Then Begin // Dec Point Order
       DecPointOrder(x, y);
     End;
-    OpenGLControl1Paint(Nil);
+    OpenGLControl1.Invalidate;
   End;
 End;
 
@@ -1832,9 +1794,6 @@ Begin
   // Render Szene
   glClearColor(0.0, 0.0, 0.0, 0.0);
   glClear(GL_COLOR_BUFFER_BIT Or GL_DEPTH_BUFFER_BIT);
-{$IFDEF LEGACYMODE}
-  glLoadIdentity();
-{$ENDIF}
   mv.Render();
   //  If CheckBox3.Checked Or CheckBox11.Checked Then Begin
   pt := mv.GetMouseMapLongLat(0, 0);
@@ -1850,51 +1809,27 @@ Begin
     txt := Splashhint;
     If Splashhint2 <> '' Then txt := Splashhint2;
     Go2d(OpenGLControl1.Width, OpenGLControl1.Height);
-{$IFDEF LEGACYMODE}
-    glColor4f(0, 0, 0, 0);
-    glBindTexture(GL_TEXTURE_2D, 0); // Entladen des Texturspeichers
-{$ENDIF}
     w := OpenGL_ASCII_Font.TextWidth(txt);
     h := OpenGL_ASCII_Font.TextHeight(txt);
-{$IFDEF LEGACYMODE}
-    glbegin(GL_QUADS);
-{$ELSE}
     UseColorShader;
     glShaderBegin(GL_TRIANGLE_FAN);
-{$ENDIF}
     If MoveX + 15 + w > OpenGLControl1.Width Then Begin
-{$IFDEF LEGACYMODE}
-      glVertex2f(MoveX - 10 - w, MoveY + 2.5);
-      glVertex2f(MoveX - 10 - w, MoveY + 2.5 + h + 5);
-      glVertex2f(MoveX, MoveY + 2.5 + h + 5);
-      glVertex2f(MoveX, MoveY + 2.5);
-      glend;
-{$ELSE}
       glShaderVertex(MoveX - 10 - w, MoveY + 2.5, 0);
       glShaderVertex(MoveX - 10 - w, MoveY + 2.5 + h + 5, 0);
       glShaderVertex(MoveX, MoveY + 2.5 + h + 5, 0);
       glShaderVertex(MoveX, MoveY + 2.5, 0);
       glShaderEnd();
       UseTextureShader();
-{$ENDIF}
       OpenGL_ASCII_Font.Color := clwhite;
       OpenGL_ASCII_Font.Textout(MoveX - 5 - round(w), MoveY + 5, txt);
     End
     Else Begin
-{$IFDEF LEGACYMODE}
-      glVertex2f(MoveX + 5, MoveY + 2.5);
-      glVertex2f(MoveX + 5, MoveY + 2.5 + h + 5);
-      glVertex2f(MoveX + 5 + w + 10, MoveY + 2.5 + h + 5);
-      glVertex2f(MoveX + 5 + w + 10, MoveY + 2.5);
-      glend;
-{$ELSE}
       glShaderVertex(MoveX + 5, MoveY + 2.5, 0);
       glShaderVertex(MoveX + 5, MoveY + 2.5 + h + 5, 0);
       glShaderVertex(MoveX + 5 + w + 10, MoveY + 2.5 + h + 5, 0);
       glShaderVertex(MoveX + 5 + w + 10, MoveY + 2.5, 0);
       glShaderEnd();
       UseTextureShader();
-{$ENDIF}
       OpenGL_ASCII_Font.Color := clwhite;
       OpenGL_ASCII_Font.Textout(MoveX + 10, MoveY + 5, txt);
     End;
@@ -1915,18 +1850,9 @@ End;
 Procedure TForm15.OpenGLControl1Resize(Sender: TObject);
 Begin
   If Form15Initialized Then Begin
-{$IFDEF LEGACYMODE}
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    glViewport(0, 0, OpenGLControl1.Width, OpenGLControl1.Height);
-    gluPerspective(45.0, OpenGLControl1.Width / OpenGLControl1.Height, 0.1, 100.0);
-    glMatrixMode(GL_MODELVIEW);
-{$ELSE}
     If OpenGLControl1.MakeCurrent Then
       glViewport(0, 0, OpenGLControl1.Width, OpenGLControl1.Height);
     OpenGLControl1.Invalidate;
-{$ENDIF}
-    OpenGLControl1Paint(Nil);
   End;
   button1.Left := OpenGLControl1.Left + OpenGLControl1.Width - Button1.Width - Scale96ToForm(8);
 End;

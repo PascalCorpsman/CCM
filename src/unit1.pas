@@ -1883,6 +1883,7 @@ Begin
   For i := 1 To ParamCount Do Begin
     If lowercase(ParamStr(i)) = '-lazarus-ide' Then Begin
       Language.AskNameChanges := true;
+      Language.DeleteUnusedItems := true;
       lang := 'en';
       setValue('General', 'Language', lang);
       folder := IncludeTrailingPathDelimiter(ExtractFilePath(ParamStrUTF8(0))); // Wieder auf die Original Datei verweisen

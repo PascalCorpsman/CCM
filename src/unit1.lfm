@@ -2,12 +2,12 @@ object Form1: TForm1
   Left = 349
   Height = 505
   Top = 107
-  Width = 408
+  Width = 417
   Caption = 'Form1'
   ClientHeight = 505
-  ClientWidth = 408
+  ClientWidth = 417
   Menu = MainMenu1
-  LCLVersion = '4.99.0.0'
+  LCLVersion = '5.99.0.0'
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnKeyDown = ComboBox2KeyDown
@@ -17,22 +17,22 @@ object Form1: TForm1
     Left = 8
     Height = 16
     Top = 16
-    Width = 40
+    Width = 39
     Caption = 'Search'
   end
   object Label2: TLabel
     Left = 8
     Height = 16
     Top = 46
-    Width = 80
+    Width = 79
     Caption = 'Distance [km]'
   end
   object Edit2: TEdit
     Left = 125
-    Height = 26
+    Height = 30
     Hint = 'If value is negative, than the cache has to have at least the given distance'
     Top = 38
-    Width = 205
+    Width = 214
     Anchors = [akTop, akLeft, akRight]
     ParentShowHint = False
     ShowHint = True
@@ -42,7 +42,7 @@ object Form1: TForm1
     OnKeyPress = Edit1KeyPress
   end
   object Button1: TButton
-    Left = 341
+    Left = 350
     Height = 85
     Top = 8
     Width = 59
@@ -61,9 +61,9 @@ object Form1: TForm1
   end
   object ComboBox1: TComboBox
     Left = 125
-    Height = 30
+    Height = 28
     Top = 72
-    Width = 205
+    Width = 214
     Anchors = [akTop, akLeft, akRight]
     ItemHeight = 0
     Style = csDropDownList
@@ -75,7 +75,7 @@ object Form1: TForm1
     Left = 8
     Height = 336
     Top = 112
-    Width = 391
+    Width = 400
     Anchors = [akTop, akLeft, akRight]
     Columns = <    
       item
@@ -106,9 +106,9 @@ object Form1: TForm1
   end
   object StatusBar1: TStatusBar
     Left = 0
-    Height = 24
-    Top = 481
-    Width = 408
+    Height = 18
+    Top = 487
+    Width = 417
     Panels = <    
       item
         Width = 100
@@ -123,10 +123,10 @@ object Form1: TForm1
   end
   object ComboBox2: TComboBox
     Left = 125
-    Height = 28
+    Height = 30
     Hint = 'Will compare against Cache Subject or GC-Code'
     Top = 8
-    Width = 205
+    Width = 214
     Anchors = [akTop, akLeft, akRight]
     ItemHeight = 0
     ParentShowHint = False
